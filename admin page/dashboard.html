@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Practice - PowerMath Defenders</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-gray-100">
+  
+    <div class="flex h-screen">
+        <!-- Sidebar -->
+     <div id="sidebar" class="w-64 bg-white shadow-lg">
+
+            <div class="p-6">
+                <div class="flex items-center gap-2 mb-8">
+                    <img src="logo.png" >
+                </div>
+                
+                <nav class="space-y-2">
+                        <a href="#" class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg transition">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                        </svg>
+                        <span>Dashboard</span>
+                    </a>
+                    <a href="#" class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg transition">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                        </svg>
+                        <span>Reading Mission</span>
+                    </a>
+                    <a href="#" class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg transition">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                        </svg>
+                        <span>Reading Lesson</span>
+                    </a>
+                    <a href="#" class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg transition">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                        </svg>
+                        <span>Daily Progress</span>
+                    </a>
+                    <a href="#" class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg transition">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                        </svg>
+                        <span>User Info</span>
+                    </a>
+                    
+                </nav>
+
+                  <div class="mt-6 bg-white p-4 rounded shadow">
+                    <a href="#" class="flex items-center gap-3 px-4 py-3 text-red-600 hover:bg-red-50 rounded-lg transition">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+                        </svg>
+                        <span>Logout</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+     
+
+
+        <!-- Main Content Area -->
+        <div class="ml-20 flex-1 overflow-auto">
+            <!-- Dashboard Page -->
+            <div id="dashboard" class="page active">
+                <div class="p-8">
+                    <div class="flex justify-between items-center mb-8">
+                        <div>
+                            <h1 class="text-3xl font-bold text-gray-800">Dashboard</h1>
+                            <p class="text-gray-500 text-sm">Hi, Nha In tagalog</p>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <button class="p-2 hover:bg-gray-100 rounded-lg transition">
+                                <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                            </button>
+                            <button class="p-2 hover:bg-gray-100 rounded-lg transition relative">
+                                <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
+                                <span class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+                            </button>
+                            <img src="https://ui-avatars.com/api/?name=User&background=random" alt="User" class="w-10 h-10 rounded-full">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-3 gap-6 mb-8">
+                        <div class="bg-white rounded-2xl p-6 shadow-sm">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-gray-500 text-sm">Total Active Users</span>
+                                <svg class="w-5 h-5 text-teal-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
+                            </div>
+                            <div class="text-4xl font-bold text-gray-800">100</div>
+                        </div>
+                        <div class="bg-white rounded-2xl p-6 shadow-sm">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-gray-500 text-sm">Total Post User</span>
+                                <svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
+                            </div>
+                            <div class="text-4xl font-bold text-gray-800">200</div>
+                        </div>
+                        <div class="bg-white rounded-2xl p-6 shadow-sm">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-gray-500 text-sm">Total User</span>
+                                <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
+                            </div>
+                            <div class="text-4xl font-bold text-gray-800">1200</div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-3 gap-6">
+                        <div class="col-span-2 bg-white rounded-2xl p-6 shadow-sm">
+                            <h2 class="text-xl font-bold text-gray-800 mb-6">Post User List</h2>
+                            <table class="w-full">
+                                <thead>
+                                    <tr class="text-left text-gray-500 text-sm border-b">
+                                        <th class="pb-3 font-medium">User ID</th>
+                                        <th class="pb-3 font-medium">Last Name</th>
+                                        <th class="pb-3 font-medium">Email</th>
+                                        <th class="pb-3 font-medium">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="text-gray-700">
+                                    <tr class="border-b"><td class="py-4">101</td><td class="py-4">John Smith</td><td class="py-4">johnsmith@example.com</td><td class="py-4"><button class="text-gray-400 hover:text-gray-600"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg></button></td></tr>
+                                    <tr class="border-b"><td class="py-4">102</td><td class="py-4">Cameron Williamson</td><td class="py-4">cameronwilliamson@example.com</td><td class="py-4"><button class="text-gray-400 hover:text-gray-600"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg></button></td></tr>
+                                    <tr class="border-b"><td class="py-4">103</td><td class="py-4">Arlene Simmons</td><td class="py-4">arlenesimmons@example.com</td><td class="py-4"><button class="text-gray-400 hover:text-gray-600"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg></button></td></tr>
+                                    <tr class="border-b"><td class="py-4">104</td><td class="py-4">Eleanor Pena</td><td class="py-4">eleanorpena@example.com</td><td class="py-4"><button class="text-gray-400 hover:text-gray-600"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg></button></td></tr>
+                                    <tr class="border-b"><td class="py-4">105</td><td class="py-4">Wade Warren</td><td class="py-4">wadewarren@example.com</td><td class="py-4"><button class="text-gray-400 hover:text-gray-600"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg></button></td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="space-y-6">
+                            <div class="bg-white rounded-2xl p-6 shadow-sm">
+                                <h2 class="text-xl font-bold text-gray-800 mb-6">Top Users</h2>
+                                <div class="flex justify-center gap-4 mb-4">
+                                    <div class="text-center">
+                                        <div class="w-16 h-16 bg-purple-200 rounded-full mx-auto mb-2 flex items-center justify-center">
+                                            <svg class="w-8 h-8 text-purple-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path></svg>
+                                        </div>
+                                        <p class="text-xs font-medium">Brandee Jang</p>
+                                        <p class="text-xs text-gray-500">200 points</p>
+                                    </div>
+                                    <div class="text-center">
+                                        <div class="w-20 h-20 bg-yellow-200 rounded-full mx-auto mb-2 flex items-center justify-center">
+                                            <svg class="w-10 h-10 text-yellow-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path></svg>
+                                        </div>
+                                        <p class="text-xs font-medium">Anabelle Fox</p>
+                                        <p class="text-xs text-gray-500">350 points</p>
+                                    </div>
+                                    <div class="text-center">
+                                        <div class="w-16 h-16 bg-teal-200 rounded-full mx-auto mb-2 flex items-center justify-center">
+                                            <svg class="w-8 h-8 text-teal-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path></svg>
+                                        </div>
+                                        <p class="text-xs font-medium">Casandra Haw</p>
+                                        <p class="text-xs text-gray-500">150 points</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            
+            <!-- Right Side -->
+            <div class="space-y-6">
+                <!-- Top Users -->
+                
+                </div>
+
+                
+
+    
+</body>
+</html>
