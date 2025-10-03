@@ -1,0 +1,297 @@
+<<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PowerMath Defenders - Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .page { display: none; }
+        .page.active { display: block; }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div class="flex h-screen overflow-hidden">
+        <!-- Sidebar -->
+        <div class="fixed left-0 top-0 h-screen w-20 bg-gradient-to-b from-teal-400 to-teal-500 flex flex-col items-center py-6 z-10">
+            <div class="mb-8">
+                <div class="w-12 h-12 bg-white rounded-lg flex items-center justify-center font-bold text-teal-500">PF</div>
+            </div>
+            <nav class="flex flex-col gap-6">
+                <a href="#" onclick="showPage('dashboard'); return false;" class="nav-link w-12 h-12 rounded-lg flex items-center justify-center text-white hover:bg-white hover:bg-opacity-20 transition" data-page="dashboard">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                </a>
+                <a href="#" onclick="showPage('math-mission'); return false;" class="nav-link w-12 h-12 rounded-lg flex items-center justify-center text-white hover:bg-white hover:bg-opacity-20 transition" data-page="math-mission">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
+                </a>
+                <a href="#" onclick="showPage('reading-lessons'); return false;" class="nav-link w-12 h-12 rounded-lg flex items-center justify-center text-white hover:bg-white hover:bg-opacity-20 transition" data-page="reading-lessons">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+                </a>
+                <a href="#" onclick="showPage('daily-practice'); return false;" class="nav-link w-12 h-12 rounded-lg flex items-center justify-center text-white hover:bg-white hover:bg-opacity-20 transition" data-page="daily-practice">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                </a>
+            </nav>
+        </div>
+
+        <!-- Main Content Area -->
+        <div class="ml-20 flex-1 overflow-auto">
+            <!-- Dashboard Page -->
+            <div id="dashboard" class="page active">
+                <div class="p-8">
+                    <div class="flex justify-between items-center mb-8">
+                        <div>
+                            <h1 class="text-3xl font-bold text-gray-800">Dashboard</h1>
+                            <p class="text-gray-500 text-sm">Hi, Nha In tagalog</p>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <button class="p-2 hover:bg-gray-100 rounded-lg transition">
+                                <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                            </button>
+                            <button class="p-2 hover:bg-gray-100 rounded-lg transition relative">
+                                <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
+                                <span class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+                            </button>
+                            <img src="https://ui-avatars.com/api/?name=User&background=random" alt="User" class="w-10 h-10 rounded-full">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-3 gap-6 mb-8">
+                        <div class="bg-white rounded-2xl p-6 shadow-sm">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-gray-500 text-sm">Total Active Users</span>
+                                <svg class="w-5 h-5 text-teal-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
+                            </div>
+                            <div class="text-4xl font-bold text-gray-800">100</div>
+                        </div>
+                        <div class="bg-white rounded-2xl p-6 shadow-sm">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-gray-500 text-sm">Total Post User</span>
+                                <svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
+                            </div>
+                            <div class="text-4xl font-bold text-gray-800">200</div>
+                        </div>
+                        <div class="bg-white rounded-2xl p-6 shadow-sm">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-gray-500 text-sm">Total User</span>
+                                <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
+                            </div>
+                            <div class="text-4xl font-bold text-gray-800">1200</div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-3 gap-6">
+                        <div class="col-span-2 bg-white rounded-2xl p-6 shadow-sm">
+                            <h2 class="text-xl font-bold text-gray-800 mb-6">Post User List</h2>
+                            <table class="w-full">
+                                <thead>
+                                    <tr class="text-left text-gray-500 text-sm border-b">
+                                        <th class="pb-3 font-medium">User ID</th>
+                                        <th class="pb-3 font-medium">Last Name</th>
+                                        <th class="pb-3 font-medium">Email</th>
+                                        <th class="pb-3 font-medium">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="text-gray-700">
+                                    <tr class="border-b"><td class="py-4">101</td><td class="py-4">John Smith</td><td class="py-4">johnsmith@example.com</td><td class="py-4"><button class="text-gray-400 hover:text-gray-600"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg></button></td></tr>
+                                    <tr class="border-b"><td class="py-4">102</td><td class="py-4">Cameron Williamson</td><td class="py-4">cameronwilliamson@example.com</td><td class="py-4"><button class="text-gray-400 hover:text-gray-600"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg></button></td></tr>
+                                    <tr class="border-b"><td class="py-4">103</td><td class="py-4">Arlene Simmons</td><td class="py-4">arlenesimmons@example.com</td><td class="py-4"><button class="text-gray-400 hover:text-gray-600"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg></button></td></tr>
+                                    <tr class="border-b"><td class="py-4">104</td><td class="py-4">Eleanor Pena</td><td class="py-4">eleanorpena@example.com</td><td class="py-4"><button class="text-gray-400 hover:text-gray-600"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg></button></td></tr>
+                                    <tr class="border-b"><td class="py-4">105</td><td class="py-4">Wade Warren</td><td class="py-4">wadewarren@example.com</td><td class="py-4"><button class="text-gray-400 hover:text-gray-600"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg></button></td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="space-y-6">
+                            <div class="bg-white rounded-2xl p-6 shadow-sm">
+                                <h2 class="text-xl font-bold text-gray-800 mb-6">Top Users</h2>
+                                <div class="flex justify-center gap-4 mb-4">
+                                    <div class="text-center">
+                                        <div class="w-16 h-16 bg-purple-200 rounded-full mx-auto mb-2 flex items-center justify-center">
+                                            <svg class="w-8 h-8 text-purple-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path></svg>
+                                        </div>
+                                        <p class="text-xs font-medium">Brandee Jang</p>
+                                        <p class="text-xs text-gray-500">200 points</p>
+                                    </div>
+                                    <div class="text-center">
+                                        <div class="w-20 h-20 bg-yellow-200 rounded-full mx-auto mb-2 flex items-center justify-center">
+                                            <svg class="w-10 h-10 text-yellow-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path></svg>
+                                        </div>
+                                        <p class="text-xs font-medium">Anabelle Fox</p>
+                                        <p class="text-xs text-gray-500">350 points</p>
+                                    </div>
+                                    <div class="text-center">
+                                        <div class="w-16 h-16 bg-teal-200 rounded-full mx-auto mb-2 flex items-center justify-center">
+                                            <svg class="w-8 h-8 text-teal-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path></svg>
+                                        </div>
+                                        <p class="text-xs font-medium">Casandra Haw</p>
+                                        <p class="text-xs text-gray-500">150 points</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="bg-gradient-to-br from-teal-400 to-teal-500 rounded-2xl p-6 shadow-sm text-white">
+                                <h2 class="text-xl font-bold mb-4">Subscription form</h2>
+                                <canvas id="subscriptionChart" class="w-full h-40 mb-4"></canvas>
+                                <div class="flex justify-between text-xs">
+                                    <span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span><span>May</span><span>Jun</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Math Mission Page -->
+            <div id="math-mission" class="page">
+                <div class="bg-gray-800 text-white px-8 py-4 flex justify-between items-center">
+                    <div>
+                        <h1 class="text-2xl font-bold">Math Mission</h1>
+                        <p class="text-sm text-gray-400">Here is your Analytics</p>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <button class="p-2 hover:bg-gray-700 rounded-lg transition">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
+                        </button>
+                        <img src="https://ui-avatars.com/api/?name=User&background=random" alt="User" class="w-10 h-10 rounded-full">
+                    </div>
+                </div>
+
+                <div class="p-8">
+                    <div class="bg-white rounded-lg shadow-md border-4 border-teal-500 p-6">
+                        <div class="flex justify-between items-center mb-6">
+                            <h2 class="text-2xl font-bold text-gray-800">All Math Mission</h2>
+                            <button class="flex items-center gap-2 bg-teal-500 text-white px-4 py-2 rounded-lg hover:bg-teal-600 transition font-medium">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                                Add Mission
+                            </button>
+                        </div>
+
+                        <table class="w-full">
+                            <thead class="border-b-2 border-gray-200">
+                                <tr>
+                                    <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Mission Name</th>
+                                    <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Total Played</th>
+                                    <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Point</th>
+                                    <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Total Questions</th>
+                                    <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Status</th>
+                                    <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="border-b border-gray-100 hover:bg-gray-50">
+                                    <td class="px-6 py-4 text-gray-800">Tech Jungle</td>
+                                    <td class="px-6 py-4 text-gray-600">426</td>
+                                    <td class="px-6 py-4 text-gray-600">200</td>
+                                    <td class="px-6 py-4 text-gray-600">20</td>
+                                    <td class="px-6 py-4"><span class="text-teal-600 font-medium">Active</span></td>
+                                    <td class="px-6 py-4"><div class="flex gap-2"><button class="p-1 text-gray-400 hover:text-gray-600"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path></svg></button><button class="p-1 text-red-400 hover:text-red-600"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg></button></div></td>
+                                </tr>
+                                <tr class="border-b border-gray-100 hover:bg-gray-50">
+                                    <td class="px-6 py-4 text-gray-800">Time Travel Adventure</td>
+                                    <td class="px-6 py-4 text-gray-600">609</td>
+                                    <td class="px-6 py-4 text-gray-600">300</td>
+                                    <td class="px-6 py-4 text-gray-600">30</td>
+                                    <td class="px-6 py-4"><span class="text-teal-600 font-medium">Active</span></td>
+                                    <td class="px-6 py-4"><div class="flex gap-2"><button class="p-1 text-gray-400 hover:text-gray-600"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path></svg></button><button class="p-1 text-red-400 hover:text-red-600"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg></button></div></td>
+                                </tr>
+                                <tr class="border-b border-gray-100 hover:bg-gray-50">
+                                    <td class="px-6 py-4 text-gray-800">The Lost Treasure</td>
+                                    <td class="px-6 py-4 text-gray-600">568</td>
+                                    <td class="px-6 py-4 text-gray-600">100</td>
+                                    <td class="px-6 py-4 text-gray-600">25</td>
+                                    <td class="px-6 py-4"><span class="text-teal-600 font-medium">Active</span></td>
+                                    <td class="px-6 py-4"><div class="flex gap-2"><button class="p-1 text-gray-400 hover:text-gray-600"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path></svg></button><button class="p-1 text-red-400 hover:text-red-600"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg></button></div></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div class="flex justify-between items-center mt-6 pt-4 border-t">
+                            <span class="text-sm text-gray-600">01 page of 100</span>
+                            <div class="flex gap-2">
+                                <button class="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition text-gray-700">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+                                    Previous
+                                </button>
+                                <button class="px-4 py-2 bg-gray-200 rounded-lg font-medium text-gray-700">01</button>
+                                <button class="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition text-gray-700">
+                                    Next
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Right Side -->
+            <div class="space-y-6">
+                <!-- Top Users -->
+                <div class="bg-white rounded-2xl p-6 shadow-sm">
+                    <h2 class="text-xl font-bold text-gray-800 mb-6">Top Users</h2>
+                    <div class="flex justify-center gap-4 mb-4">
+                        <div class="text-center">
+                            <div class="w-16 h-16 bg-purple-200 rounded-full mx-auto mb-2 flex items-center justify-center">
+                                <svg class="w-8 h-8 text-purple-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path></svg>
+                            </div>
+                            <p class="text-xs font-medium">Brandee Jang</p>
+                            <p class="text-xs text-gray-500">200 points</p>
+                        </div>
+                        <div class="text-center">
+                            <div class="w-20 h-20 bg-yellow-200 rounded-full mx-auto mb-2 flex items-center justify-center">
+                                <svg class="w-10 h-10 text-yellow-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path></svg>
+                            </div>
+                            <p class="text-xs font-medium">Anabelle Fox</p>
+                            <p class="text-xs text-gray-500">350 points</p>
+                        </div>
+                        <div class="text-center">
+                            <div class="w-16 h-16 bg-teal-200 rounded-full mx-auto mb-2 flex items-center justify-center">
+                                <svg class="w-8 h-8 text-teal-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path></svg>
+                            </div>
+                            <p class="text-xs font-medium">Casandra Haw</p>
+                            <p class="text-xs text-gray-500">150 points</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Subscription Form -->
+                <div class="bg-gradient-to-br from-teal-400 to-teal-500 rounded-2xl p-6 shadow-sm text-white">
+                    <h2 class="text-xl font-bold mb-4">Subscription form</h2>
+                    <canvas id="subscriptionChart" class="w-full h-40 mb-4"></canvas>
+                    <div class="flex justify-between text-xs">
+                        <span>Jan</span>
+                        <span>Feb</span>
+                        <span>Mar</span>
+                        <span>Apr</span>
+                        <span>May</span>
+                        <span>Jun</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Simple bar chart visualization
+        const canvas = document.getElementById('subscriptionChart');
+        const ctx = canvas.getContext('2d');
+        canvas.width = canvas.offsetWidth * 2;
+        canvas.height = canvas.offsetHeight * 2;
+        ctx.scale(2, 2);
+
+        const data = [120, 180, 80, 200, 160, 140];
+        const maxValue = Math.max(...data);
+        const barWidth = canvas.width / 2 / data.length - 10;
+        const colors = ['#ef4444', '#ef4444', '#fbbf24', '#fbbf24', '#10b981', '#10b981'];
+
+        data.forEach((value, index) => {
+            const barHeight = (value / maxValue) * (canvas.height / 2 - 20);
+            const x = index * (barWidth + 10) + 10;
+            const y = canvas.height / 2 - barHeight - 10;
+
+            ctx.fillStyle = colors[index];
+            ctx.fillRect(x, y, barWidth, barHeight);
+        });
+    </script>
+</body>
+</html>
