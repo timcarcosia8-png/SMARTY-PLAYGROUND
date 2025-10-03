@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smarty Playground - Reset Password</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background: linear-gradient(180deg, #7C3AED 0%, #6B21A8 40%, #4C1D95 70%, #2D1B69 100%);
+            min-height: 100vh;
+            font-family: 'Arial', sans-serif;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 3s infinite ease-in-out;
+        }
+        
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.2; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+        
+        .sparkle {
+            position: absolute;
+            animation: sparkle 2s infinite;
+            font-size: 20px;
+        }
+        
+        @keyframes sparkle {
+            0%, 100% { opacity: 0; transform: scale(0) rotate(0deg); }
+            50% { opacity: 1; transform: scale(1) rotate(180deg); }
+        }
+        
+        .title {
+            font-family: 'Arial Black', sans-serif;
+            font-weight: 900;
+            letter-spacing: 2px;
+            text-shadow: 
+                3px 3px 0px #F97316,
+                6px 6px 0px rgba(0,0,0,0.3);
+        }
+        
+        .cloud {
+            position: absolute;
+            background: rgba(139, 92, 246, 0.2);
+            border-radius: 100px;
+            filter: blur(50px);
+        }
+    </style>
+</head>
+<body>
+    <!-- Stars Background -->
+    <div id="stars"></div>
+    
+    <!-- Clouds -->
+    <div class="cloud" style="width: 200px; height: 80px; top: 10%; left: -50px;"></div>
+    <div class="cloud" style="width: 180px; height: 70px; top: 20%; right: -40px;"></div>
+    <div class="cloud" style="width: 150px; height: 60px; bottom: 30%; left: -30px;"></div>
+    <div class="cloud" style="width: 160px; height: 65px; bottom: 20%; right: -35px;"></div>
+    
+    <!-- Sparkles -->
+    <div class="sparkle" style="top: 15%; left: 20%; animation-delay: 0s;">✨</div>
+    <div class="sparkle" style="top: 25%; right: 15%; animation-delay: 1s;">✨</div>
+    <div class="sparkle" style="bottom: 40%; left: 10%; animation-delay: 2s;">⭐</div>
+    <div class="sparkle" style="top: 20%; right: 25%; animation-delay: 1.5s;">⭐</div>
+    
+    <!-- Main Container -->
+    <div class="relative z-10 max-w-md mx-auto min-h-screen flex flex-col px-6 py-4">
+        <!-- Status Bar -->
+        <div class="flex justify-between items-center pb-4">
+            <span class="text-white text-sm font-semibold">9:41</span>
+            <div class="flex items-center gap-1 text-white text-xs">
+                <span>📶</span>
+                <span>📡</span>
+                <span>🔋</span>
+            </div>
+        </div>
+        
+        <!-- Back Button -->
+        <div class="mb-8">
+            <button class="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition-transform">
+                <svg class="w-6 h-6 text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"></path>
+                </svg>
+            </button>
+        </div>
+        
+        <!-- Title Section -->
+        <div class="text-center mb-8">
+            <h1 class="title text-5xl leading-tight mb-6" style="color: #FCD34D;">
+                SMARTY<br>PLAYGROUND
+            </h1>
+            
+            <h2 class="text-white text-2xl font-bold mb-3">Reset Password</h2>
+            <p class="text-white text-sm px-4">
+                Please check your email. Give correct<br>reset 5 digit code here.
+            </p>
+        </div>
+        
+        <!-- Form Section -->
+        <div class="space-y-4 mb-8 flex-1">
+            <input 
+                type="password" 
+                placeholder="Enter New Password"
+                class="w-full px-6 py-4 rounded-2xl bg-white text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-400 transition-all shadow-md"
+            >
+            
+            <input 
+                type="password" 
+                placeholder="Enter Confirm Password"
+                class="w-full px-6 py-4 rounded-2xl bg-white text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-400 transition-all shadow-md"
+            >
+        </div>
+        
+        <!-- Reset Button -->
+        <div class="pb-8">
+            <button class="w-full bg-gradient-to-r from-orange-400 to-orange-500 text-white font-bold text-xl py-4 rounded-2xl shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300">
+                Reset Password
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Create stars
+        const starsContainer = document.getElementById('stars');
+        for (let i = 0; i < 80; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+            const size = Math.random() * 3 + 1;
+            star.style.width = size + 'px';
+            star.style.height = size + 'px';
+            star.style.left = Math.random() * 100 + '%';
+            star.style.top = Math.random() * 100 + '%';
+            star.style.animationDelay = Math.random() * 3 + 's';
+            star.style.animationDuration = (Math.random() * 2 + 2) + 's';
+            starsContainer.appendChild(star);
+        }
+    </script>
+</body>
+</html>
