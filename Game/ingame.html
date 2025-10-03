@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Word Salad - SMARTY PLAYGROUND</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background: linear-gradient(180deg, #6B21A8 0%, #1E1B4B 100%);
+            min-height: 100vh;
+            font-family: 'Arial', sans-serif;
+        }
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 2s infinite;
+        }
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+        .letter-tile {
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        .letter-tile:active {
+            transform: scale(0.95);
+        }
+        .letter-tile.selected {
+            transform: scale(1.1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+        }
+        .shake {
+            animation: shake 0.5s;
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+        .bounce {
+            animation: bounce 1s infinite;
+        }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        .fade-in {
+            animation: fadeIn 0.3s;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .celebration {
+            animation: celebrate 0.6s;
+        }
+        @keyframes celebrate {
+            0%, 100% { transform: scale(1) rotate(0deg); }
+            25% { transform: scale(1.2) rotate(-10deg); }
+            75% { transform: scale(1.2) rotate(10deg); }
+        }
+    </style>
+</head>
+<body class="overflow-x-hidden">
+    <!-- Stars Background -->
+    <div id="stars"></div>
+
+    <!-- Main Container -->
+    <div class="max-w-md mx-auto relative" id="app">
+        <!-- Game Screen -->
+        <div id="gameScreen" class="min-h-screen p-6 flex flex-col">
+            <!-- Header -->
+            <div class="flex items-center justify-between mb-6">
+                <button onclick="showMenu()" class="bg-white rounded-full w-12 h-12 flex items-center justify-center shadow-lg">
+                    <span class="text-purple-900 text-2xl font-bold">←</span>
+                </button>
+                <h1 class="text-white text-2xl font-bold">WORD SALAD</h1>
+                <div class="bg-yellow-400 text-purple-900 font-bold text-lg py-2 px-4 rounded-full shadow-lg">
+                    🪙 <span id="points">50</span>
+                </div>
+            </div>
+
+            <!-- Level Progress -->
+            <div class="bg-white rounded-2xl p-4 mb-6 shadow-lg text-center">
+                <p class="text-purple-900 font-bold text-lg mb-2">Round <span id="currentRound">1</span> of 5</p>
+                <div class="flex gap-2 justify-center">
+                    <div class="w-8 h-8 bg-green-400 rounded-full flex items-center justify-center">
+                        <span class="text-white font-bold">✓</span>
+                    </div>
+                    <div class="w-8 h-8 bg-cyan-400 rounded-full pulse"></div>
+                    <div class="w-8 h-8 bg-gray-300 rounded-full"></div>
+                    <div class="w-8 h-8 bg-gray-300 rounded-full"></div>
+                    <div class="w-8 h-8 bg-gray-300 rounded-full"></div>
+                </div>
+            </div>
+
+            <!-- Image Hint -->
+            <div class="bg-white rounded-3xl p-8 mb-6 shadow-lg text-center">
+                <p class="text-purple-900 text-xl font-bold mb-4">Spell the word:</p>
+                <div class="text-8xl mb-4" id="hintImage">🐱</div>
+                <p class="text-cyan-400 text-3xl font-bold tracking-widest" id="wordHint">_ _ _</p>
+            </div>
+
+            <!-- Current Word Building Area -->
+            <div class="bg-cyan-400 rounded-3xl p-6 mb-6 shadow-lg min-h-24 flex items-center justify-center">
+                <div id="currentWord" class="flex gap-3 flex-wrap justify-center">
+                    <!-- Selected letters appear here -->
+                </div>
+            </div>
+
+            <!-- Letter Grid - Large buttons for kids -->
+            <div class="grid grid-cols-3 gap-4 mb-6" id="letterGrid">
+                <button class="letter-tile bg-white text-purple-900 font-bold text-4xl py-8 rounded-3xl shadow-xl hover:bg-gray-50 border-4 border-purple-200" onclick="selectLetter(this, 'C')">C</button>
+                <button class="letter-tile bg-white text-purple-900 font-bold text-4xl py-8 rounded-3xl shadow-xl hover:bg-gray-50 border-4 border-purple-200" onclick="selectLetter(this, 'A')">A</button>
+                <button class="letter-tile bg-white text-purple-900 font-bold text-4xl py-8 rounded-3xl shadow-xl hover:bg-gray-50 border-4 border-purple-200" onclick="selectLetter(this, 'T')">T</button>
+            </div>
+
+            <!-- Action Buttons - Big and colorful -->
+            <div class="flex gap-4">
+                <button onclick="clearWord()" class="flex-1 bg-red-400 text-white font-bold text-2xl py-6 rounded-3xl shadow-xl hover:bg-red-500 transition border-4 border-red-300">
+                    ↺ Clear
+                </button>
+                <button onclick="submitWord()" class="flex-1 bg-green-400 text-white font-bold text-2xl py-6 rounded-3xl shadow-xl hover:bg-green-500 transition pulse border-4 border-green-300">
+                    ✓ Check
+                </button>
+            </div>
+        </div>
+
+        <!-- Menu Screen -->
+        <div id="menuScreen" class="min-h-screen p-6 hidden">
+            <!-- Header -->
+            <div class="text-center mb-8">
+                <h1 class="text-white text-3xl font-bold mb-2">WORD SALAD</h1>
+                <p class="text-white text-lg">Learn to spell words!</p>
+            </div>
+
+            <!-- Character -->
+            <div class="flex justify-center mb-8">
+                <div class="w-32 h-32 bg-gradient-to-br from-pink-300 to-pink-400 rounded-full flex items-center justify-center shadow-2xl bounce">
+                    <span class="text-7xl">😊</span>
+                </div>
+            </div>
+
+            <!-- Level Selection -->
+            <div class="space-y-4 mb-6">
+                <button onclick="startGame('easy')" class="w-full bg-white rounded-3xl p-6 shadow-xl hover:bg-gray-50 transition border-4 border-green-300">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-4">
+                            <div class="w-16 h-16 bg-green-400 rounded-full flex items-center justify-center text-3xl">
+                                😊
+                            </div>
+                            <div class="text-left">
+                                <h3 class="text-purple-900 font-bold text-2xl">Easy</h3>
+                                <p class="text-purple-700 text-lg">3 letter words</p>
+                            </div>
+                        </div>
+                        <span class="text-green-400 font-bold text-3xl">⭐</span>
+                    </div>
+                </button>
+
+                <button onclick="startGame('medium')" class="w-full bg-white rounded-3xl p-6 shadow-xl hover:bg-gray-50 transition border-4 border-cyan-300">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-4">
+                            <div class="w-16 h-16 bg-cyan-400 rounded-full flex items-center justify-center text-3xl">
+                                🤓
+                            </div>
+                            <div class="text-left">
+                                <h3 class="text-purple-900 font-bold text-2xl">Medium</h3>
+                                <p class="text-purple-700 text-lg">4 letter words</p>
+                            </div>
+                        </div>
+                        <span class="text-cyan-400 font-bold text-3xl">⭐⭐</span>
+                    </div>
+                </button>
+
+                <button onclick="startGame('hard')" class="w-full bg-white rounded-3xl p-6 shadow-xl hover:bg-gray-50 transition border-4 border-pink-300">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-4">
+                            <div class="w-16 h-16 bg-pink-400 rounded-full flex items-center justify-center text-3xl">
+                                🌟
+                            </div>
+                            <div class="text-left">
+                                <h3 class="text-purple-900 font-bold text-2xl">Hard</h3>
+                                <p class="text-purple-700 text-lg">5 letter words</p>
+                            </div>
+                        </div>
+                        <span class="text-pink-400 font-bold text-3xl">⭐⭐⭐</span>
+                    </div>
+                </button>
+            </div>
+
+            <!-- Stats Card -->
+            <div class="bg-gradient-to-br from-pink-400 to-pink-500 rounded-3xl p-6 shadow-xl border-4 border-pink-300">
+                <h3 class="text-white font-bold text-2xl mb-4 text-center">Your Progress</h3>
+                <div class="grid grid-cols-2 gap-4 text-center">
+                    <div class="bg-white bg-opacity-20 rounded-2xl p-4">
+                        <p class="text-white text-4xl font-bold">12</p>
+                        <p class="text-white text-sm">Words Learned</p>
+                    </div>
+                    <div class="bg-white bg-opacity-20 rounded-2xl p-4">
+                        <p class="text-white text-4xl font-bold">50</p>
+                        <p class="text-white text-sm">Points 🪙</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Success Modal (Correct Answer) -->
+        <div id="successModal" class="fixed inset-0 bg-black bg-opacity-70 items-center justify-center hidden" style="z-index: 1000;">
+            <div class="bg-gradient-to-b from-green-400 to-green-500 rounded-3xl p-8 mx-6 text-center shadow-2xl fade-in border-4 border-green-300">
+                <div class="text-8xl mb-4 celebration">🎉</div>
+                <h2 class="text-white text-4xl font-bold mb-4">Great Job!</h2>
+                <div class="bg-white text-green-500 font-bold text-5xl py-4 px-8 rounded-3xl mb-6 shadow-lg" id="correctWordDisplay">
+                    CAT
+                </div>
+                <p class="text-white text-2xl mb-6">+10 Points! 🪙</p>
+                <button onclick="nextRound()" class="bg-white text-green-500 font-bold text-2xl py-4 px-16 rounded-3xl shadow-lg hover:bg-gray-100 transition">
+                    Next Word →
+                </button>
+            </div>
+        </div>
+
+        <!-- Level Complete Modal (200 Points Reward) -->
+        <div id="levelCompleteModal" class="fixed inset-0 bg-black bg-opacity-70 items-center justify-center hidden" style="z-index: 1000;">
+            <div class="relative mx-6 fade-in">
+                <!-- Cyan Banner -->
+                <div class="absolute -top-6 left-1/2 transform -translate-x-1/2 bg-cyan-400 text-white font-bold text-xl py-4 px-12 rounded-2xl shadow-xl z-10 border-4 border-cyan-300" style="box-shadow: 0 4px 0 #0891b2;">
+                    CONGRATULATION
+                </div>
+                
+                <!-- Main Pink Card -->
+                <div class="bg-gradient-to-b from-pink-400 to-pink-500 rounded-3xl p-10 pt-16 text-center shadow-2xl border-4 border-pink-300" style="box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+                    <div class="text-8xl mb-6">🏆</div>
+                    <h2 class="text-white text-3xl font-bold mb-4">You Have Earned</h2>
+                    <div class="text-white text-7xl font-black mb-8" style="text-shadow: 0 4px 10px rgba(0,0,0,0.3);">200 POINTS! </div>
+                    <button onclick="finishGame()" class="bg-cyan-400 text-white font-bold text-2xl py-5 px-20 rounded-3xl shadow-lg hover:bg-cyan-500 transition border-4 border-cyan-300" style="box-shadow: 0 4px 0 #0891b2;">
+                        OK
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Wrong Answer Modal -->
+        <div id="wrongModal" class="fixed inset-0 bg-black bg-opacity-70 items-center justify-center hidden" style="z-index: 1000;">
+            <div class="bg-gradient-to-b from-red-400 to-red-500 rounded-3xl p-8 mx-6 text-center shadow-2xl fade-in border-4 border-red-300">
+                <div class="text-8xl mb-4 shake">😢</div>
+                <h2 class="text-white text-4xl font-bold mb-4">Try Again!</h2>
+                <p class="text-white text-2xl mb-6">That's not quite right.</p>
+                <button onclick="hideWrong()" class="bg-white text-red-500 font-bold text-2xl py-4 px-16 rounded-3xl shadow-lg hover:bg-gray-100 transition">
+                    OK
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Generate stars
+        const starsContainer = document.getElementById('stars');
+        for (let i = 0; i < 50; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+            star.style.width = Math.random() * 3 + 'px';
+            star.style.height = star.style.width;
+            star.style.left = Math.random() * 100 + '%';
+            star.style.top = Math.random() * 100 + '%';
+            star.style.animationDelay = Math.random() * 2 + 's';
+            starsContainer.appendChild(star);
+        }
+
+        // Game state
+        let selectedLetters = [];
+        let currentRound = 1;
+        let totalRounds = 5;
+        let currentDifficulty = 'easy';
+        
+        // Word sets for different difficulties
+        const words = {
+            easy: [
+                {word: 'CAT', emoji: '🐱', letters: ['C', 'A', 'T']},
+                {word: 'DOG', emoji: '🐶', letters: ['D', 'O', 'G']},
+                {word: 'SUN', emoji: '☀️', letters: ['S', 'U', 'N']},
+                {word: 'BEE', emoji: '🐝', letters: ['B', 'E', 'E']},
+                {word: 'CAR', emoji: '🚗', letters: ['C', 'A', 'R']}
+            ],
+            medium: [
+                {word: 'FISH', emoji: '🐟', letters: ['F', 'I', 'S', 'H']},
+                {word: 'BIRD', emoji: '🐦', letters: ['B', 'I', 'R', 'D']},
+                {word: 'MOON', emoji: '🌙', letters: ['M', 'O', 'O', 'N']},
+                {word: 'TREE', emoji: '🌳', letters: ['T', 'R', 'E', 'E']},
+                {word: 'STAR', emoji: '⭐', letters: ['S', 'T', 'A', 'R']}
+            ],
+            hard: [
+                {word: 'APPLE', emoji: '🍎', letters: ['A', 'P', 'P', 'L', 'E']},
+                {word: 'HORSE', emoji: '🐴', letters: ['H', 'O', 'R', 'S', 'E']},
+                {word: 'HOUSE', emoji: '🏠', letters: ['H', 'O', 'U', 'S', 'E']},
+                {word: 'PIZZA', emoji: '🍕', letters: ['P', 'I', 'Z', 'Z', 'A']},
+                {word: 'HEART', emoji: '❤️', letters: ['H', 'E', 'A', 'R', 'T']}
+            ]
+        };
+
+        let currentWordSet = [];
+        let currentWordData = null;
+
+        function startGame(difficulty) {
+            currentDifficulty = difficulty;
+            currentRound = 1;
+            currentWordSet = [...words[difficulty]];
+            loadRound();
+            showGame();
+        }
+
+        function loadRound() {
+            if (currentRound > totalRounds) {
+                showLevelComplete();
+                return;
+            }
+
+            currentWordData = currentWordSet[currentRound - 1];
+            
+            // Update UI
+            document.getElementById('currentRound').textContent = currentRound;
+            document.getElementById('hintImage').textContent = currentWordData.emoji;
+            document.getElementById('wordHint').textContent = '_'.repeat(currentWordData.word.length).split('').join(' ');
+            
+            // Create letter buttons
+            const letterGrid = document.getElementById('letterGrid');
+            letterGrid.innerHTML = '';
+            
+            // Shuffle letters for variety
+            const shuffledLetters = [...currentWordData.letters].sort(() => Math.random() - 0.5);
+            
+            shuffledLetters.forEach(letter => {
+                const button = document.createElement('button');
+                button.className = 'letter-tile bg-white text-purple-900 font-bold text-4xl py-8 rounded-3xl shadow-xl hover:bg-gray-50 border-4 border-purple-200';
+                button.textContent = letter;
+                button.onclick = () => selectLetter(button, letter);
+                letterGrid.appendChild(button);
+            });
+            
+            selectedLetters = [];
+            updateCurrentWord();
+            updateProgressDots();
+        }
+
+        function updateProgressDots() {
+            const dotsHtml = [];
+            for (let i = 1; i <= totalRounds; i++) {
+                if (i < currentRound) {
+                    dotsHtml.push('<div class="w-8 h-8 bg-green-400 rounded-full flex items-center justify-center"><span class="text-white font-bold">✓</span></div>');
+                } else if (i === currentRound) {
+                    dotsHtml.push('<div class="w-8 h-8 bg-cyan-400 rounded-full pulse"></div>');
+                } else {
+                    dotsHtml.push('<div class="w-8 h-8 bg-gray-300 rounded-full"></div>');
+                }
+            }
+            document.querySelector('.flex.gap-2.justify-center').innerHTML = dotsHtml.join('');
+        }
+
+        function selectLetter(button, letter) {
+            if (!button.classList.contains('selected')) {
+                button.classList.add('selected');
+                selectedLetters.push({ button, letter });
+                updateCurrentWord();
+            }
+        }
+
+        function updateCurrentWord() {
+            const currentWordDiv = document.getElementById('currentWord');
+            currentWordDiv.innerHTML = selectedLetters.map(item => 
+                `<span class="bg-white text-purple-900 font-bold text-4xl px-6 py-4 rounded-2xl shadow-lg border-4 border-purple-200">${item.letter}</span>`
+            ).join('');
+        }
+
+        function clearWord() {
+            selectedLetters.forEach(item => {
+                item.button.classList.remove('selected');
+            });
+            selectedLetters = [];
+            updateCurrentWord();
+        }
+
+        function submitWord() {
+            if (selectedLetters.length === 0) return;
+            
+            const word = selectedLetters.map(item => item.letter).join('');
+            
+            if (word === currentWordData.word) {
+                document.getElementById('correctWordDisplay').textContent = word;
+                showSuccess();
+                
+                // Update points
+                const currentPoints = parseInt(document.getElementById('points').textContent);
+                document.getElementById('points').textContent = currentPoints + 10;
+            } else {
+                showWrong();
+            }
+        }
+
+        function nextRound() {
+            hideSuccess();
+            currentRound++;
+            clearWord();
+            loadRound();
+        }
+
+        function showGame() {
+            document.getElementById('gameScreen').classList.remove('hidden');
+            document.getElementById('menuScreen').classList.add('hidden');
+        }
+
+        function showMenu() {
+            document.getElementById('gameScreen').classList.add('hidden');
+            document.getElementById('menuScreen').classList.remove('hidden');
+        }
+
+        function showSuccess() {
+            document.getElementById('successModal').classList.remove('hidden');
+            document.getElementById('successModal').classList.add('flex');
+        }
+
+        function hideSuccess() {
+            document.getElementById('successModal').classList.add('hidden');
+            document.getElementById('successModal').classList.remove('flex');
+        }
+
+        function showWrong() {
+            document.getElementById('wrongModal').classList.remove('hidden');
+            document.getElementById('wrongModal').classList.add('flex');
+        }
+
+        function hideWrong() {
+            document.getElementById('wrongModal').classList.add('hidden');
+            document.getElementById('wrongModal').classList.remove('flex');
+        }
+
+        function showLevelComplete() {
+            document.getElementById('levelCompleteModal').classList.remove('hidden');
+            document.getElementById('levelCompleteModal').classList.add('flex');
+            
+            // Update total points
+            const currentPoints = parseInt(document.getElementById('points').textContent);
+            document.getElementById('points').textContent = currentPoints + 200;
+        }
+
+        function finishGame() {
+            document.getElementById('levelCompleteModal').classList.add('hidden');
+            document.getElementById('levelCompleteModal').classList.remove('flex');
+            showMenu();
+        }
+    </script>
+</body>
+</html>
