@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PowerMath Defenders - Daily Practice</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+            display: flex;
+        }
+
+        .sidebar {
+            width: 200px;
+            background: white;
+            border-right: 3px solid #00d4aa;
+            height: 100vh;
+            padding: 20px 0;
+            position: fixed;
+        }
+
+        .logo {
+            padding: 0 20px 20px;
+            margin-bottom: 30px;
+        }
+
+        .logo h1 {
+            background: linear-gradient(135deg, #ff9800, #ffc107);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 16px;
+            text-align: center;
+            border: 3px solid #ff6f00;
+            font-weight: bold;
+        }
+
+        .nav-item {
+            padding: 12px 20px;
+            margin: 5px 15px;
+            cursor: pointer;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s;
+            color: #333;
+            font-size: 14px;
+        }
+
+        .nav-item:hover {
+            background: #f0f0f0;
+        }
+
+        .nav-item.active {
+            background: #00d4aa;
+            color: white;
+        }
+
+        .nav-item.logout {
+            color: #ff6b6b;
+            margin-top: auto;
+        }
+
+        .main-content {
+            margin-left: 200px;
+            flex: 1;
+            padding: 30px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .header-title h2 {
+            color: #00d4aa;
+            font-size: 32px;
+            margin-bottom: 5px;
+        }
+
+        .header-title p {
+            color: #999;
+            font-size: 14px;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .notification {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: 1px solid #ddd;
+        }
+
+        .profile-pic {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: #ddd;
+            cursor: pointer;
+        }
+
+        .content-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 20px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .card h3 {
+            font-size: 20px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .user-table {
+            width: 100%;
+        }
+
+        .table-header {
+            display: grid;
+            grid-template-columns: 80px 1fr 1.5fr 80px;
+            padding: 12px 0;
+            border-bottom: 2px solid #f0f0f0;
+            font-size: 13px;
+            color: #666;
+            font-weight: 600;
+        }
+
+        .table-row {
+            display: grid;
+            grid-template-columns: 80px 1fr 1.5fr 80px;
+            padding: 15px 0;
+            border-bottom: 1px solid #f5f5f5;
+            align-items: center;
+            font-size: 14px;
+            color: #333;
+        }
+
+        .table-row:hover {
+            background: #f9f9f9;
+        }
+
+        .action-btn {
+            cursor: pointer;
+            color: #999;
+            font-size: 18px;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .page-info {
+            color: #999;
+            font-size: 13px;
+        }
+
+        .pagination-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 10px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .btn-prev {
+            background: #f0f0f0;
+            color: #999;
+        }
+
+        .btn-page {
+            background: white;
+            border: 1px solid #ddd;
+            color: #333;
+        }
+
+        .btn-next {
+            background: #00d4aa;
+            color: white;
+        }
+
+        .btn-next:hover {
+            background: #00bd96;
+        }
+
+        .leaderboard-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            border: none;
+            background: white;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.3s;
+            border: 1px solid #ddd;
+        }
+
+        .tab.active {
+            background: linear-gradient(135deg, #ff6b6b, #ff8e53);
+            color: white;
+            border: none;
+        }
+
+        .podium {
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            margin: 30px 0;
+            gap: 15px;
+        }
+
+        .podium-place {
+            text-align: center;
+            position: relative;
+        }
+
+        .avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin: 0 auto 10px;
+            border: 4px solid #fff;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .podium-place:nth-child(2) .avatar {
+            width: 100px;
+            height: 100px;
+            border: 5px solid #ffd700;
+        }
+
+        .crown {
+            position: absolute;
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 40px;
+        }
+
+        .avatar-1 { background: linear-gradient(135deg, #a78bfa, #8b5cf6); }
+        .avatar-2 { background: linear-gradient(135deg, #fbbf24, #f59e0b); }
+        .avatar-3 { background: linear-gradient(135deg, #60a5fa, #3b82f6); }
+
+        .podium-name {
+            font-weight: bold;
+            font-size: 14px;
+            margin-bottom: 3px;
+        }
+
+        .podium-stats {
+            font-size: 11px;
+            color: #666;
+        }
+
+        .leaderboard-list {
+            margin-top: 20px;
+        }
+
+        .leaderboard-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            margin-bottom: 8px;
+            background: #f9f9f9;
+            border-radius: 8px;
+        }
+
+        .leaderboard-left {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .leaderboard-name {
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .leaderboard-stats {
+            font-size: 11px;
+            color: #666;
+        }
+
+        .leaderboard-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .rank {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .heart {
+            color: #ff6b6b;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="logo">
+            <h1>POWERMATH<br>DEFENDERS</h1>
+        </div>
+        <div class="nav-item">
+            <span>📊</span> Dashboard
+        </div>
+        <div class="nav-item">
+            <span>🎯</span> Math Mission
+        </div>
+        <div class="nav-item">
+            <span>⏱️</span> Time Challenges
+        </div>
+        <div class="nav-item">
+            <span>📈</span> Daily Practice
+        </div>
+        <div class="nav-item active">
+            <span>👤</span> User Info
+        </div>
+        <div class="nav-item">
+            <span>💳</span> Subscription
+        </div>
+        <div class="nav-item logout">
+            <span>🚪</span> Logout
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="header">
+            <div class="header-title">
+                <h2>Daily Practice</h2>
+                <p>Here is Your Analytics</p>
+            </div>
+            <div class="header-right">
+                <div class="notification">🔔</div>
+                <div class="profile-pic"></div>
+            </div>
+        </div>
+
+        <div class="content-wrapper">
+            <div class="card">
+                <h3>User Info</h3>
+                <div class="user-table">
+                    <div class="table-header">
+                        <div>User ID</div>
+                        <div>User Name</div>
+                        <div>Email</div>
+                        <div>Action</div>
+                    </div>
+                    <div class="table-row">
+                        <div>001</div>
+                        <div>Brooklyn Simmons</div>
+                        <div>DebraHolt@Example.Com</div>
+                        <div class="action-btn">⋯</div>
+                    </div>
+                    <div class="table-row">
+                        <div>002</div>
+                        <div>Cameron Williamson</div>
+                        <div>Curtis.Weaver@Example.Com</div>
+                        <div class="action-btn">⋯</div>
+                    </div>
+                    <div class="table-row">
+                        <div>003</div>
+                        <div>Wade Warren</div>
+                        <div>Debbie.Baker@Example.Com</div>
+                        <div class="action-btn">⋯</div>
+                    </div>
+                    <div class="table-row">
+                        <div>004</div>
+                        <div>Devon Lane</div>
+                        <div>Georgia.Young@Example.Com</div>
+                        <div class="action-btn">⋯</div>
+                    </div>
+                    <div class="table-row">
+                        <div>004</div>
+                        <div>Devon Lane</div>
+                        <div>Deanna.Curtis@Example.Com</div>
+                        <div class="action-btn">⋯</div>
+                    </div>
+                    <div class="table-row">
+                        <div>004</div>
+                        <div>Devon Lane</div>
+                        <div>Alma.Lawson@Example.Com</div>
+                        <div class="action-btn">⋯</div>
+                    </div>
+                    <div class="table-row">
+                        <div>004</div>
+                        <div>Devon Lane</div>
+                        <div>Tim.Jennings@Example.Com</div>
+                        <div class="action-btn">⋯</div>
+                    </div>
+                    <div class="table-row">
+                        <div>004</div>
+                        <div>Devon Lane</div>
+                        <div>Sara.Cruz@Example.Com</div>
+                        <div class="action-btn">⋯</div>
+                    </div>
+                    <div class="table-row">
+                        <div>004</div>
+                        <div>Devon Lane</div>
+                        <div>Jessica.Hanson@Example.Com</div>
+                        <div class="action-btn">⋯</div>
+                    </div>
+                </div>
+                <div class="pagination">
+                    <div class="page-info">01 page of 300</div>
+                    <div class="pagination-buttons">
+                        <button class="btn btn-prev">← Previous</button>
+                        <button class="btn btn-page">01</button>
+                        <button class="btn btn-next">Next →</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>User Leaderboard</h3>
+                <div class="leaderboard-tabs">
+                    <button class="tab active">Today</button>
+                    <button class="tab">This Week</button>
+                    <button class="tab">All Time</button>
+                </div>
+
+                <div class="podium">
+                    <div class="podium-place">
+                        <div class="avatar avatar-1"></div>
+                        <div class="podium-name">Floyd Miles</div>
+                        <div class="podium-stats">Level : 22 | Gain : 2000</div>
+                    </div>
+                    <div class="podium-place">
+                        <div class="crown">👑</div>
+                        <div class="avatar avatar-2"></div>
+                        <div class="podium-name">Pasztor Kira</div>
+                        <div class="podium-stats">Level : 22 | Gain : 2000</div>
+                    </div>
+                    <div class="podium-place">
+                        <div class="avatar avatar-3"></div>
+                        <div class="podium-name">Theresa Webb</div>
+                        <div class="podium-stats">Level : 22 | Gain : 2000</div>
+                    </div>
+                </div>
+
+                <div class="leaderboard-list">
+                    <div class="leaderboard-item">
+                        <div class="leaderboard-left">
+                            <div class="leaderboard-name">Darrell Steward</div>
+                            <div class="leaderboard-stats">Level : 22 | Gain : 2000</div>
+                        </div>
+                        <div class="leaderboard-right">
+                            <span class="rank">#4</span>
+                            <span class="heart">❤️</span>
+                        </div>
+                    </div>
+                    <div class="leaderboard-item">
+                        <div class="leaderboard-left">
+                            <div class="leaderboard-name">Darrell Steward</div>
+                            <div class="leaderboard-stats">Level : 22 | Gain : 2000</div>
+                        </div>
+                        <div class="leaderboard-right">
+                            <span class="rank">#5</span>
+                            <span class="heart">❤️</span>
+                        </div>
+                    </div>
+                    <div class="leaderboard-item">
+                        <div class="leaderboard-left">
+                            <div class="leaderboard-name">Darrell Steward</div>
+                            <div class="leaderboard-stats">Level : 22 | Gain : 2000</div>
+                        </div>
+                        <div class="leaderboard-right">
+                            <span class="rank">#6</span>
+                            <span class="heart">❤️</span>
+                        </div>
+                    </div>
+                    <div class="leaderboard-item">
+                        <div class="leaderboard-left">
+                            <div class="leaderboard-name">Darrell Steward</div>
+                            <div class="leaderboard-stats">Level : 22 | Gain : 2000</div>
+                        </div>
+                        <div class="leaderboard-right">
+                            <span class="rank">#7</span>
+                            <span class="heart">❤️</span>
+                        </div>
+                    </div>
+                    <div class="leaderboard-item">
+                        <div class="leaderboard-left">
+                            <div class="leaderboard-name">Darrell Steward</div>
+                            <div class="leaderboard-stats">Level : 22 | Gain : 2000</div>
+                        </div>
+                        <div class="leaderboard-right">
+                            <span class="rank">#8</span>
+                            <span class="heart">❤️</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
