@@ -187,7 +187,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         <!-- Footer -->
         <div class="text-center mt-6">
-            <p class="text-sm text-gray-500">© 2024 PowerMath Defenders. All rights reserved.</p>
+            <p class="text-sm text-gray-500">© 2025 Smarty Playground. All rights reserved.</p>
         </div>
     </div>
 

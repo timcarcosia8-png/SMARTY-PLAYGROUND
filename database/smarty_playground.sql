@@ -68,3 +68,4 @@ INSERT INTO lessons (lesson_title, description, difficulty) VALUES
 -- ('Eleanor Pena', 'eleanorpena@example.com', 130, 'active'),
 -- ('Wade Warren', 'wadewarren@example.com', 110, 'active');
 
+SELECT * FROM users;
