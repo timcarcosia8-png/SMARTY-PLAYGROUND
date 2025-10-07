@@ -1,6 +1,12 @@
-<!-- <?php
-// $conn = new mysqli("localhost", "root", "", "smarty_playground");
-// if ($conn->connect_error) {
-//     die("Connection failed: " . $conn->connect_error);
-// }
-?> -->
+<?php
+$servername = "localhost";
+$username = "root";
+$password = "";
+$database = "smarty_playground";
+
+
+$conn = new mysqli($servername, $username, $password, $database);
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+?>
