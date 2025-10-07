@@ -5,27 +5,58 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Smarty Playground - Login</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Bangers&display=swap" rel="stylesheet">
+
     <style>
         body {
             background: linear-gradient(180deg, #7C3AED 0%, #6B21A8 40%, #4C1D95 70%, #2D1B69 100%);
             min-height: 100vh;
-            font-family: 'Arial', sans-serif;
+            font-family: 'Bangers', cursive;
             position: relative;
-            overflow: hidden;
+            overflow-x: hidden;
+            overflow-y: auto;
         }
-        
+
+        /* Stars and sparkles */
         .star {
             position: absolute;
             background: white;
             border-radius: 50%;
             animation: twinkle 3s infinite ease-in-out;
         }
-        
+
         @keyframes twinkle {
             0%, 100% { opacity: 0.2; transform: scale(1); }
             50% { opacity: 1; transform: scale(1.2); }
         }
-        
+
+        .sparkle {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            animation: sparkle 2s infinite;
+            z-index: 5;
+        }
+
+        @keyframes sparkle {
+            0%, 100% { opacity: 0; transform: scale(0) rotate(0deg); }
+            50% { opacity: 1; transform: scale(1) rotate(180deg); }
+        }
+
+        .cloud {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 100px;
+            animation: cloudFloat 20s infinite linear;
+            z-index: 1;
+        }
+
+        @keyframes cloudFloat {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100vw); }
+        }
+
+        /* Login page content styles */
         .title {
             font-family: 'Arial Black', sans-serif;
             font-weight: 900;
@@ -36,31 +67,12 @@
                 -1px -1px 0px rgba(255,255,255,0.3);
             animation: titlePulse 2s ease-in-out infinite;
         }
-        
+
         @keyframes titlePulse {
             0%, 100% { transform: scale(1); }
             50% { transform: scale(1.02); }
         }
-        
-        .back-btn {
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-        }
-        
-        .back-btn:active {
-            transform: scale(0.9);
-        }
-        
-        input {
-            transition: all 0.3s ease;
-        }
-        
-        input:focus {
-            outline: none;
-            box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.5);
-            transform: translateY(-2px);
-        }
-        
+
         .login-btn {
             background: linear-gradient(180deg, #22D3EE 0%, #06B6D4 50%, #0891B2 100%);
             transition: all 0.3s ease;
@@ -68,99 +80,67 @@
             letter-spacing: 1px;
             box-shadow: 0 8px 20px rgba(6, 182, 212, 0.4);
         }
-        
+
         .login-btn:active {
             transform: scale(0.95);
             box-shadow: 0 4px 10px rgba(6, 182, 212, 0.4);
         }
-        
-        .link-text {
-            color: #22D3EE;
-            text-decoration: underline;
-            cursor: pointer;
-            transition: color 0.2s;
-        }
-        
-        .link-text:hover {
-            color: #67E8F9;
-        }
-        
-        .forgot-link {
+
+        .forgot-link, .link-text {
             color: #22D3EE;
             cursor: pointer;
             transition: color 0.2s;
         }
-        
-        .forgot-link:hover {
+
+        .forgot-link:hover, .link-text:hover {
             color: #67E8F9;
-        }
-        
-        .content-wrapper {
-            animation: fadeIn 0.5s ease-in-out;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
+
 <body>
     <!-- Stars Background -->
     <div id="stars"></div>
-    
-    <!-- Main Container -->
+
+    <!-- Clouds -->
+    <div class="cloud" style="width: 150px; height: 50px; top: 10%; left: -150px; animation-delay: 0s;"></div>
+    <div class="cloud" style="width: 200px; height: 60px; top: 25%; left: -200px; animation-delay: 5s;"></div>
+    <div class="cloud" style="width: 120px; height: 45px; top: 15%; left: -120px; animation-delay: 10s;"></div>
+
+    <!-- Sparkles -->
+    <div class="sparkle" style="top: 15%; left: 20%; animation-delay: 0s;">✨</div>
+    <div class="sparkle" style="top: 25%; right: 15%; animation-delay: 1s;">✨</div>
+    <div class="sparkle" style="top: 35%; left: 10%; animation-delay: 2s;">⭐</div>
+    <div class="sparkle" style="top: 20%; right: 25%; animation-delay: 1.5s;">⭐</div>
+
+    <!-- Main Login Container -->
     <div class="relative z-10 max-w-md mx-auto min-h-screen flex flex-col">
-        <!-- Status Bar -->
-        <div class="flex justify-between items-center px-6 pt-3 pb-2">
-            <span class="text-white text-sm font-bold">9:41</span>
-            <div class="flex items-center gap-1">
-                <div class="text-white text-xs">📶</div>
-                <div class="text-white text-xs">📡</div>
-                <div class="text-white text-xs">🔋</div>
-            </div>
-        </div>
-        
-        <!-- Back Button -->
         <div class="px-6 pt-4">
             <button class="back-btn bg-white rounded-full w-12 h-12 flex items-center justify-center">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
                     <path d="M15 18L9 12L15 6" stroke="#4C1D95" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
             </button>
         </div>
-        
-        <!-- Content Wrapper -->
-        <div class="content-wrapper flex-1 flex flex-col px-6 pt-8">
-            <!-- Title Section -->
+
+        <div class="flex-1 flex flex-col px-6 pt-8">
             <div class="text-center mb-8">
                 <h1 class="title text-4xl leading-tight mb-4" style="color: #FCD34D;">
                     SMARTY<br>PLAYGROUND
                 </h1>
                 <h2 class="text-white text-2xl font-bold mb-2">Log In Your Account</h2>
-                <p class="text-white text-sm opacity-90">Start your journey in smarty playground fun way</p>
+                <p class="text-white text-sm opacity-90">Start your journey in Smarty Playground the fun way!</p>
             </div>
-            
-            <!-- Form Section -->
+
             <div class="space-y-4 mb-2">
-                <input 
-                    type="email" 
-                    placeholder="Enter Email Here" 
-                    class="w-full px-5 py-4 rounded-2xl text-gray-400 text-base bg-white"
-                />
-                <input 
-                    type="password" 
-                    placeholder="Enter Password Here" 
-                    class="w-full px-5 py-4 rounded-2xl text-gray-400 text-base bg-white"
-                />
+                <input type="email" placeholder="Enter Email Here" class="w-full px-5 py-4 rounded-2xl text-gray-400 text-base bg-white"/>
+                <input type="password" placeholder="Enter Password Here" class="w-full px-5 py-4 rounded-2xl text-gray-400 text-base bg-white"/>
             </div>
-            
-            <!-- Forgot Password Link -->
+
             <div class="text-right mb-8">
                 <a href="#" class="forgot-link text-sm font-semibold">Forgot Password?</a>
             </div>
-            
-            <!-- Terms Text -->
+
             <div class="mb-6">
                 <p class="text-white text-xs text-center leading-relaxed">
                     By continuing, you confirm that you are 6 years or older and agree to our 
@@ -168,21 +148,19 @@
                     <span class="link-text">Privacy Policy</span>.
                 </p>
             </div>
-            
-            <!-- Login Button -->
-            <button class="login-btn w-full py-4 rounded-full text-white text-xl font-bold">
+
+            <button class="login-btn w-full py-4 rounded-full text-white text-xl font-bold" onclick="window.location.href='dashboard.html'">
                 Login
             </button>
         </div>
-        
-        <!-- Bottom Spacing -->
+
         <div class="h-12"></div>
     </div>
 
     <script>
         // Create stars
         const starsContainer = document.getElementById('stars');
-        for (let i = 0; i < 80; i++) {
+        for (let i = 0; i < 100; i++) {
             const star = document.createElement('div');
             star.className = 'star';
             const size = Math.random() * 3 + 1;

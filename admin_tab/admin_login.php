@@ -1,3 +1,71 @@
+<?php
+include "../filter_input.php";
+session_start();
+$bdservername = "localhost";
+$bdusername = "root";
+$bdpassword = "";
+$database = "smarty_playground";
+
+$conn = mysqli_connect($bdservername, $bdusername, $bdpassword, $database);
+if (!$conn) {
+    die("Connection failed: " . mysqli_connect_error());
+}
+
+$error_message = "";
+$email = "";
+$password = "";
+$errors = [];
+
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    $email = filterInput($_POST['email']);
+    $password = filterInput($_POST['password']);
+
+    
+    if (empty($email) || empty($password)) {
+        $errors[] = "All fields are required.";
+    } else {
+        
+        $stmt = $conn->prepare("SELECT * FROM users WHERE email = ? AND role = 'admin' LIMIT 1");
+        $stmt->bind_param("s", $email);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($result->num_rows > 0) {
+            $user = $result->fetch_assoc();
+
+            if ($user['status'] !== 'active') {
+                $errors[] = "Your account is inactive. Please contact the system administrator.";
+            } else {
+                
+                $storedHash = $user['password'];
+
+                if (password_verify($password, $storedHash)) {
+                    
+                    $_SESSION['admin_id'] = $user['user_id'];
+                    $_SESSION['admin_name'] = $user['name'];
+
+                    header("Location: dashboard.html");
+                    exit();
+                } else {
+                    
+                    $errors[] = "Invalid password.";
+                }
+            }
+        } else {
+            $errors[] = "Email not found in the system.";
+        }
+
+        $stmt->close();
+    }
+
+    if (count($errors) > 0) {
+        foreach ($errors as $error) {
+            echo "<p class='text-red-600 text-sm font-medium text-center mt-2'>" . htmlspecialchars($error) . "</p>";
+        }
+    }
+}
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -24,7 +92,7 @@
             </div>
 
             <!-- Login Form -->
-            <form id="loginForm" onsubmit="handleLogin(event)">
+            <form method="POST">
                 <!-- Email Input -->
                 <div class="mb-4">
                     <label for="email" class="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
@@ -62,25 +130,27 @@
                         </button>
                     </div>
                 </div>
-
+                
                 <!-- Remember Me & Forgot Password -->
                 <div class="flex items-center justify-between mb-6">
                     <label class="flex items-center">
                         <input type="checkbox" class="w-4 h-4 text-teal-500 border-gray-300 rounded focus:ring-teal-500">
                         <span class="ml-2 text-sm text-gray-600">Remember me</span>
                     </label>
-                    <a href="forgotpass.html" class="text-sm text-teal-500 hover:text-teal-600">Forgot password?</a>
+                    <a href="#" class="text-sm text-teal-500 hover:text-teal-600">Forgot password?</a>
                 </div>
 
                 <!-- Error Message -->
-                <div id="errorMessage" class="hidden mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm">
+                <?php if (!empty($error_message)): ?>
+                <div class="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm">
                     <div class="flex items-center gap-2">
                         <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                             <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
                         </svg>
-                        <span id="errorText">Invalid email or password</span>
+                        <span><?= htmlspecialchars($error_message) ?></span>
                     </div>
                 </div>
+                <?php endif; ?>
 
                 <!-- Login Button -->
                 <button 
@@ -117,7 +187,7 @@
 
         <!-- Footer -->
         <div class="text-center mt-6">
-            <p class="text-sm text-gray-500">© 2024 Smarty Playground. All rights reserved.</p>
+            <p class="text-sm text-gray-500">© 2025 Smarty Playground. All rights reserved.</p>
         </div>
     </div>
 
@@ -134,64 +204,6 @@
                 eyeIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>';
             }
         }
-
-        function handleLogin(event) {
-            event.preventDefault();
-            
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            const errorMessage = document.getElementById('errorMessage');
-            const errorText = document.getElementById('errorText');
-            
-            // Simple validation (in real app, this would be server-side)
-            if (email === 'admin@powermath.com' && password === 'admin123') {
-                // Success - hide error and show success
-                errorMessage.classList.add('hidden');
-                
-                // Show success message
-                const form = document.getElementById('loginForm');
-                form.innerHTML = `
-                    <div class="text-center py-8">
-                        <div class="w-16 h-16 bg-green-50 border-2 border-green-500 rounded-full mx-auto mb-4 flex items-center justify-center">
-                            <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                            </svg>
-                        </div>
-                        <h3 class="text-xl font-bold text-gray-800 mb-2">Login Successful!</h3>
-                        <p class="text-gray-600 mb-4">Redirecting to dashboard...</p>
-                        <div class="flex justify-center">
-                            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-teal-500"></div>
-                        </div>
-                    </div>
-                `;
-                
-                // In a real app, you would redirect to the dashboard
-                // setTimeout(() => {
-                //     window.location.href = 'dashboard.html';
-                // }, 2000);
-                
-            } else {
-                // Show error message
-                errorMessage.classList.remove('hidden');
-                
-                if (!email || !password) {
-                    errorText.textContent = 'Please fill in all fields';
-                } else {
-                    errorText.textContent = 'Invalid email or password. Please try again.';
-                }
-                
-                // Shake animation
-                errorMessage.classList.add('animate-pulse');
-                setTimeout(() => {
-                    errorMessage.classList.remove('animate-pulse');
-                }, 500);
-            }
-        }
-
-        // Demo credentials helper
-        // console.log('Demo Admin Credentials:');
-        // console.log('Email: admin@powermath.com');
-        // console.log('Password: admin123');
     </script>
 </body>
 </html>
