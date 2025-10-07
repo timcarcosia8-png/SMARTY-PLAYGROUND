@@ -1,10 +1,17 @@
 CREATE DATABASE smarty_playground;
 USE smarty_playground;
 
+<<<<<<< HEAD
 CREATE DATABASE IF NOT EXISTS smarty_playground
   CHARACTER SET utf8mb4
   COLLATE utf8mb4_unicode_ci;
 USE smarty_playground;
+=======
+-- CREATE DATABASE IF NOT EXISTS smarty_playground
+--   CHARACTER SET utf8mb4
+--   COLLATE utf8mb4_unicode_ci;
+-- USE smarty_playground;
+>>>>>>> 0fa9a8fe5aad26f0f8abd252bca99f888b72fb86
 
 CREATE TABLE users (
   user_id INT AUTO_INCREMENT PRIMARY KEY,
