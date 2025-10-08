@@ -5,19 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Smarty Playground - Login</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Bangers&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
         body {
             background: linear-gradient(180deg, #7C3AED 0%, #6B21A8 40%, #4C1D95 70%, #2D1B69 100%);
             min-height: 100vh;
-            font-family: 'Bangers', cursive;
+            font-family: 'Poppins', sans-serif;
             position: relative;
             overflow-x: hidden;
             overflow-y: auto;
         }
 
-        /* Stars and sparkles */
         .star {
             position: absolute;
             background: white;
@@ -56,44 +55,65 @@
             100% { transform: translateX(100vw); }
         }
 
-        /* Login page content styles */
         .title {
-            font-family: 'Arial Black', sans-serif;
-            font-weight: 900;
+            font-family: 'Bangers', cursive;
+            font-weight: 400;
             letter-spacing: 2px;
             text-shadow: 
                 3px 3px 0px #F97316,
                 6px 6px 0px #7C3AED,
                 -1px -1px 0px rgba(255,255,255,0.3);
-            animation: titlePulse 2s ease-in-out infinite;
-        }
-
-        @keyframes titlePulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.02); }
         }
 
         .login-btn {
             background: linear-gradient(180deg, #22D3EE 0%, #06B6D4 50%, #0891B2 100%);
+            color: white;
             transition: all 0.3s ease;
-            font-weight: 800;
-            letter-spacing: 1px;
+            font-weight: 600;
             box-shadow: 0 8px 20px rgba(6, 182, 212, 0.4);
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(6, 182, 212, 0.5);
         }
 
         .login-btn:active {
             transform: scale(0.95);
-            box-shadow: 0 4px 10px rgba(6, 182, 212, 0.4);
+        }
+
+        .back-btn {
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .back-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         }
 
         .forgot-link, .link-text {
             color: #22D3EE;
             cursor: pointer;
-            transition: color 0.2s;
+            transition: all 0.2s;
         }
 
         .forgot-link:hover, .link-text:hover {
             color: #67E8F9;
+        }
+
+        input {
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        input:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.3);
+        }
+
+        input::placeholder {
+            color: #9CA3AF;
         }
     </style>
 </head>
@@ -115,41 +135,49 @@
 
     <!-- Main Login Container -->
     <div class="relative z-10 max-w-md mx-auto min-h-screen flex flex-col">
-        <div class="px-6 pt-4">
-            <button class="back-btn bg-white rounded-full w-12 h-12 flex items-center justify-center">
+        <div class="px-6 pt-6">
+            <button onclick="history.back()" class="back-btn bg-white rounded-full w-12 h-12 flex items-center justify-center">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
                     <path d="M15 18L9 12L15 6" stroke="#4C1D95" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
             </button>
         </div>
 
-        <div class="flex-1 flex flex-col px-6 pt-8">
-            <div class="text-center mb-8">
-                <h1 class="title text-4xl leading-tight mb-4" style="color: #FCD34D;">
-                    SMARTY<br>PLAYGROUND
+        <div class="flex-1 flex flex-col px-8 pt-12">
+            <div class="text-center mb-10">
+                <h1 class="title text-3xl mb-6" style="color: #FCD34D;">
+                    SMARTY PLAYGROUND
                 </h1>
-                <h2 class="text-white text-2xl font-bold mb-2">Log In Your Account</h2>
-                <p class="text-white text-sm opacity-90">Start your journey in Smarty Playground the fun way!</p>
+                <h2 class="text-white text-2xl font-semibold mb-3">Log In Your Account</h2>
+                <p class="text-white/90 text-sm">Start your journey in Smarty Playground the fun way!</p>
             </div>
 
-            <div class="space-y-4 mb-2">
-                <input type="email" placeholder="Enter Email Here" class="w-full px-5 py-4 rounded-2xl text-gray-400 text-base bg-white"/>
-                <input type="password" placeholder="Enter Password Here" class="w-full px-5 py-4 rounded-2xl text-gray-400 text-base bg-white"/>
+            <div class="space-y-4 mb-4">
+                <input 
+                    type="email" 
+                    placeholder="Enter Email Here" 
+                    class="w-full px-5 py-4 rounded-xl text-gray-700 text-base bg-white"
+                />
+                <input 
+                    type="password" 
+                    placeholder="Enter Password Here" 
+                    class="w-full px-5 py-4 rounded-xl text-gray-700 text-base bg-white"
+                />
             </div>
 
             <div class="text-right mb-8">
-                <a href="#" class="forgot-link text-sm font-semibold">Forgot Password?</a>
+                <a href="#" class="forgot-link text-sm font-medium">Forgot Password?</a>
             </div>
 
-            <div class="mb-6">
-                <p class="text-white text-xs text-center leading-relaxed">
+            <div class="mb-8">
+                <p class="text-white/90 text-xs text-center leading-relaxed">
                     By continuing, you confirm that you are 6 years or older and agree to our 
-                    <span class="link-text">Terms & Conditions</span> and 
-                    <span class="link-text">Privacy Policy</span>.
+                    <span class="link-text font-medium">Terms & Conditions</span> and 
+                    <span class="link-text font-medium">Privacy Policy</span>.
                 </p>
             </div>
 
-            <button class="login-btn w-full py-4 rounded-full text-white text-xl font-bold" onclick="window.location.href='dashboard.html'">
+            <button class="login-btn w-full py-4 rounded-full text-lg font-semibold" onclick="window.location.href='dashboard.html'">
                 Login
             </button>
         </div>
