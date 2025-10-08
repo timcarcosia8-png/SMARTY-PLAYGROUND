@@ -1,340 +1,156 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Let Us Try - Lesson 1</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            background: linear-gradient(180deg, #7B4BA5 0%, #4A2B6D 50%, #2A1B4D 100%);
-            min-height: 100vh;
-            font-family: 'Comic Sans MS', cursive, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
-
-        .container {
-            max-width: 900px;
-            width: 100%;
-        }
-
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .title {
-            font-size: 48px;
-            color: #FFD700;
-            text-shadow: 3px 3px 6px rgba(0,0,0,0.4);
-            margin-bottom: 15px;
-            font-weight: bold;
-        }
-
-        .instructions {
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(10px);
-            padding: 20px;
-            border-radius: 25px;
-            color: white;
-            font-size: 20px;
-            margin-bottom: 30px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-            border: 2px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .game-board {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 40px;
-            margin-top: 30px;
-        }
-
-        .column {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        .item-btn {
-            background: linear-gradient(145deg, #FF6B9D, #C44569);
-            border: 4px solid #FFD93D;
-            border-radius: 25px;
-            padding: 25px;
-            font-size: 28px;
-            font-weight: bold;
-            color: white;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 8px 15px rgba(0,0,0,0.3);
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-            position: relative;
-        }
-
-        .item-btn:hover {
-            transform: translateY(-5px) scale(1.05);
-            box-shadow: 0 12px 25px rgba(0,0,0,0.4);
-        }
-
-        .item-btn.selected {
-            background: linear-gradient(145deg, #FFD93D, #FFA500);
-            border-color: #FF6B9D;
-            transform: scale(1.08);
-            animation: pulse 0.5s ease;
-        }
-
-        .item-btn.matched {
-            background: linear-gradient(145deg, #6BCF7F, #4CAF50);
-            border-color: #FFD93D;
-            cursor: default;
-            animation: success 0.6s ease;
-        }
-
-        .item-btn.wrong {
-            animation: shake 0.5s ease;
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1.08); }
-            50% { transform: scale(1.15); }
-        }
-
-        @keyframes success {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.2) rotate(5deg); }
-            100% { transform: scale(1); }
-        }
-
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-10px); }
-            75% { transform: translateX(10px); }
-        }
-
-        .stars {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
-            pointer-events: none;
-        }
-
-        .star {
-            position: absolute;
-            width: 3px;
-            height: 3px;
-            background: white;
-            border-radius: 50%;
-            box-shadow: 0 0 3px white;
-            animation: twinkle 3s infinite;
-        }
-
-        @keyframes twinkle {
-            0%, 100% { opacity: 0.3; }
-            50% { opacity: 1; }
-        }
-
-        .completion-message {
-            text-align: center;
-            font-size: 36px;
-            color: #FFD700;
-            margin-top: 30px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-            display: none;
-            animation: bounce 1s ease infinite;
-        }
-
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-
-        .reset-btn {
-            display: none;
-            margin: 20px auto;
-            background: linear-gradient(145deg, #6BCF7F, #4CAF50);
-            border: 4px solid #FFD93D;
-            border-radius: 20px;
-            padding: 15px 40px;
-            font-size: 24px;
-            font-weight: bold;
-            color: white;
-            cursor: pointer;
-            box-shadow: 0 8px 15px rgba(0,0,0,0.3);
-        }
-
-        .reset-btn:hover {
-            transform: scale(1.1);
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sight Words Game</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      font-family: 'Fredoka One', cursive;
+      background: #fef9f9;
+    }
+    .letter {
+      width: 60px;
+      height: 60px;
+      background: #fbbf24;
+      color: white;
+      font-size: 2rem;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 12px;
+      cursor: grab;
+      user-select: none;
+      transition: transform 0.2s;
+    }
+    .letter:hover {
+      transform: scale(1.1);
+    }
+    .dropzone {
+      min-width: 60px;
+      min-height: 60px;
+      border: 2px dashed #9ca3af;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 5px;
+    }
+    .dropzone.filled {
+      border-style: solid;
+      background: #34d399;
+      color: white;
+      font-weight: bold;
+    }
+    .word-container {
+      display: flex;
+      margin-bottom: 20px;
+    }
+  </style>
 </head>
-<body>
-    <div class="stars" id="stars"></div>
-    
-    <div class="container">
-        <div class="header">
-            <div class="title">🌟 Let Us Try 🌟</div>
-            <div class="instructions">
-                📢 Tap to connect each object with the sound it makes.<br>
-                🗣️ Read the words below. Repeat after him or her.
-            </div>
-        </div>
+<body class="flex flex-col items-center justify-center min-h-screen p-4">
 
-        <div class="game-board">
-            <div class="column" id="objects"></div>
-            <div class="column" id="sounds"></div>
-        </div>
+  <h1 class="text-3xl font-bold mb-6 text-purple-700">Sight Words Game</h1>
 
-        <div class="completion-message" id="completion">
-            🎉 Excellent Work! You matched all the sounds! 🎉
-        </div>
-        <button class="reset-btn" id="resetBtn">Play Again! 🔄</button>
+  <div id="game" class="flex flex-col items-center gap-6">
+    <!-- Word Dropzone -->
+    <div class="word-container" id="dropzones">
+      <!-- JS will generate drop zones -->
     </div>
 
-    <script>
-        const pairs = [
-            { object: '🐶 Dog', sound: '🔊 Woof Woof' },
-            { object: '🐱 Cat', sound: '🔊 Meow Meow' },
-            { object: '🐮 Cow', sound: '🔊 Moo Moo' },
-            { object: '🐔 Chicken', sound: '🔊 Cluck Cluck' },
-            { object: '🚗 Car', sound: '🔊 Beep Beep' },
-            { object: '🔔 Bell', sound: '🔊 Ring Ring' }
-        ];
+    <!-- Letters -->
+    <div class="flex gap-4 flex-wrap" id="letters">
+      <!-- JS will generate draggable letters -->
+    </div>
 
-        let selectedObject = null;
-        let selectedSound = null;
-        let matchedPairs = 0;
+    <button id="nextBtn" class="mt-4 px-6 py-3 bg-purple-600 text-white rounded-full text-lg font-bold hover:bg-purple-700">Next Word</button>
+  </div>
 
-        function shuffle(array) {
-            const arr = [...array];
-            for (let i = arr.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [arr[i], arr[j]] = [arr[j], arr[i]];
-            }
-            return arr;
-        }
+  <script>
+    // Words for the game
+    const words = ["cat", "dog", "sun", "hat", "big", "bag"];
+    let currentWordIndex = 0;
 
-        function createStars() {
-            const starsContainer = document.getElementById('stars');
-            for (let i = 0; i < 50; i++) {
-                const star = document.createElement('div');
-                star.className = 'star';
-                star.style.left = Math.random() * 100 + '%';
-                star.style.top = Math.random() * 100 + '%';
-                star.style.animationDelay = Math.random() * 3 + 's';
-                starsContainer.appendChild(star);
-            }
-        }
+    const dropzonesContainer = document.getElementById("dropzones");
+    const lettersContainer = document.getElementById("letters");
+    const nextBtn = document.getElementById("nextBtn");
 
-        function initGame() {
-            const objectsCol = document.getElementById('objects');
-            const soundsCol = document.getElementById('sounds');
-            
-            objectsCol.innerHTML = '';
-            soundsCol.innerHTML = '';
-            
-            const shuffledObjects = shuffle(pairs);
-            const shuffledSounds = shuffle(pairs);
-            
-            shuffledObjects.forEach((pair, index) => {
-                const btn = document.createElement('button');
-                btn.className = 'item-btn';
-                btn.textContent = pair.object;
-                btn.dataset.id = pairs.indexOf(pair);
-                btn.onclick = () => selectObject(btn);
-                objectsCol.appendChild(btn);
-            });
-            
-            shuffledSounds.forEach((pair, index) => {
-                const btn = document.createElement('button');
-                btn.className = 'item-btn';
-                btn.textContent = pair.sound;
-                btn.dataset.id = pairs.indexOf(pair);
-                btn.onclick = () => selectSound(btn);
-                soundsCol.appendChild(btn);
-            });
-            
-            selectedObject = null;
-            selectedSound = null;
-            matchedPairs = 0;
-            document.getElementById('completion').style.display = 'none';
-            document.getElementById('resetBtn').style.display = 'none';
-        }
+    function speak(text) {
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'en-US';
+      utterance.rate = 0.8;
+      utterance.pitch = 1;
+      speechSynthesis.speak(utterance);
+    }
 
-        function selectObject(btn) {
-            if (btn.classList.contains('matched')) return;
-            
-            if (selectedObject) {
-                selectedObject.classList.remove('selected');
-            }
-            
-            selectedObject = btn;
-            btn.classList.add('selected');
-            
-            if (selectedSound) {
-                checkMatch();
-            }
-        }
+    function shuffle(array) {
+      return array.sort(() => Math.random() - 0.5);
+    }
 
-        function selectSound(btn) {
-            if (btn.classList.contains('matched')) return;
-            
-            if (selectedSound) {
-                selectedSound.classList.remove('selected');
-            }
-            
-            selectedSound = btn;
-            btn.classList.add('selected');
-            
-            if (selectedObject) {
-                checkMatch();
-            }
-        }
+    function loadWord() {
+      dropzonesContainer.innerHTML = "";
+      lettersContainer.innerHTML = "";
+      const word = words[currentWordIndex];
 
-        function checkMatch() {
-            if (selectedObject.dataset.id === selectedSound.dataset.id) {
-                selectedObject.classList.remove('selected');
-                selectedSound.classList.remove('selected');
-                selectedObject.classList.add('matched');
-                selectedSound.classList.add('matched');
-                
-                matchedPairs++;
-                
-                if (matchedPairs === pairs.length) {
-                    setTimeout(() => {
-                        document.getElementById('completion').style.display = 'block';
-                        document.getElementById('resetBtn').style.display = 'block';
-                    }, 500);
-                }
-                
-                selectedObject = null;
-                selectedSound = null;
-            } else {
-                selectedObject.classList.add('wrong');
-                selectedSound.classList.add('wrong');
-                
-                setTimeout(() => {
-                    selectedObject.classList.remove('selected', 'wrong');
-                    selectedSound.classList.remove('selected', 'wrong');
-                    selectedObject = null;
-                    selectedSound = null;
-                }, 500);
-            }
-        }
+      // Create drop zones
+      for(let i=0;i<word.length;i++){
+        const dz = document.createElement('div');
+        dz.className = "dropzone";
+        dz.dataset.index = i;
+        dz.addEventListener('dragover', e => e.preventDefault());
+        dz.addEventListener('drop', e => handleDrop(e, dz));
+        dropzonesContainer.appendChild(dz);
+      }
 
-        document.getElementById('resetBtn').onclick = initGame;
+      // Create letters (shuffled)
+      const shuffled = shuffle(word.split(''));
+      shuffled.forEach(l => {
+        const letterDiv = document.createElement('div');
+        letterDiv.className = "letter";
+        letterDiv.textContent = l;
+        letterDiv.draggable = true;
+        letterDiv.dataset.letter = l;
+        letterDiv.addEventListener('dragstart', () => speak(l));
+        lettersContainer.appendChild(letterDiv);
+      });
+    }
 
-        createStars();
-        initGame();
-    </script>
+    function handleDrop(e, dz) {
+      e.preventDefault();
+      const letter = e.dataTransfer.getData("text");
+      const draggedEl = document.querySelector(`.letter[data-letter='${letter}']`);
+      if(draggedEl){
+        dz.textContent = letter;
+        dz.classList.add('filled');
+        draggedEl.remove();
+
+        checkWordComplete();
+      }
+    }
+
+    function checkWordComplete() {
+      const dzs = Array.from(dropzonesContainer.children);
+      const completeWord = dzs.map(dz => dz.textContent).join('');
+      if(!dzs.some(dz => dz.textContent === "")){
+        speak(completeWord);
+      }
+    }
+
+    // Drag & drop setup
+    lettersContainer.addEventListener('dragstart', e => {
+      e.dataTransfer.setData("text", e.target.dataset.letter);
+    });
+
+    nextBtn.addEventListener('click', () => {
+      currentWordIndex = (currentWordIndex + 1) % words.length;
+      loadWord();
+    });
+
+    // Initial load
+    loadWord();
+  </script>
+
 </body>
 </html>
