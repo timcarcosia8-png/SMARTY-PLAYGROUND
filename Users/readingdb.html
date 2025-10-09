@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title> Mission</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Fredoka', sans-serif;
+      background: linear-gradient(180deg, #6B21A8 0%, #581C87 50%, #3B0764 100%);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    .star {
+      position: absolute;
+      background: white;
+      border-radius: 50%;
+      animation: twinkle 3s infinite ease-in-out;
+    }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.3; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.2); }
+    }
+
+    .sparkle {
+      position: absolute;
+      color: white;
+      font-size: 20px;
+      animation: sparkleAnim 2s infinite;
+    }
+
+    @keyframes sparkleAnim {
+      0%, 100% { opacity: 0; transform: scale(0) rotate(0deg); }
+      50% { opacity: 1; transform: scale(1) rotate(180deg); }
+    }
+
+    .island {
+      position: absolute;
+      width: 200px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      animation: float 3s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+    }
+
+    .island:nth-child(1) { animation-delay: 0s; }
+    .island:nth-child(2) { animation-delay: 0.5s; }
+    .island:nth-child(3) { animation-delay: 1s; }
+    .island:nth-child(4) { animation-delay: 1.5s; }
+
+    .platform {
+      width: 100%;
+      height: 120px; /* Increased from 90px */
+      background: linear-gradient(180deg, rgba(168, 85, 247, 0.4) 0%, rgba(126, 58, 237, 0.6) 100%);
+      border-radius: 50%;
+      position: relative;
+      box-shadow: 0 20px 40px rgba(107, 33, 168, 0.5);
+    }
+
+    .character {
+      width: 100px; /* Increased from 80px */
+      height: 100px; /* Increased from 80px */
+      object-fit: contain; /* Ensures clarity and proper scaling */
+      position: absolute;
+      bottom: 60px;
+      left: 50%;
+      transform: translateX(-50%);
+      animation: characterBounce 2s ease-in-out infinite;
+    }
+
+    @keyframes characterBounce {
+      0%, 100% { transform: translateX(-50%) translateY(0px); }
+      50% { transform: translateX(-50%) translateY(-8px); }
+    }
+
+    .label {
+      position: absolute;
+      bottom: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0, 0, 0, 0.7);
+      color: white;
+      padding: 6px 12px;
+      border-radius: 15px;
+      font-weight: 600;
+      font-size: 11px;
+      text-align: center;
+      max-width: 90%;
+      white-space: normal;
+      line-height: 1.2;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    .path {
+      position: absolute;
+      border: 3px dashed rgba(255, 255, 255, 0.5);
+      border-radius: 50px;
+    }
+
+    .back-btn {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      width: 50px;
+      height: 50px;
+      background: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      transition: all 0.3s ease;
+      z-index: 100;
+    }
+
+    .back-btn:hover {
+      transform: scale(1.1);
+    }
+
+    .title {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: white;
+      font-size: 22px;
+      font-weight: 700;
+      z-index: 100;
+      text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
+    }
+  </style>
+</head>
+<body>
+  <!-- Stars Background -->
+  <div id="stars"></div>
+
+  <!-- Sparkles -->
+  <div class="sparkle" style="top: 10%; left: 15%;">✨</div>
+  <div class="sparkle" style="top: 20%; right: 20%; animation-delay: 0.5s;">⭐</div>
+  <div class="sparkle" style="top: 60%; left: 10%; animation-delay: 1s;">✨</div>
+  <div class="sparkle" style="top: 80%; right: 15%; animation-delay: 1.5s;">⭐</div>
+
+  <!-- Back Button -->
+  <button class="back-btn" onclick="history.back()">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M15 18L9 12L15 6" stroke="#6B21A8" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </button>
+
+  <!-- Title -->
+  <div class="title">Math Mission</div>
+
+  <!-- Map Container -->
+  <div class="relative" style="height: 100vh; max-width: 400px; margin: 0 auto; padding-top: 80px;">
+    <!-- Path lines -->
+    
+    <!-- Islands -->
+    <div class="island" style="top: 100px; left: 20px;">
+      <div class="platform">
+        <img src="hero1.png" alt="Character 1" class="character">
+        <div class="label">TECH JUNGLE</div>
+      </div>
+    </div>
+
+    <div class="island" style="top: 230px; right: 20px;">
+      <div class="platform">
+        <img src="hero2.png" alt="Character 2" class="character">
+        
+        <div class="label">GALACTIC VISTA</div>
+      </div>
+    </div>
+
+    <div class="island" style="top: 360px; left: 20px;">
+      <div class="platform">
+        <img src="hero3.png" alt="Character 3" class="character">
+        <div class="label">HIGH-TECH<br>UNDERWATER BASE</div>
+      </div>
+    </div>
+
+    <div class="island" style="top: 490px; right: 20px;">
+      <div class="platform">
+        <img src="hero4.png" alt="Character 4" class="character">
+        <div class="label">GAMING WORKSHOP</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Create stars
+    const starsContainer = document.getElementById('stars');
+    for (let i = 0; i < 100; i++) {
+      const star = document.createElement('div');
+      star.className = 'star';
+      const size = Math.random() * 3 + 1;
+      star.style.width = size + 'px';
+      star.style.height = size + 'px';
+      star.style.left = Math.random() * 100 + '%';
+      star.style.top = Math.random() * 100 + '%';
+      star.style.animationDelay = Math.random() * 3 + 's';
+      star.style.animationDuration = (Math.random() * 2 + 2) + 's';
+      starsContainer.appendChild(star);
+    }
+
+    // Add click handlers to islands
+  const levelLinks = [
+  "../game/gameL1.html",             // Tech Jungle
+  "../game/gameL2.html",     // Galactic Vista
+  "../game/gameL3.html",    // High-Tech Underwater Base
+  "../game/gameL4.html"     // Gaming Workshop
+];
+
+document.querySelectorAll('.island').forEach((island, index) => {
+  island.style.cursor = 'pointer';
+  island.addEventListener('click', () => {
+    window.location.href = levelLinks[index];
+  });
+});
+
+  </script>
+</body>
+</html>
