@@ -204,6 +204,7 @@
     </div>
 
     <p class="instruction">Drag the letters to spell the word!</p>
+<p id="feedback" class="text-center text-red-600 font-bold text-xl mb-4 hidden">Try Again!</p>
 
     <div id="game" class="flex flex-col items-center gap-6">
       <!-- Word Dropzone -->
@@ -272,13 +273,21 @@
       }
     }
 
-    // 🧩 Load current word
-    function loadWord() {
-      dropzonesContainer.innerHTML = "";
-      lettersContainer.innerHTML = "";
-      const word = words[currentWordIndex];
+  function loadWord() {
+  document.getElementById('feedback').classList.add('hidden');
 
-      setTimeout(() => speak(word, 0.6), 300);
+  dropzonesContainer.innerHTML = "";
+  lettersContainer.innerHTML = "";
+  const word = words[currentWordIndex];
+
+  // Disable Next button at the start
+  nextBtn.disabled = true;
+  nextBtn.classList.add('opacity-50', 'cursor-not-allowed');
+
+  setTimeout(() => speak(word, 0.6), 300);
+
+  // rest of your function...
+
 
       // Drop zones
       for (let i = 0; i < word.length; i++) {
@@ -321,22 +330,69 @@
       }
     }
 
-    function checkWordComplete() {
-      const dzs = Array.from(dropzonesContainer.children);
-      if (!dzs.some(dz => !dz.classList.contains('filled'))) {
-        const completeWord = dzs.map(dz => dz.textContent).join('');
-        const expectedWord = words[currentWordIndex];
-        
-        setTimeout(() => {
-          if (completeWord === expectedWord) {
-            celebrate();
-            speak(`greatjobyou spelled ${expectedWord}`, 0.7);
-          } else {
-            speak(`oops tryagain theword is ${expectedWord}`, 0.7);
+function checkWordComplete() {
+  const dzs = Array.from(dropzonesContainer.children);
+  if (!dzs.some(dz => !dz.classList.contains('filled'))) {
+    const completeWord = dzs.map(dz => dz.textContent).join('');
+    const expectedWord = words[currentWordIndex];
+
+    setTimeout(() => {
+    if (completeWord === expectedWord) {
+  celebrate();
+  speak(expectedWord, 0.8);
+
+  setTimeout(() => {
+    speak(`greatjobyouspelled${expectedWord}`, 0.7);
+  }, 1500);
+
+  // ✅ Replace dropzones with static display
+  dropzonesContainer.innerHTML = "";
+  for (let char of expectedWord) {
+    const confirmedLetter = document.createElement('div');
+    confirmedLetter.className = "dropzone filled";
+    confirmedLetter.textContent = char;
+    dropzonesContainer.appendChild(confirmedLetter);
+  }
+
+  // ✅ Clear letters
+  lettersContainer.innerHTML = "";
+
+  // ✅ Hide feedback
+  document.getElementById('feedback').classList.add('hidden');
+
+  // ✅ Enable Next button
+  nextBtn.disabled = false;
+  nextBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+}
+ else {
+        speak("tryagain", 0.7);
+        document.getElementById('feedback').classList.remove('hidden');
+
+        dzs.forEach(dz => {
+          if (dz.textContent) {
+            const letter = dz.textContent;
+            dz.textContent = "";
+            dz.classList.remove('filled');
+
+            const letterDiv = document.createElement('div');
+            letterDiv.className = "letter";
+            letterDiv.textContent = letter;
+            letterDiv.draggable = true;
+            letterDiv.dataset.letter = letter;
+            letterDiv.addEventListener('dragstart', e => {
+              e.dataTransfer.setData("text", letter);
+              speak(letter, 0.8);
+            });
+            lettersContainer.appendChild(letterDiv);
           }
-        }, 500);
+        });
       }
-    }
+    }, 500);
+  }
+}
+
+
+
 
     // 🔊 Replay word
     speakWordBtn.addEventListener('click', () => {
@@ -344,13 +400,19 @@
     });
 
     // ➡️ Next word
-    nextBtn.addEventListener('click', () => {
-      currentWordIndex = (currentWordIndex + 1) % words.length;
-      loadWord();
-    });
+   nextBtn.addEventListener('click', () => {
+  currentWordIndex++;
+
+  if (currentWordIndex >= words.length) {
+    showGameOver();
+  } else {
+    loadWord();
+  }
+});
 
     // 🚀 Start
     loadWord();
+    
   </script>
 </body>
 
