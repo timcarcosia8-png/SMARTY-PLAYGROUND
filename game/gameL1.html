@@ -403,11 +403,24 @@ function checkWordComplete() {
    nextBtn.addEventListener('click', () => {
   currentWordIndex++;
 
-  if (currentWordIndex >= words.length) {
-    showGameOver();
-  } else {
-    loadWord();
-  }
+ if (currentWordIndex >= words.length) {
+  // Save game progress
+  localStorage.setItem("readingGameCompleted", "true");
+
+  // Celebration
+  celebrate();
+  speak("greatjob", 0.8);
+
+  // Redirect to dashboard after a short delay
+  setTimeout(() => {
+  window.location.href = "../Users/dashboard.html";
+
+  }, 3000);
+} else {
+  loadWord();
+}
+
+
 });
 
     // 🚀 Start

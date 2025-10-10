@@ -307,25 +307,23 @@
       <button class="btn" onclick="restartGame()">Play Again! 🔄</button>
     </div>
   </div>
-
 <script>
   const questions = [
-{ emoji: '🍎',  sound: 'A', word: 'apple',  options: ['A', 'B', 'C', 'D'] },
-{ emoji: '🦋',  sound: 'B', word: 'butterfly', options: ['A', 'B', 'F', 'P'] },
-{ emoji: '🐱',  sound: 'C', word: 'cat', options: ['C', 'K', 'S', 'T'] },
-{ emoji: '🐕',  sound: 'D', word: 'dog', options: ['B', 'D', 'G', 'P'] },
-{ emoji: '🐘',  sound: 'E', word: 'elephant', options: ['A', 'E', 'I', 'L'] },
-{ emoji: '🐸', sound: 'F', word: 'frog', options: ['F', 'B', 'T', 'M'] },
-{ emoji: '🦒', sound: 'G', word: 'giraffe', options: ['G', 'J', 'K', 'D'] },
-{ emoji: '🏠', sound: 'H', word: 'house', options: ['H', 'O', 'I', 'U'] },
-{ emoji: '🍦', sound: 'I', word: 'ice cream', options: ['I', 'E', 'A', 'O'] },
-{ emoji: '🦘', sound: 'K', word: 'kangaroo', options: ['K', 'J', 'L', 'N'] },
-{ emoji: '🦁', sound: 'L', word: 'lion', options: ['L', 'M', 'N', 'R'] },
-{ emoji: '🐒', sound: 'M', word: 'monkey', options: ['M', 'N', 'P', 'Q'] },
-{ emoji: '🐧', sound: 'P', word: 'penguin', options: ['P', 'B', 'T', 'F'] },
-{ emoji: '🐰', sound: 'R', word: 'rabbit', options: ['R', 'T', 'L', 'V'] },
-{ emoji: '🐢', sound: 'T', word: 'turtle', options: ['T', 'D', 'S', 'Z'] },
-
+    { image: 'animal/apple.png', sound: 'A', word: 'apple', options: ['A', 'B', 'C', 'D'] },
+    { image: 'animal/butterfly.png', sound: 'B', word: 'butterfly', options: ['A', 'B', 'F', 'P'] },
+    { image: 'animal/cat.png', sound: 'C', word: 'cat', options: ['C', 'K', 'S', 'T'] },
+    { image: 'animal/dog.png', sound: 'D', word: 'dog', options: ['B', 'D', 'G', 'P'] },
+    { image: 'animal/elephant.png', sound: 'E', word: 'elephant', options: ['A', 'E', 'I', 'L'] },
+    { image: 'animal/frog.png', sound: 'F', word: 'frog', options: ['F', 'B', 'T', 'M'] },
+    { image: 'animal/giraffe.png', sound: 'G', word: 'giraffe', options: ['G', 'J', 'K', 'D'] },
+    { image: 'animal/house.png', sound: 'H', word: 'house', options: ['H', 'O', 'I', 'U'] },
+    { image: 'animal/icecream.png', sound: 'I', word: 'ice cream', options: ['I', 'E', 'A', 'O'] },
+    { image: 'animal/kangaroo.png', sound: 'K', word: 'kangaroo', options: ['K', 'J', 'L', 'N'] },
+    { image: 'animal/lion.jpg', sound: 'L', word: 'lion', options: ['L', 'M', 'N', 'R'] },
+    { image: 'animal/monkey.png', sound: 'M', word: 'monkey', options: ['M', 'N', 'P', 'Q'] },
+    { image: 'animal/penguin.png', sound: 'P', word: 'penguin', options: ['P', 'B', 'T', 'F'] },
+    { image: 'animal/rabbit.png', sound: 'R', word: 'rabbit', options: ['R', 'T', 'L', 'V'] },
+    { image: 'animal/turtle.png', sound: 'T', word: 'turtle', options: ['T', 'D', 'S', 'Z'] },
   ];
 
   const letterSounds = {};
@@ -368,13 +366,11 @@
     currentAudio.play();
   }
 
-  // 🎵 Plays letter sound
   function playLetterSound(letter) {
     const soundUrl = letterSounds[letter.toUpperCase()];
     if (soundUrl) playSound(soundUrl);
   }
 
-  // 🎵 Plays emoji word sound
   function playWordSound(word) {
     playSound(`sounds/kevin-${word.toLowerCase()}.mp3`);
   }
@@ -382,16 +378,21 @@
   function loadQuestion() {
     answered = false;
     const q = questions[currentQuestion];
-
     document.getElementById('progress').textContent = `Question ${currentQuestion + 1} of ${questions.length}`;
-    document.getElementById('picture').textContent = q.emoji;
-   
+   const pictureElem = document.getElementById('picture');
+pictureElem.innerHTML = `
+  <div class="flex justify-center items-center">
+    <img src="${q.image}" alt="${q.word}" 
+         class="w-40 h-40 object-contain border-4 border-yellow-400 rounded-2xl bg-white shadow-md">
+  </div>
+`;
+
+
     document.getElementById('feedback').textContent = '';
     document.getElementById('feedback').className = 'feedback';
     document.getElementById('nextBtn').style.display = 'none';
 
-    // make emoji clickable 🔊
-    const pictureElem = document.getElementById('picture');
+   
     pictureElem.style.cursor = 'pointer';
     pictureElem.onclick = () => playWordSound(q.word);
 
@@ -410,7 +411,6 @@
 
   function checkAnswer(selected, btn) {
     if (answered) return;
-
     playLetterSound(selected);
     answered = true;
     const q = questions[currentQuestion];
@@ -426,7 +426,6 @@
       btn.classList.add('wrong');
       document.getElementById('feedback').textContent = '💫 Try to remember! 💫';
       document.getElementById('feedback').className = 'feedback wrong';
-
       allBtns.forEach(b => {
         if (b.textContent === q.sound) b.classList.add('correct');
       });
@@ -462,22 +461,21 @@
     }
   }
 
+  // 🎉 UPDATED PART 🎉
   function showCompletion() {
-    document.getElementById('gameScreen').style.display = 'none';
-    document.getElementById('completionScreen').style.display = 'block';
-    document.getElementById('finalScore').textContent = `You scored ${score} out of ${questions.length}! 🎉`;
-  }
+  // Save completion so the dashboard can show the congratulations box
+  localStorage.setItem("readingGameCompleted", "true");
 
-  function restartGame() {
-    currentQuestion = 0;
-    score = 0;
-    document.getElementById('completionScreen').style.display = 'none';
-    document.getElementById('gameScreen').style.display = 'block';
-    loadQuestion();
-  }
+  // Redirect after a short delay
+  setTimeout(() => {
+    window.location.href = "../Users/dashboard.html"; // adjust the path if needed
+  }, 1000);
+}
+
 
   loadQuestion();
 </script>
+
 
 </body>
 </html>

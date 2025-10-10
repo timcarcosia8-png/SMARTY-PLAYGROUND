@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smarty Playground - Progress Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Fredoka', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+    }
+
+    .progress-container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .star {
+      position: fixed;
+      background: white;
+      border-radius: 50%;
+      animation: twinkle 3s infinite ease-in-out;
+    }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.2; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.2); }
+    }
+
+    .game-card {
+      background: white;
+      border-radius: 20px;
+      padding: 20px;
+      margin-bottom: 15px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      transition: all 0.3s ease;
+    }
+
+    .game-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+    }
+
+    .progress-bar {
+      background: #e5e7eb;
+      border-radius: 50px;
+      height: 12px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .progress-fill {
+      height: 100%;
+      border-radius: 50px;
+      background: linear-gradient(90deg, #34d399 0%, #10b981 100%);
+      transition: width 0.8s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .progress-fill::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+      animation: shimmer 2s infinite;
+    }
+
+    @keyframes shimmer {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+
+    .stats-card {
+      background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+      border-radius: 20px;
+      padding: 25px;
+      box-shadow: 0 10px 30px rgba(251, 191, 36, 0.4);
+      color: white;
+      margin-bottom: 20px;
+    }
+
+    .back-btn {
+      width: 50px;
+      height: 50px;
+      background: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      transition: all 0.3s ease;
+      margin-bottom: 20px;
+    }
+
+    .back-btn:hover {
+      transform: scale(1.1);
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 0.875rem;
+      font-weight: 600;
+    }
+
+    .badge-completed {
+      background: #d1fae5;
+      color: #065f46;
+    }
+
+    .badge-pending {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .lesson-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px;
+      background: #f9fafb;
+      border-radius: 12px;
+      margin-bottom: 8px;
+      transition: all 0.3s ease;
+    }
+
+    .lesson-item:hover {
+      background: #f3f4f6;
+      transform: translateX(5px);
+    }
+
+    .category-header {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #374151;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Background Stars -->
+  <div id="stars"></div>
+
+  <div class="progress-container">
+    <!-- Back Button -->
+    <button class="back-btn" onclick="history.back()">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <path d="M15 18L9 12L15 6" stroke="#667eea" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+
+    <!-- Stats Card -->
+    <div class="stats-card">
+      <h1 class="text-2xl font-bold mb-4">🎯 My Learning Progress</h1>
+      <div class="grid grid-cols-3 gap-4 text-center">
+        <div>
+          <div class="text-3xl font-bold" id="totalCompleted">0</div>
+          <div class="text-sm opacity-90">Completed</div>
+        </div>
+        <div>
+          <div class="text-3xl font-bold" id="totalLessons">0</div>
+          <div class="text-sm opacity-90">Total</div>
+        </div>
+        <div>
+          <div class="text-3xl font-bold" id="overallProgress">0%</div>
+          <div class="text-sm opacity-90">Progress</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Games Section -->
+    <div class="game-card">
+      <div class="category-header">
+        🎮 Games
+      </div>
+
+      <!-- Game 1: Word Builder -->
+      <div class="lesson-item" data-key="wordGameCompleted">
+        <div class="flex-1">
+          <div class="font-bold text-gray-800">Spell the Word</div>
+          <div class="text-xs text-gray-500">Drag letters to spell words</div>
+        </div>
+        <span class="badge badge-pending game-status">❌ Not Started</span>
+      </div>
+
+      <!-- Game 2: Beginning Sounds -->
+      <div class="lesson-item" data-key="readingGameCompleted">
+        <div class="flex-1">
+          <div class="font-bold text-gray-800">Beginning Sounds</div>
+          <div class="text-xs text-gray-500">Match letters with sounds</div>
+        </div>
+        <span class="badge badge-pending game-status">❌ Not Started</span>
+      </div>
+
+      <div class="mt-4">
+        <div class="flex justify-between text-sm text-gray-600 mb-2">
+          <span>Games Progress</span>
+          <span id="gamesProgress">0%</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" id="gamesProgressBar" style="width: 0%"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Lessons Section -->
+    <div class="game-card">
+      <div class="category-header">
+        📚 Reading Lessons
+      </div>
+
+      <!-- Lesson 1 -->
+      <div class="lesson-item" data-key="lesson1Completed">
+        <div class="flex-1">
+          <div class="font-bold text-gray-800">Lesson 1: Letter Recognition</div>
+          <div class="text-xs text-gray-500">Learn uppercase letters A-Z</div>
+        </div>
+        <span class="badge badge-pending lesson-status">❌ Not Started</span>
+      </div>
+
+      <!-- Lesson 2 -->
+      <div class="lesson-item" data-key="lesson2Completed">
+        <div class="flex-1">
+          <div class="font-bold text-gray-800">Lesson 2: Phonics Basics</div>
+          <div class="text-xs text-gray-500">Learn letter sounds</div>
+        </div>
+        <span class="badge badge-pending lesson-status">❌ Not Started</span>
+      </div>
+
+      <!-- Lesson 3 -->
+      <div class="lesson-item" data-key="lesson3Completed">
+        <div class="flex-1">
+          <div class="font-bold text-gray-800">Lesson 3: Simple Words</div>
+          <div class="text-xs text-gray-500">Read 3-letter words</div>
+        </div>
+        <span class="badge badge-pending lesson-status">❌ Not Started</span>
+      </div>
+
+      <!-- Lesson 4 -->
+      <div class="lesson-item" data-key="lesson4Completed">
+        <div class="flex-1">
+          <div class="font-bold text-gray-800">Lesson 4: Sight Words</div>
+          <div class="text-xs text-gray-500">Memorize common words</div>
+        </div>
+        <span class="badge badge-pending lesson-status">❌ Not Started</span>
+      </div>
+
+      <div class="mt-4">
+        <div class="flex justify-between text-sm text-gray-600 mb-2">
+          <span>Lessons Progress</span>
+          <span id="lessonsProgress">0%</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" id="lessonsProgressBar" style="width: 0%"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Math Missions Section -->
+    <div class="game-card">
+      <div class="category-header">
+        🔢 Math Missions
+      </div>
+
+      <!-- Math 1 -->
+      <div class="lesson-item" data-key="math1Completed">
+        <div class="flex-1">
+          <div class="font-bold text-gray-800">Mission 1: Counting 1-10</div>
+          <div class="text-xs text-gray-500">Learn to count objects</div>
+        </div>
+        <span class="badge badge-pending math-status">❌ Not Started</span>
+      </div>
+
+      <!-- Math 2 -->
+      <div class="lesson-item" data-key="math2Completed">
+        <div class="flex-1">
+          <div class="font-bold text-gray-800">Mission 2: Simple Addition</div>
+          <div class="text-xs text-gray-500">Add numbers up to 10</div>
+        </div>
+        <span class="badge badge-pending math-status">❌ Not Started</span>
+      </div>
+
+      <!-- Math 3 -->
+      <div class="lesson-item" data-key="math3Completed">
+        <div class="flex-1">
+          <div class="font-bold text-gray-800">Mission 3: Simple Subtraction</div>
+          <div class="text-xs text-gray-500">Subtract numbers up to 10</div>
+        </div>
+        <span class="badge badge-pending math-status">❌ Not Started</span>
+      </div>
+
+      <div class="mt-4">
+        <div class="flex justify-between text-sm text-gray-600 mb-2">
+          <span>Math Progress</span>
+          <span id="mathProgress">0%</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" id="mathProgressBar" style="width: 0%"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Reset Button -->
+    <div class="text-center mt-6">
+      <button onclick="resetProgress()" class="bg-white text-purple-600 font-bold px-8 py-3 rounded-full shadow-lg hover:shadow-xl transition-all hover:scale-105 active:scale-95">
+        Reset All Progress 🔄
+      </button>
+    </div>
+  </div>
+
+  <script>
+    // Create background stars
+    const starsContainer = document.getElementById('stars');
+    for (let i = 0; i < 50; i++) {
+      const star = document.createElement('div');
+      star.className = 'star';
+      const size = Math.random() * 3 + 1;
+      star.style.width = size + 'px';
+      star.style.height = size + 'px';
+      star.style.left = Math.random() * 100 + '%';
+      star.style.top = Math.random() * 100 + '%';
+      star.style.animationDelay = Math.random() * 3 + 's';
+      starsContainer.appendChild(star);
+    }
+
+    // Load and display progress
+    function loadProgress() {
+      let totalCompleted = 0;
+      let totalItems = 0;
+
+      // Games
+      let gamesCompleted = 0;
+      const gameItems = document.querySelectorAll('.lesson-item[data-key^="wordGame"], .lesson-item[data-key^="readingGame"]');
+      gameItems.forEach(item => {
+        totalItems++;
+        const key = item.getAttribute('data-key');
+        const status = item.querySelector('.game-status');
+        const completed = localStorage.getItem(key) === 'true';
+        
+        if (completed) {
+          gamesCompleted++;
+          totalCompleted++;
+          status.textContent = '✅ Completed';
+          status.className = 'badge badge-completed';
+        }
+      });
+
+      // Lessons
+      let lessonsCompleted = 0;
+      const lessonItems = document.querySelectorAll('.lesson-item[data-key^="lesson"]');
+      lessonItems.forEach(item => {
+        totalItems++;
+        const key = item.getAttribute('data-key');
+        const status = item.querySelector('.lesson-status');
+        const completed = localStorage.getItem(key) === 'true';
+        
+        if (completed) {
+          lessonsCompleted++;
+          totalCompleted++;
+          status.textContent = '✅ Completed';
+          status.className = 'badge badge-completed';
+        }
+      });
+
+      // Math
+      let mathCompleted = 0;
+      const mathItems = document.querySelectorAll('.lesson-item[data-key^="math"]');
+      mathItems.forEach(item => {
+        totalItems++;
+        const key = item.getAttribute('data-key');
+        const status = item.querySelector('.math-status');
+        const completed = localStorage.getItem(key) === 'true';
+        
+        if (completed) {
+          mathCompleted++;
+          totalCompleted++;
+          status.textContent = '✅ Completed';
+          status.className = 'badge badge-completed';
+        }
+      });
+
+      // Update progress bars
+      const gamesPercent = Math.round((gamesCompleted / gameItems.length) * 100);
+      const lessonsPercent = Math.round((lessonsCompleted / lessonItems.length) * 100);
+      const mathPercent = Math.round((mathCompleted / mathItems.length) * 100);
+      const overallPercent = Math.round((totalCompleted / totalItems) * 100);
+
+      document.getElementById('gamesProgress').textContent = gamesPercent + '%';
+      document.getElementById('gamesProgressBar').style.width = gamesPercent + '%';
+      
+      document.getElementById('lessonsProgress').textContent = lessonsPercent + '%';
+      document.getElementById('lessonsProgressBar').style.width = lessonsPercent + '%';
+      
+      document.getElementById('mathProgress').textContent = mathPercent + '%';
+      document.getElementById('mathProgressBar').style.width = mathPercent + '%';
+
+      // Update stats
+      document.getElementById('totalCompleted').textContent = totalCompleted;
+      document.getElementById('totalLessons').textContent = totalItems;
+      document.getElementById('overallProgress').textContent = overallPercent + '%';
+    }
+
+    function resetProgress() {
+      if (confirm('Are you sure you want to reset all progress? This cannot be undone.')) {
+        localStorage.clear();
+        location.reload();
+      }
+    }
+
+    // Load progress on page load
+    document.addEventListener('DOMContentLoaded', loadProgress);
+  </script>
+</body>
+</html>
