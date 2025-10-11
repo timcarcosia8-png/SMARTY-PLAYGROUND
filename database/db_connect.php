@@ -1,12 +1,13 @@
 <?php
-$servername = "localhost";
-$username = "root";
-$password = "";
+session_start();
+$bdservername = "localhost";
+$bdusername = "root";
+$bdpassword = "";
 $database = "smarty_playground";
 
-
-$conn = new mysqli($servername, $username, $password, $database);
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
+$conn = mysqli_connect($bdservername, $bdusername, $bdpassword, $database);
+if (!$conn) {
+    die("Connection failed: " . mysqli_connect_error());
 }
+
 ?>

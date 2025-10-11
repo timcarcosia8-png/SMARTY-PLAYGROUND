@@ -1,14 +1,10 @@
 <?php
-include "../filter_input.php";
-session_start();
-$bdservername = "localhost";
-$bdusername = "root";
-$bdpassword = "";
-$database = "smarty_playground";
 
-$conn = mysqli_connect($bdservername, $bdusername, $bdpassword, $database);
-if (!$conn) {
-    die("Connection failed: " . mysqli_connect_error());
+include "../filter_input.php";
+include "../database/db_connect.php";
+
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
 }
 
 $error_message = "";
@@ -20,11 +16,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $email = filterInput($_POST['email']);
     $password = filterInput($_POST['password']);
 
-    
     if (empty($email) || empty($password)) {
         $errors[] = "All fields are required.";
     } else {
-        
         $stmt = $conn->prepare("SELECT * FROM users WHERE email = ? AND role = 'admin' LIMIT 1");
         $stmt->bind_param("s", $email);
         $stmt->execute();
@@ -36,18 +30,16 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             if ($user['status'] !== 'active') {
                 $errors[] = "Your account is inactive. Please contact the system administrator.";
             } else {
-                
-                $storedHash = $user['password'];
+                if (password_verify($password, $user['password'])) {
+                    // ✅ Store session data
+                    $_SESSION['user_id'] = $user['user_id'];
+                    $_SESSION['name'] = $user['name'];
+                    $_SESSION['role'] = $user['role'];
 
-                if (password_verify($password, $storedHash)) {
-                    
-                    $_SESSION['admin_id'] = $user['user_id'];
-                    $_SESSION['admin_name'] = $user['name'];
-
-                    header("Location: dashboard.html");
+                    // ✅ Redirect to dashboard
+                    header("Location: admin_dashboard.php");
                     exit();
                 } else {
-                    
                     $errors[] = "Invalid password.";
                 }
             }
@@ -58,16 +50,19 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $stmt->close();
     }
 
-    if (count($errors) > 0) {
+    if (!empty($errors)) {
         foreach ($errors as $error) {
             echo "<p class='text-red-600 text-sm font-medium text-center mt-2'>" . htmlspecialchars($error) . "</p>";
         }
     }
 }
 
+
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -75,9 +70,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; }
+        body {
+            font-family: 'Inter', sans-serif;
+        }
     </style>
 </head>
+
 <body class="bg-gray-50 min-h-screen flex items-center justify-center p-4">
     <div class="w-full max-w-md">
         <!-- Login Card -->
@@ -96,45 +94,37 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 <!-- Email Input -->
                 <div class="mb-4">
                     <label for="email" class="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
-                    <input 
-                        type="email" 
-                        id="email" 
-                        name="email"
-                        required
+                    <input type="email" id="email" name="email" required
                         class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition"
-                        placeholder="admin@powermath.com"
-                    >
+                        placeholder="admin@powermath.com">
                 </div>
 
                 <!-- Password Input -->
                 <div class="mb-4">
                     <label for="password" class="block text-sm font-medium text-gray-700 mb-2">Password</label>
                     <div class="relative">
-                        <input 
-                            type="password" 
-                            id="password" 
-                            name="password"
-                            required
+                        <input type="password" id="password" name="password" required
                             class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition pr-12"
-                            placeholder="Enter your password"
-                        >
-                        <button 
-                            type="button" 
-                            onclick="togglePassword()" 
-                            class="absolute inset-y-0 right-0 pr-3 flex items-center"
-                        >
-                            <svg id="eyeIcon" class="w-5 h-5 text-gray-400 hover:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                            placeholder="Enter your password">
+                        <button type="button" onclick="togglePassword()"
+                            class="absolute inset-y-0 right-0 pr-3 flex items-center">
+                            <svg id="eyeIcon" class="w-5 h-5 text-gray-400 hover:text-gray-600" fill="none"
+                                stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z">
+                                </path>
                             </svg>
                         </button>
                     </div>
                 </div>
-                
+
                 <!-- Remember Me & Forgot Password -->
                 <div class="flex items-center justify-between mb-6">
                     <label class="flex items-center">
-                        <input type="checkbox" class="w-4 h-4 text-teal-500 border-gray-300 rounded focus:ring-teal-500">
+                        <input type="checkbox"
+                            class="w-4 h-4 text-teal-500 border-gray-300 rounded focus:ring-teal-500">
                         <span class="ml-2 text-sm text-gray-600">Remember me</span>
                     </label>
                     <a href="#" class="text-sm text-teal-500 hover:text-teal-600">Forgot password?</a>
@@ -142,21 +132,21 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
                 <!-- Error Message -->
                 <?php if (!empty($error_message)): ?>
-                <div class="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm">
-                    <div class="flex items-center gap-2">
-                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
-                        </svg>
-                        <span><?= htmlspecialchars($error_message) ?></span>
+                    <div class="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm">
+                        <div class="flex items-center gap-2">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd"
+                                    d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                                    clip-rule="evenodd"></path>
+                            </svg>
+                            <span><?= htmlspecialchars($error_message) ?></span>
+                        </div>
                     </div>
-                </div>
                 <?php endif; ?>
 
                 <!-- Login Button -->
-                <button 
-                    type="submit" 
-                    class="w-full bg-teal-500 text-white py-2.5 rounded-lg font-medium hover:bg-teal-600 transition duration-200 shadow-sm"
-                >
+                <button type="submit"
+                    class="w-full bg-teal-500 text-white py-2.5 rounded-lg font-medium hover:bg-teal-600 transition duration-200 shadow-sm">
                     Sign In
                 </button>
             </form>
@@ -175,11 +165,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
                 <div class="flex items-start gap-3">
                     <svg class="w-5 h-5 text-gray-600 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
+                        <path fill-rule="evenodd"
+                            d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                            clip-rule="evenodd"></path>
                     </svg>
                     <div>
                         <p class="text-sm font-medium text-gray-800">Authorized Personnel Only</p>
-                        <p class="text-xs text-gray-600 mt-1">This login portal is restricted to administrators. Unauthorized access attempts will be logged and reported.</p>
+                        <p class="text-xs text-gray-600 mt-1">This login portal is restricted to administrators.
+                            Unauthorized access attempts will be logged and reported.</p>
                     </div>
                 </div>
             </div>
@@ -187,7 +180,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         <!-- Footer -->
         <div class="text-center mt-6">
-            <p class="text-sm text-gray-500">© 2025 Smarty Playground. All rights reserved.</p>
+            <p class="text-sm text-gray-500">© 2024 PowerMath Defenders. All rights reserved.</p>
         </div>
     </div>
 
@@ -195,7 +188,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         function togglePassword() {
             const passwordInput = document.getElementById('password');
             const eyeIcon = document.getElementById('eyeIcon');
-            
+
             if (passwordInput.type === 'password') {
                 passwordInput.type = 'text';
                 eyeIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"></path>';
@@ -206,4 +199,5 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         }
     </script>
 </body>
+
 </html>
