@@ -6,6 +6,9 @@
     <title>Smarty Playground</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Bangers&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
     <style>
         body {
             background: linear-gradient(180deg, #7C3AED 0%, #6B21A8 40%, #4C1D95 70%, #2D1B69 100%);
@@ -40,11 +43,23 @@
             50% { opacity: 1; transform: scale(1) rotate(180deg); }
         }
         
-        .title-container {
-            font-family: 'Bangers', cursive;
-            font-weight: 400;
-            letter-spacing: 3px;
-        }
+       .title {
+  font-family: 'Fredoka One', cursive;
+  font-weight: 900;
+  letter-spacing: 2px;
+  color: #FCD34D;
+  text-shadow:
+    3px 3px 0px #F97316,
+    6px 6px 0px #7C3AED,
+    -1px -1px 0px rgba(255,255,255,0.3);
+  animation: titlePulse 2s ease-in-out infinite;
+}
+
+@keyframes titlePulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.02); }
+}
+
         
         .letter {
             display: inline-block;
@@ -145,6 +160,7 @@
             z-index: 1;
         }
     </style>
+    
 </head>
 <body>
     <!-- Stars Background -->
@@ -170,10 +186,12 @@
         
         <!-- Title Section -->
         <div class="flex-1 flex flex-col items-center justify-center pt-20">
-            <div class="title-container text-5xl text-center leading-tight">
-                <div id="title-line1"></div>
-                <div id="title-line2"></div>
-            </div>
+            <div class="text-center mb-8">
+  <h1 class="title text-5xl leading-tight mb-3">
+    SMARTY<br>PLAYGROUND
+  </h1>
+</div>
+
         </div>
         
         <!-- Buttons Section -->
@@ -237,19 +255,7 @@
             starsContainer.appendChild(star);
         }
         
-        // Create bouncing letters for title
-        function createBouncingText(text, containerId) {
-            const container = document.getElementById(containerId);
-            for (let i = 0; i < text.length; i++) {
-                const span = document.createElement('span');
-                span.className = 'letter';
-                span.textContent = text[i] === ' ' ? '\u00A0' : text[i];
-                container.appendChild(span);
-            }
-        }
         
-        createBouncingText('SMARTY', 'title-line1');
-        createBouncingText('PLAYGROUND', 'title-line2');
     </script>
 </body>
 </html>
