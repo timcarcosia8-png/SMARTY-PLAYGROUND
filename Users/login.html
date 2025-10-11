@@ -136,11 +136,15 @@
     <!-- Main Login Container -->
     <div class="relative z-10 max-w-md mx-auto min-h-screen flex flex-col">
         <div class="px-6 pt-6">
-            <button onclick="history.back()" class="back-btn bg-white rounded-full w-12 h-12 flex items-center justify-center">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                    <path d="M15 18L9 12L15 6" stroke="#4C1D95" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-            </button>
+            <button
+  onclick="if (history.length > 1) { history.back(); } else { window.location.href='home.html'; }"
+  class="back-btn bg-white rounded-full w-12 h-12 flex items-center justify-center"
+>
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+    <path d="M15 18L9 12L15 6" stroke="#4C1D95" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
+</button>
+
         </div>
 
         <div class="flex-1 flex flex-col px-8 pt-12">
@@ -177,7 +181,7 @@
                 </p>
             </div>
 
-            <button class="login-btn w-full py-4 rounded-full text-lg font-semibold" onclick="window.location.href='dashboard.html'">
+            <button class="login-btn w-full py-4 rounded-full text-lg font-semibold" onclick="window.location.href='cAvatar.html'">
                 Login
             </button>
         </div>
