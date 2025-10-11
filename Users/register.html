@@ -117,11 +117,15 @@
    
     <!-- Back Button -->
     <div class="px-6 pt-4">
-        <button class="back-btn bg-white rounded-full w-12 h-12 flex items-center justify-center">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M15 18L9 12L15 6" stroke="#4C1D95" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-        </button>
+        <button
+  onclick="if (history.length > 1) { history.back(); } else { window.location.href='index.html'; }"
+  class="back-btn bg-white rounded-full w-12 h-12 flex items-center justify-center"
+>
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+    <path d="M15 18L9 12L15 6" stroke="#4C1D95" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
+</button>
+
     </div>
     
     <!-- Content Wrapper -->

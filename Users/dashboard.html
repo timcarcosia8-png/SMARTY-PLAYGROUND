@@ -272,7 +272,7 @@
           <span class="text-3xl">📊</span>
           <span class="text-xs">Progress</span>
         </button>
-        <button onclick="window.location.href='profile.html'" class="nav-btn flex flex-col items-center gap-1 text-gray-400">
+        <button onclick="window.location.href='dbprofile.html'" class="nav-btn flex flex-col items-center gap-1 text-gray-400">
           <span class="text-3xl">👤</span>
           <span class="text-xs">Profile</span>
         </button>
@@ -328,6 +328,18 @@
         // Add your navigation logic here
       });
     });
+    // Example: when player selects an avatar
+function selectAvatar(imagePath) {
+  localStorage.setItem("userAvatar", imagePath);
+  alert("Avatar saved!");
+}
+
+// Example: when player enters their name
+function saveName(playerName) {
+  localStorage.setItem("userName", playerName);
+  alert("Name saved!");
+}
+
   </script>
 <script>
 document.addEventListener("DOMContentLoaded", () => {
@@ -360,6 +372,14 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 3000);
   }
 });
+ document.querySelectorAll('.nav-item, .fab-button').forEach(item => {
+      item.addEventListener('click', function() {
+        document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+        if (this.classList.contains('nav-item')) {
+          this.classList.add('active');
+        }
+      });
+    });
 </script>
 
 
