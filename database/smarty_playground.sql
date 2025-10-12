@@ -75,3 +75,44 @@ CREATE TABLE user_lessons (
     FOREIGN KEY (lesson_id) REFERENCES lessons(lesson_id) ON DELETE CASCADE
 );
 
+CREATE TABLE objects_audio (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(50) NOT NULL,       -- e.g., dog, cat
+    audio LONGBLOB NOT NULL           -- store actual mp3 data
+);
+
+CREATE TABLE letter_audio (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    letter CHAR(1) NOT NULL UNIQUE,
+    audio LONGBLOB NOT NULL
+);
+
+
+INSERT INTO letter_audio (letter, audio)
+VALUES
+('A', LOAD_FILE('C:/xampp/htdocs/SMARTY-PLAYGROUND/game/sounds/kevin-A.mp3')),
+('B', LOAD_FILE('C:/xampp/htdocs/SMARTY-PLAYGROUND/game/sounds/kevin-B.mp3')),
+('C', LOAD_FILE('C:/xampp/htdocs/SMARTY-PLAYGROUND/game/sounds/kevin-C.mp3')),
+('D', LOAD_FILE('C:/xampp/htdocs/SMARTY-PLAYGROUND/game/sounds/kevin-D.mp3')),
+('E', LOAD_FILE('C:/xampp/htdocs/SMARTY-PLAYGROUND/game/sounds/kevin-E.mp3')),
+('F', LOAD_FILE('C:/xampp/htdocs/SMARTY-PLAYGROUND/game/sounds/kevin-F.mp3')),
+('G', LOAD_FILE('C:/xampp/htdocs/SMARTY-PLAYGROUND/game/sounds/kevin-G.mp3')),
+('H', LOAD_FILE('C:/xampp/htdocs/SMARTY-PLAYGROUND/game/sounds/kevin-H.mp3')),
+('I', LOAD_FILE('C:/xampp/htdocs/SMARTY-PLAYGROUND/game/sounds/kevin-I.mp3')),
+('J', LOAD_FILE('C:/xampp/htdocs/SMARTY-PLAYGROUND/game/sounds/kevin-J.mp3')),
+('K', LOAD_FILE('C:/xampp/htdocs/SMARTY-PLAYGROUND/game/sounds/kevin-K.mp3')),
+('L', LOAD_FILE('C:/xampp/htdocs/SMARTY-PLAYGROUND/game/sounds/kevin-L.mp3')),
+('M', LOAD_FILE('C:/xampp/htdocs/SMARTY-PLAYGROUND/game/sounds/kevin-M.mp3')),
+('N', LOAD_FILE('C:/xampp/htdocs/SMARTY-PLAYGROUND/game/sounds/kevin-N.mp3')),
+('O', LOAD_FILE('C:/xampp/htdocs/SMARTY-PLAYGROUND/game/sounds/kevin-O.mp3')),
+('P', LOAD_FILE('C:/xampp/htdocs/SMARTY-PLAYGROUND/game/sounds/kevin-P.mp3')),
+('Q', LOAD_FILE('C:/xampp/htdocs/SMARTY-PLAYGROUND/game/sounds/kevin-Q.mp3')),
+('R', LOAD_FILE('C:/xampp/htdocs/SMARTY-PLAYGROUND/game/sounds/kevin-R.mp3')),
+('S', LOAD_FILE('C:/xampp/htdocs/SMARTY-PLAYGROUND/game/sounds/kevin-S.mp3')),
+('T', LOAD_FILE('C:/xampp/htdocs/SMARTY-PLAYGROUND/game/sounds/kevin-T.mp3')),
+('U', LOAD_FILE('C:/xampp/htdocs/SMARTY-PLAYGROUND/game/sounds/kevin-U.mp3')),
+('V', LOAD_FILE('C:/xampp/htdocs/SMARTY-PLAYGROUND/game/sounds/kevin-V.mp3')),
+('W', LOAD_FILE('C:/xampp/htdocs/SMARTY-PLAYGROUND/game/sounds/kevin-W.mp3')),
+('X', LOAD_FILE('C:/xampp/htdocs/SMARTY-PLAYGROUND/game/sounds/kevin-X.mp3')),
+('Y', LOAD_FILE('C:/xampp/htdocs/SMARTY-PLAYGROUND/game/sounds/kevin-Y.mp3')),
+('Z', LOAD_FILE('C:/xampp/htdocs/SMARTY-PLAYGROUND/game/sounds/kevin-Z.mp3'));
