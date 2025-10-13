@@ -5,228 +5,368 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>READING MISSION - SMARTY PLAYGROUND</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; }
+         body { 
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 500px;
+            width: 90%;
+            position: relative;
+            animation: slideUp 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: #f3f4f6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .close-btn:hover {
+            background: #e5e7eb;
+            transform: rotate(90deg);
+        }
     </style>
 </head>
 <body class="bg-gray-100">
   
     <div class="flex h-screen">
         <!-- Sidebar -->
-     <div id="sidebar" class="fixed top-0 left-0 h-full w-64 bg-white shadow-lg transform -translate-x-full md:translate-x-0 transition-transform duration-300 z-40">
-      <div class="p-6">
-          <div class="flex items-center gap-2 mb-8">
-              <img src="logo.png">
-          </div>
-         <nav class="space-y-2">
-  <a href="dashboard.html" class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg transition">Dashboard</a>
-  <a href="readingms1.html" class="flex items-center gap-3 px-4 py-3 bg-teal-500 text-white rounded-lg font-medium">Reading Mission</a>
-  <a href="readinglessons.html" class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg transition">Reading Lesson</a>
-  <a href="dailyprogress.html" class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg transition">Daily Progress</a>
-  <a href="userinfo.html" class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg transition">User Info</a>
-</nav>
-          <div class="absolute bottom-6 left-6 right-6">
-              <a href="#" class="flex items-center gap-3 px-4 py-3 text-red-600 hover:bg-red-50 rounded-lg transition">Logout</a>
-          </div>
-      </div>
-  </div>
-      <!-- Toggle Button -->
-  <button id="toggleSidebar" class="md:hidden fixed top-4 left-4 z-50 p-2 bg-gray-800 text-white rounded">
-      ☰
-  </button>
-     
-
+        <div id="sidebar" class="fixed top-0 left-0 h-full w-64 bg-white shadow-lg transform -translate-x-full md:translate-x-0 transition-transform duration-300 z-40">
+            <div class="p-6">
+                <div class="flex items-center gap-2 mb-8">
+                    <img src="logo.png" alt="Logo">
+                </div>
+                <nav class="space-y-2">
+                    <a href="dashboard.html" class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg transition">Dashboard</a>
+                    <a href="readingms1.html" class="flex items-center gap-3 px-4 py-3 bg-teal-500 text-white rounded-lg font-medium">Reading Mission</a>
+                    <a href="readinglessons.html" class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg transition">Reading Lesson</a>
+                    <a href="dailyprogress.html" class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg transition">Daily Progress</a>
+                    <a href="userinfo.html" class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg transition">User Info</a>
+                </nav>
+                <div class="absolute bottom-6 left-6 right-6">
+                    <a href="#" class="flex items-center gap-3 px-4 py-3 text-red-600 hover:bg-red-50 rounded-lg transition">Logout</a>
+                </div>
+            </div>
+        </div>
         
-  <!-- Main Content Area -->
-  <div id="mainContent" class="flex-1 ml-0 md:ml-64 transition-all duration-300">
-      <div class="p-8">
-          <div class="flex justify-between items-center mb-8">
-              <div>
-                  <h1 class="text-3xl font-bold text-gray-800">Reading Mission</h1>
-            
-              </div>
-              <div class="flex items-center gap-4">
-                  <button class="p-2 hover:bg-gray-100 rounded-lg transition">
-                      <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                  </button>
-                  <button class="p-2 hover:bg-gray-100 rounded-lg transition relative">
-                      <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
-                      <span class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
-                  </button>
-                  <img src="https://ui-avatars.com/api/?name=User&background=random" alt="User" class="w-10 h-10 rounded-full">
-              </div>
-          </div>
-
-            <!-- Content Area -->
+        <!-- Toggle Button -->
+        <button id="toggleSidebar" class="md:hidden fixed top-4 left-4 z-50 p-2 bg-gray-800 text-white rounded">
+            ☰
+        </button>
+        
+        <!-- Main Content Area -->
+        <div id="mainContent" class="flex-1 ml-0 md:ml-64 transition-all duration-300">
             <div class="p-8">
-                <div class="bg-white rounded-lg shadow-md border-4 border-white-500 p-6">
-                    <!-- Header with Add Button -->
-                    <div class="flex justify-between items-center mb-6">
-                        <h2 class="text-2xl font-bold text-gray-800">All Math Mission</h2>
-                        <button class="flex items-center gap-2 bg-teal-500 text-white px-4 py-2 rounded-lg hover:bg-teal-600 transition font-medium">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                            </svg>
-                            Add Mission
+                <div class="flex justify-between items-center mb-8">
+                    <div>
+                        <h1 class="text-3xl font-bold text-gray-800">Reading Mission</h1>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <button class="p-2 hover:bg-gray-100 rounded-lg transition">
+                            <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                         </button>
+                        <button class="p-2 hover:bg-gray-100 rounded-lg transition relative">
+                            <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
+                            <span class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+                        </button>
+                        <img src="https://ui-avatars.com/api/?name=User&background=random" alt="User" class="w-10 h-10 rounded-full">
                     </div>
+                </div>
 
-                    <!-- Table -->
-                    <div class="overflow-x-auto">
-                        <table class="w-full">
-                            <thead class="border-b-2 border-gray-200">
-                                <tr>
-                                    <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Mission Name</th>
-                                    <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Total Played</th>
-                                    <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Point</th>
-                                    <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Total Questions</th>
-                                    <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Status</th>
-                                    <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr class="border-b border-gray-100 hover:bg-gray-50 transition">
-                                    <td class="px-6 py-4 text-gray-800">Tech Jungle</td>
-                                    <td class="px-6 py-4 text-gray-600">426</td>
-                                    <td class="px-6 py-4 text-gray-600">200</td>
-                                    <td class="px-6 py-4 text-gray-600">20</td>
-                                    <td class="px-6 py-4">
-                                        <span class="text-teal-600 font-medium">Active</span>
-                                    </td>
-                                    <td class="px-6 py-4">
-                                        <div class="flex gap-2">
-                                            <button class="p-1 text-gray-400 hover:text-gray-600">
-                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path>
-                                                </svg>
-                                            </button>
-                                            <button class="p-1 text-red-400 hover:text-red-600">
-                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                                                </svg>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr class="border-b border-gray-100 hover:bg-gray-50 transition">
-                                    <td class="px-6 py-4 text-gray-800">Time Travel Adventure</td>
-                                    <td class="px-6 py-4 text-gray-600">609</td>
-                                    <td class="px-6 py-4 text-gray-600">300</td>
-                                    <td class="px-6 py-4 text-gray-600">30</td>
-                                    <td class="px-6 py-4">
-                                        <span class="text-teal-600 font-medium">Active</span>
-                                    </td>
-                                    <td class="px-6 py-4">
-                                        <div class="flex gap-2">
-                                            <button class="p-1 text-gray-400 hover:text-gray-600">
-                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path>
-                                                </svg>
-                                            </button>
-                                            <button class="p-1 text-red-400 hover:text-red-600">
-                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                                                </svg>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr class="border-b border-gray-100 hover:bg-gray-50 transition">
-                                    <td class="px-6 py-4 text-gray-800">The Lost Treasure</td>
-                                    <td class="px-6 py-4 text-gray-600">568</td>
-                                    <td class="px-6 py-4 text-gray-600">100</td>
-                                    <td class="px-6 py-4 text-gray-600">25</td>
-                                    <td class="px-6 py-4">
-                                        <span class="text-teal-600 font-medium">Active</span>
-                                    </td>
-                                    <td class="px-6 py-4">
-                                        <div class="flex gap-2">
-                                            <button class="p-1 text-gray-400 hover:text-gray-600">
-                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path>
-                                                </svg>
-                                            </button>
-                                            <button class="p-1 text-red-400 hover:text-red-600">
-                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                                                </svg>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr class="border-b border-gray-100 hover:bg-gray-50 transition">
-                                    <td class="px-6 py-4 text-gray-800">Space Mission</td>
-                                    <td class="px-6 py-4 text-gray-600">357</td>
-                                    <td class="px-6 py-4 text-gray-600">20</td>
-                                    <td class="px-6 py-4 text-gray-600">30</td>
-                                    <td class="px-6 py-4">
-                                        <span class="text-teal-600 font-medium">Active</span>
-                                    </td>
-                                    <td class="px-6 py-4">
-                                        <div class="flex gap-2">
-                                            <button class="p-1 text-gray-400 hover:text-gray-600">
-                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path>
-                                                </svg>
-                                            </button>
-                                            <button class="p-1 text-red-400 hover:text-red-600">
-                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                                                </svg>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr class="hover:bg-gray-50 transition">
-                                    <td class="px-6 py-4 text-gray-800">ABC Mission</td>
-                                    <td class="px-6 py-4 text-gray-600">556</td>
-                                    <td class="px-6 py-4 text-gray-600">50</td>
-                                    <td class="px-6 py-4 text-gray-600">20</td>
-                                    <td class="px-6 py-4">
-                                        <span class="text-teal-600 font-medium">Active</span>
-                                    </td>
-                                    <td class="px-6 py-4">
-                                        <div class="flex gap-2">
-                                            <button class="p-1 text-gray-400 hover:text-gray-600">
-                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path>
-                                                </svg>
-                                            </button>
-                                            <button class="p-1 text-red-400 hover:text-red-600">
-                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                                                </svg>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+                <!-- Content Area -->
+                <div class="p-8">
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <!-- Header with Add Button -->
+                        <div class="flex justify-between items-center mb-6">
+                            <h2 class="text-2xl font-bold text-gray-800">All Reading Missions</h2>
+                            <button onclick="openAddModal()" class="flex items-center gap-2 bg-teal-500 text-white px-4 py-2 rounded-lg hover:bg-teal-600 transition font-medium">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                                </svg>
+                                Add Mission
+                            </button>
+                        </div>
 
-                    <!-- Pagination -->
-                    <div class="flex justify-between items-center mt-6 pt-4 border-t">
-                        <span class="text-sm text-gray-600">01 page of 100</span>
-                        <div class="flex gap-2">
-                            <button class="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition text-gray-700">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
-                                </svg>
-                                Previous
-                            </button>
-                            <button class="px-4 py-2 bg-gray-200 rounded-lg font-medium text-gray-700">01</button>
-                            <button class="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition text-gray-700">
-                                Next
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                                </svg>
-                            </button>
+                        <!-- Table -->
+                        <div class="overflow-x-auto">
+                            <table class="w-full">
+                                <thead class="border-b-2 border-gray-200">
+                                    <tr>
+                                        <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Mission Name</th>
+                                        <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Total Played</th>
+                                        <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Point</th>
+                                        <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Total Questions</th>
+                                        <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Status</th>
+                                        <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="border-b border-gray-100 hover:bg-gray-50 transition">
+                                        <td class="px-6 py-4 text-gray-800">Tech Jungle</td>
+                                        <td class="px-6 py-4 text-gray-600">426</td>
+                                        <td class="px-6 py-4 text-gray-600">200</td>
+                                        <td class="px-6 py-4 text-gray-600">20</td>
+                                        <td class="px-6 py-4">
+                                            <span class="text-teal-600 font-medium">Active</span>
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            <div class="flex gap-2">
+                                                <button onclick="openEditModal('Tech Jungle', 426, 200, 20)" class="p-2 text-blue-500 hover:bg-blue-50 rounded-lg transition">
+                                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                                    </svg>
+                                                </button>
+                                                <button onclick="openDeleteModal('Tech Jungle')" class="p-2 text-red-500 hover:bg-red-50 rounded-lg transition">
+                                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                                    </svg>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr class="border-b border-gray-100 hover:bg-gray-50 transition">
+                                        <td class="px-6 py-4 text-gray-800">Time Travel Adventure</td>
+                                        <td class="px-6 py-4 text-gray-600">609</td>
+                                        <td class="px-6 py-4 text-gray-600">300</td>
+                                        <td class="px-6 py-4 text-gray-600">30</td>
+                                        <td class="px-6 py-4">
+                                            <span class="text-teal-600 font-medium">Active</span>
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            <div class="flex gap-2">
+                                                <button onclick="openEditModal('Time Travel Adventure', 609, 300, 30)" class="p-2 text-blue-500 hover:bg-blue-50 rounded-lg transition">
+                                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                                    </svg>
+                                                </button>
+                                                <button onclick="openDeleteModal('Time Travel Adventure')" class="p-2 text-red-500 hover:bg-red-50 rounded-lg transition">
+                                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                                    </svg>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr class="border-b border-gray-100 hover:bg-gray-50 transition">
+                                        <td class="px-6 py-4 text-gray-800">The Lost Treasure</td>
+                                        <td class="px-6 py-4 text-gray-600">568</td>
+                                        <td class="px-6 py-4 text-gray-600">100</td>
+                                        <td class="px-6 py-4 text-gray-600">25</td>
+                                        <td class="px-6 py-4">
+                                            <span class="text-teal-600 font-medium">Active</span>
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            <div class="flex gap-2">
+                                                <button onclick="openEditModal('The Lost Treasure', 568, 100, 25)" class="p-2 text-blue-500 hover:bg-blue-50 rounded-lg transition">
+                                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                                    </svg>
+                                                </button>
+                                                <button onclick="openDeleteModal('The Lost Treasure')" class="p-2 text-red-500 hover:bg-red-50 rounded-lg transition">
+                                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                                    </svg>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Pagination -->
+                        <div class="flex justify-between items-center mt-6 pt-4 border-t">
+                            <span class="text-sm text-gray-600">01 page of 100</span>
+                            <div class="flex gap-2">
+                                <button class="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition text-gray-700">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                                    </svg>
+                                    Previous
+                                </button>
+                                <button class="px-4 py-2 bg-gray-200 rounded-lg font-medium text-gray-700">01</button>
+                                <button class="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition text-gray-700">
+                                    Next
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                    </svg>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- Add Mission Modal -->
+    <div id="addModal" class="modal">
+        <div class="modal-content">
+            <div class="close-btn" onclick="closeAddModal()">✕</div>
+            <h2 class="text-2xl font-bold text-gray-800 mb-6">Add New Mission</h2>
+            <form class="space-y-4">
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Mission Name *</label>
+                    <input type="text" placeholder="Enter mission name" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Points *</label>
+                    <input type="number" placeholder="Enter points" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Total Questions *</label>
+                    <input type="number" placeholder="Enter total questions" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500">
+                </div>
+                <button type="submit" class="w-full bg-teal-500 text-white py-3 rounded-lg font-semibold hover:bg-teal-600 transition">
+                    Add Mission
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Edit Mission Modal -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <div class="close-btn" onclick="closeEditModal()">✕</div>
+            <h2 class="text-2xl font-bold text-gray-800 mb-6">Edit Mission</h2>
+            <form class="space-y-4">
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Mission Name *</label>
+                    <input type="text" id="editName" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Points *</label>
+                    <input type="number" id="editPoints" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Total Questions *</label>
+                    <input type="number" id="editQuestions" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500">
+                </div>
+                <button type="submit" class="w-full bg-teal-500 text-white py-3 rounded-lg font-semibold hover:bg-teal-600 transition">
+                    Update Mission
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="deleteModal" class="modal">
+        <div class="modal-content">
+            <div class="close-btn" onclick="closeDeleteModal()">✕</div>
+            <div class="text-center">
+                <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                    </svg>
+                </div>
+                <h2 class="text-2xl font-bold text-gray-800 mb-2">Delete Mission</h2>
+                <p class="text-gray-600 mb-6">Are you sure you want to delete "<span id="deleteName" class="font-semibold"></span>"? This action cannot be undone.</p>
+                <div class="flex gap-3">
+                    <button onclick="closeDeleteModal()" class="flex-1 px-4 py-3 border border-gray-300 rounded-lg font-semibold text-gray-700 hover:bg-gray-50 transition">
+                        Cancel
+                    </button>
+                    <button onclick="confirmDelete()" class="flex-1 px-4 py-3 bg-red-500 text-white rounded-lg font-semibold hover:bg-red-600 transition">
+                        Delete
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sidebar toggle
+        document.getElementById('toggleSidebar').addEventListener('click', function() {
+            document.getElementById('sidebar').classList.toggle('-translate-x-full');
+        });
+
+        // Add Modal
+        function openAddModal() {
+            document.getElementById('addModal').classList.add('active');
+        }
+
+        function closeAddModal() {
+            document.getElementById('addModal').classList.remove('active');
+        }
+
+        // Edit Modal
+        function openEditModal(name, played, points, questions) {
+            document.getElementById('editName').value = name;
+            document.getElementById('editPoints').value = points;
+            document.getElementById('editQuestions').value = questions;
+            document.getElementById('editModal').classList.add('active');
+        }
+
+        function closeEditModal() {
+            document.getElementById('editModal').classList.remove('active');
+        }
+
+        // Delete Modal
+        function openDeleteModal(name) {
+            document.getElementById('deleteName').textContent = name;
+            document.getElementById('deleteModal').classList.add('active');
+        }
+
+        function closeDeleteModal() {
+            document.getElementById('deleteModal').classList.remove('active');
+        }
+
+        function confirmDelete() {
+            // Add delete logic here
+            alert('Mission deleted!');
+            closeDeleteModal();
+        }
+
+        // Close modal when clicking outside
+        document.querySelectorAll('.modal').forEach(modal => {
+            modal.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.classList.remove('active');
+                }
+            });
+        });
+    </script>
 </body>
 </html>
