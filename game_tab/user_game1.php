@@ -3,6 +3,9 @@ include "../filter_input.php";
 include "../database/db_connect.php";
 // include "../get_Objects.php";
 // include "../get_Audio.php";
+
+
+
 ?>
 
 <!DOCTYPE html>
@@ -245,6 +248,30 @@ include "../database/db_connect.php";
         .speaker-btn:active {
             transform: scale(0.95);
         }
+
+        .music-toggle {
+            background: linear-gradient(135deg, #34d399 0%, #10b981 100%);
+            color: white;
+            padding: 10px 25px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 1rem;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(16, 185, 129, 0.4);
+            transition: all 0.3s ease;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .music-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 15px rgba(16, 185, 129, 0.6);
+        }
+
+        .music-toggle:active {
+            transform: scale(0.95);
+        }
     </style>
 </head>
 
@@ -262,6 +289,9 @@ include "../database/db_connect.php";
                     d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z" />
             </svg>
         </div>
+        <!-- Background Music Toggle -->
+        <!-- <button class="music-toggle mt-2" onclick="toggleMusic()">🎵 Music</button> -->
+
 
         <p class="instruction">Drag the letters to spell the word!</p>
         <p id="feedback" class="text-center text-red-600 font-bold text-xl mb-4 hidden">Try Again!</p>
@@ -278,6 +308,9 @@ include "../database/db_connect.php";
     </div>
 
     <script>
+        let bgMusic;
+
+
         let words = [];
         let currentWordIndex = 0;
         const audioCache = {}; // ✅ Global cache for letter sounds
@@ -386,6 +419,16 @@ include "../database/db_connect.php";
                     setTimeout(() => el.remove(), 1000);
                 }, i * 100);
             }
+        }
+
+        const starsContainer = document.getElementById('stars');
+        for (let i = 0; i < 50; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+            star.style.left = Math.random() * 100 + '%';
+            star.style.top = Math.random() * 100 + '%';
+            star.style.animationDelay = Math.random() * 2 + 's';
+            starsContainer.appendChild(star);
         }
 
         const dropzonesContainer = document.getElementById('dropzones');
@@ -506,6 +549,83 @@ include "../database/db_connect.php";
                 loadWord();
             }
         });
+
+
+        // Initialize background music
+        // 🎵 Auto-start background music (no click needed)
+        function initBackgroundMusic() {
+            bgMusic = new Audio('/SMARTY-PLAYGROUND/game/sounds/bg_game1.mp3');
+            bgMusic.loop = true;
+            bgMusic.volume = 0.1; // Desired volume
+        }
+
+        function tryPlayMusic() {
+            if (!bgMusic) initBackgroundMusic();
+            bgMusic.play().catch(err => {
+                console.warn('Autoplay blocked, waiting for user interaction.');
+                document.body.addEventListener('click', () => {
+                    bgMusic.play();
+                }, { once: true });
+            });
+        }
+
+        window.addEventListener('DOMContentLoaded', tryPlayMusic);
+
+        function fadeInMusic(targetVolume = 0.3, step = 0.02, interval = 150) {
+            let vol = 0;
+            bgMusic.volume = vol;
+            const fade = setInterval(() => {
+                if (vol < targetVolume) {
+                    vol += step;
+                    bgMusic.volume = Math.min(vol, targetVolume);
+                } else {
+                    clearInterval(fade);
+                }
+            }, interval);
+        }
+
+        function tryPlayMusic() {
+            if (!bgMusic) initBackgroundMusic();
+            bgMusic.play().then(() => fadeInMusic()).catch(() => {
+                document.body.addEventListener('click', () => {
+                    bgMusic.play().then(() => fadeInMusic());
+                }, { once: true });
+            });
+        }
+
+
+        // 🚀 Start immediately when DOM is ready
+        window.addEventListener('DOMContentLoaded', initBackgroundMusic);
+
+
+        // Try to play after user interaction
+        function enableMusic() {
+            if (!bgMusic) {
+                initBackgroundMusic();
+            }
+            bgMusic.play().catch(err => {
+                console.warn('Autoplay blocked until user interaction:', err);
+            });
+        }
+
+        // Attach event listener once
+        window.addEventListener('click', enableMusic, { once: true });
+
+        // 🎵 Toggle background music on/off
+        function toggleMusic() {
+            if (!bgMusic) {
+                initBackgroundMusic();
+            }
+
+            if (bgMusic.paused) {
+                bgMusic.play().catch(err => console.warn('Autoplay blocked:', err));
+            } else {
+                bgMusic.pause();
+            }
+        }
+
+        // 🟢 Automatically start background music after user interaction
+
 
         // 🚀 Start game
         fetchWords();

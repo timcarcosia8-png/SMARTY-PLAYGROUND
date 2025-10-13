@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Upload Beginning Sound</title>
+</head>
+<body>
+    <form action="upload_question.php" method="POST" enctype="multipart/form-data">
+        Word: <input type="text" name="word" required><br>
+        Sound Letter: <input type="text" name="sound_letter" maxlength="1" required><br>
+        Image: <input type="file" name="image" accept="image/*" required><br>
+        <button type="submit">Upload Question</button>
+    </form>
+</body>
+</html>
