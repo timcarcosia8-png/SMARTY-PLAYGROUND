@@ -9,6 +9,7 @@
     <style>
         body { font-family: 'Inter', sans-serif; }
         
+        /* Modal styles */
         .modal {
             display: none;
             position: fixed;
@@ -61,7 +62,7 @@
         <div id="sidebar" class="fixed top-0 left-0 h-full w-64 bg-white shadow-lg transform -translate-x-full md:translate-x-0 transition-transform duration-300 z-40">
             <div class="p-6">
                 <div class="flex items-center gap-2 mb-8">
-                    <div class="text-2xl font-bold text-teal-600">SMARTY</div>
+                    <img src="logo.png">
                 </div>
                 <nav class="space-y-2">
                     <a href="dashboard.html" class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg transition">Dashboard</a>
@@ -128,9 +129,9 @@
                                         <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Action</th>
                                     </tr>
                                 </thead>
-                                <tbody id="lessonsTableBody">
-                                    <tr class="lesson-row border-b border-gray-100 hover:bg-gray-50 transition">
-                                        <td class="lesson-name px-6 py-4 text-gray-800">The Magic Forest</td>
+                                <tbody>
+                                    <tr class="border-b border-gray-100 hover:bg-gray-50 transition">
+                                        <td class="px-6 py-4 text-gray-800">The Magic Forest</td>
                                         <td class="px-6 py-4 text-gray-600">426</td>
                                         <td class="px-6 py-4 text-gray-600">20</td>
                                         <td class="px-6 py-4 text-gray-600">200</td>
@@ -140,12 +141,12 @@
                                         </td>
                                         <td class="px-6 py-4">
                                             <div class="flex gap-2">
-                                                <button class="edit-btn p-1 text-gray-400 hover:text-gray-600" title="Edit">
+                                                <button class="p-1 text-gray-400 hover:text-gray-600">
                                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path>
                                                     </svg>
                                                 </button>
-                                                <button class="delete-btn p-1 text-red-400 hover:text-red-600" title="Delete">
+                                                <button class="p-1 text-red-400 hover:text-red-600">
                                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
                                                     </svg>
@@ -153,8 +154,8 @@
                                             </div>
                                         </td>
                                     </tr>
-                                    <tr class="lesson-row border-b border-gray-100 hover:bg-gray-50 transition">
-                                        <td class="lesson-name px-6 py-4 text-gray-800">Ocean Adventures</td>
+                                    <tr class="border-b border-gray-100 hover:bg-gray-50 transition">
+                                        <td class="px-6 py-4 text-gray-800">Ocean Adventures</td>
                                         <td class="px-6 py-4 text-gray-600">1216</td>
                                         <td class="px-6 py-4 text-gray-600">32</td>
                                         <td class="px-6 py-4 text-gray-600">300</td>
@@ -164,12 +165,12 @@
                                         </td>
                                         <td class="px-6 py-4">
                                             <div class="flex gap-2">
-                                                <button class="edit-btn p-1 text-gray-400 hover:text-gray-600" title="Edit">
+                                                <button class="p-1 text-gray-400 hover:text-gray-600">
                                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path>
                                                     </svg>
                                                 </button>
-                                                <button class="delete-btn p-1 text-red-400 hover:text-red-600" title="Delete">
+                                                <button class="p-1 text-red-400 hover:text-red-600">
                                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
                                                     </svg>
@@ -177,8 +178,8 @@
                                             </div>
                                         </td>
                                     </tr>
-                                    <tr class="lesson-row border-b border-gray-100 hover:bg-gray-50 transition">
-                                        <td class="lesson-name px-6 py-4 text-gray-800">Dinosaur Discovery</td>
+                                    <tr class="border-b border-gray-100 hover:bg-gray-50 transition">
+                                        <td class="px-6 py-4 text-gray-800">Dinosaur Discovery</td>
                                         <td class="px-6 py-4 text-gray-600">581</td>
                                         <td class="px-6 py-4 text-gray-600">25</td>
                                         <td class="px-6 py-4 text-gray-600">100</td>
@@ -188,12 +189,12 @@
                                         </td>
                                         <td class="px-6 py-4">
                                             <div class="flex gap-2">
-                                                <button class="edit-btn p-1 text-gray-400 hover:text-gray-600" title="Edit">
+                                                <button class="p-1 text-gray-400 hover:text-gray-600">
                                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path>
                                                     </svg>
                                                 </button>
-                                                <button class="delete-btn p-1 text-red-400 hover:text-red-600" title="Delete">
+                                                <button class="p-1 text-red-400 hover:text-red-600">
                                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
                                                     </svg>
@@ -201,8 +202,8 @@
                                             </div>
                                         </td>
                                     </tr>
-                                    <tr class="lesson-row border-b border-gray-100 hover:bg-gray-50 transition">
-                                        <td class="lesson-name px-6 py-4 text-gray-800">Space Explorers</td>
+                                    <tr class="border-b border-gray-100 hover:bg-gray-50 transition">
+                                        <td class="px-6 py-4 text-gray-800">Space Explorers</td>
                                         <td class="px-6 py-4 text-gray-600">357</td>
                                         <td class="px-6 py-4 text-gray-600">30</td>
                                         <td class="px-6 py-4 text-gray-600">20</td>
@@ -212,12 +213,12 @@
                                         </td>
                                         <td class="px-6 py-4">
                                             <div class="flex gap-2">
-                                                <button class="edit-btn p-1 text-gray-400 hover:text-gray-600" title="Edit">
+                                                <button class="p-1 text-gray-400 hover:text-gray-600">
                                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path>
                                                     </svg>
                                                 </button>
-                                                <button class="delete-btn p-1 text-red-400 hover:text-red-600" title="Delete">
+                                                <button class="p-1 text-red-400 hover:text-red-600">
                                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
                                                     </svg>
@@ -225,8 +226,8 @@
                                             </div>
                                         </td>
                                     </tr>
-                                    <tr class="lesson-row hover:bg-gray-50 transition">
-                                        <td class="lesson-name px-6 py-4 text-gray-800">Fairy Tale World</td>
+                                    <tr class="hover:bg-gray-50 transition">
+                                        <td class="px-6 py-4 text-gray-800">Fairy Tale World</td>
                                         <td class="px-6 py-4 text-gray-600">556</td>
                                         <td class="px-6 py-4 text-gray-600">20</td>
                                         <td class="px-6 py-4 text-gray-600">50</td>
@@ -236,12 +237,12 @@
                                         </td>
                                         <td class="px-6 py-4">
                                             <div class="flex gap-2">
-                                                <button class="edit-btn p-1 text-gray-400 hover:text-gray-600" title="Edit">
+                                                <button class="p-1 text-gray-400 hover:text-gray-600">
                                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path>
                                                     </svg>
                                                 </button>
-                                                <button class="delete-btn p-1 text-red-400 hover:text-red-600" title="Delete">
+                                                <button class="p-1 text-red-400 hover:text-red-600">
                                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
                                                     </svg>
@@ -277,84 +278,146 @@
             </div>
         </div>
     </div>
+<!-- Edit User Modal -->
+<div id="editModal" class="modal">
+    <div class="modal-content">
+        <div class="flex justify-between items-center p-6 border-b">
+            <h3 class="text-2xl font-bold text-gray-800">Edit User</h3>
+            <button id="closeEditModal" class="text-gray-400 hover:text-gray-600 transition">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+        </div>
 
-    <!-- Edit Lesson Modal -->
-    <div id="editLessonModal" class="modal">
+        <div class="p-6">
+            <form id="editUserForm">
+                <input type="hidden" id="editUserId">
+
+                <div class="mb-4">
+                    <label class="block text-gray-700 font-medium mb-2">
+                        Full Name<span class="text-red-500">*</span>
+                    </label>
+                    <input type="text" id="editUserName" placeholder="Enter full name"
+                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+                        required />
+                </div>
+
+                <div class="mb-4">
+                    <label class="block text-gray-700 font-medium mb-2">
+                        Email<span class="text-red-500">*</span>
+                    </label>
+                    <input type="email" id="editUserEmail" placeholder="Enter email address"
+                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+                        required />
+                </div>
+
+                <button type="submit"
+                    class="w-full bg-teal-500 text-white py-3 rounded-lg font-semibold hover:bg-teal-600 transition mt-4">
+                    Save Changes
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div id="deleteModal" class="modal">
+    <div class="modal-content">
+        <div class="p-6">
+            <div class="text-center mb-6">
+                <div class="mx-auto w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mb-4">
+                    <svg class="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z">
+                        </path>
+                    </svg>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-800 mb-2">Delete User?</h3>
+                <p class="text-gray-600">Are you sure you want to delete <strong id="deleteUserName"></strong>? This
+                    action cannot be undone.</p>
+            </div>
+
+            <div class="flex gap-3">
+                <button id="cancelDelete"
+                    class="flex-1 bg-gray-200 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-300 transition">
+                    Cancel
+                </button>
+                <button id="confirmDelete"
+                    class="flex-1 bg-red-500 text-white py-3 rounded-lg font-semibold hover:bg-red-600 transition">
+                    Delete
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <!-- Add Lesson Modal -->
+    <div id="addLessonModal" class="modal">
         <div class="modal-content">
+            <!-- Modal Header -->
             <div class="flex justify-between items-center p-6 border-b">
-                <h3 class="text-2xl font-bold text-gray-800">Edit Lesson</h3>
-                <button id="closeEditModalBtn" class="text-gray-400 hover:text-gray-600 transition">
+                <h3 class="text-2xl font-bold text-gray-800">Add New Mission</h3>
+                <button id="closeModalBtn" class="text-gray-400 hover:text-gray-600 transition">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                     </svg>
                 </button>
             </div>
             
+            <!-- Modal Body -->
             <div class="p-6">
-                <form id="editLessonForm">
+                <form id="addLessonForm">
                     <div class="mb-4">
                         <label class="block text-gray-700 font-medium mb-2">
                             Lesson Name<span class="text-red-500">*</span>
                         </label>
                         <input 
                             type="text" 
-                            id="editLessonName"
+                            id="lessonName"
                             placeholder="Enter lesson name" 
                             class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
                             required
                         />
                     </div>
                     
+                    <div class="mb-4">
+                        <label class="block text-gray-700 font-medium mb-2">
+                            Upload Video<span class="text-red-500">*</span>
+                        </label>
+                        <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-teal-500 transition cursor-pointer" id="dropZone">
+                            <input 
+                                type="file" 
+                                id="videoUpload"
+                                accept="video/*"
+                                class="hidden"
+                                required
+                            />
+                            <div id="uploadPlaceholder">
+                                <svg class="w-12 h-12 mx-auto text-gray-400 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                                </svg>
+                                <p class="text-gray-600 font-medium mb-1">Click to upload or drag and drop</p>
+                                <p class="text-sm text-gray-400">MP4, AVI, MOV (MAX. 100MB)</p>
+                            </div>
+                            <div id="videoPreview" class="hidden">
+                                <video id="videoPlayer" class="w-full rounded-lg mb-3" controls></video>
+                                <p id="fileName" class="text-sm text-gray-600 font-medium mb-2"></p>
+                                <button type="button" id="removeVideo" class="text-red-500 hover:text-red-600 text-sm font-medium">
+                                    Remove Video
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
                     <button 
                         type="submit" 
-                        class="w-full bg-teal-500 text-white py-3 rounded-lg font-semibold hover:bg-teal-600 transition"
+                        class="w-full bg-teal-500 text-white py-3 rounded-lg font-semibold hover:bg-teal-600 transition mt-4"
                     >
-                        Update Lesson
+                        Add Mission
                     </button>
                 </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- Delete Confirmation Modal -->
-    <div id="deleteLessonModal" class="modal">
-        <div class="modal-content">
-            <div class="flex justify-between items-center p-6 border-b">
-                <h3 class="text-2xl font-bold text-gray-800">Delete Lesson</h3>
-                <button id="closeDeleteModalBtn" class="text-gray-400 hover:text-gray-600 transition">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                    </svg>
-                </button>
-            </div>
-            
-            <div class="p-6">
-                <div class="text-center mb-6">
-                    <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 mb-4">
-                        <svg class="h-6 w-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4v2m0 4v2m0 4h.01m-6.938-4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
-                        </svg>
-                    </div>
-                    <p class="text-gray-700 text-lg mb-2">Delete this lesson?</p>
-                    <p class="text-gray-500 text-sm">The lesson "<span id="deleteLessonName" class="font-semibold text-gray-700"></span>" will be permanently removed. This action cannot be undone.</p>
-                </div>
-                
-                <div class="flex gap-3">
-                    <button 
-                        id="cancelDeleteBtn"
-                        type="button" 
-                        class="flex-1 bg-gray-100 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-200 transition"
-                    >
-                        Cancel
-                    </button>
-                    <button 
-                        id="confirmDeleteBtn"
-                        type="button" 
-                        class="flex-1 bg-red-500 text-white py-3 rounded-lg font-semibold hover:bg-red-600 transition"
-                    >
-                        Delete
-                    </button>
-                </div>
             </div>
         </div>
     </div>
@@ -368,79 +431,51 @@
             sidebar.classList.toggle("-translate-x-full");
         });
 
-        // Modal elements
-        const editModal = document.getElementById("editLessonModal");
-        const deleteModal = document.getElementById("deleteLessonModal");
-        const closeEditBtn = document.getElementById("closeEditModalBtn");
-        const closeDeleteBtn = document.getElementById("closeDeleteModalBtn");
-        const editForm = document.getElementById("editLessonForm");
-        const cancelDeleteBtn = document.getElementById("cancelDeleteBtn");
-        const confirmDeleteBtn = document.getElementById("confirmDeleteBtn");
+        // Modal functionality
+        const modal = document.getElementById("addLessonModal");
+        const openModalBtn = document.getElementById("openModalBtn");
+        const closeModalBtn = document.getElementById("closeModalBtn");
+        const addLessonForm = document.getElementById("addLessonForm");
 
-        let currentEditRow = null;
-        let currentDeleteRow = null;
+        // Open modal
+        openModalBtn.addEventListener("click", () => {
+            modal.classList.add("active");
+        });
 
-        // Close modals
-        closeEditBtn.addEventListener("click", () => editModal.classList.remove("active"));
-        closeDeleteBtn.addEventListener("click", () => deleteModal.classList.remove("active"));
-        cancelDeleteBtn.addEventListener("click", () => deleteModal.classList.remove("active"));
+        // Close modal
+        closeModalBtn.addEventListener("click", () => {
+            modal.classList.remove("active");
+        });
 
         // Close modal when clicking outside
-        editModal.addEventListener("click", (e) => {
-            if (e.target === editModal) editModal.classList.remove("active");
+        modal.addEventListener("click", (e) => {
+            if (e.target === modal) {
+                modal.classList.remove("active");
+            }
         });
-        deleteModal.addEventListener("click", (e) => {
-            if (e.target === deleteModal) deleteModal.classList.remove("active");
+
+        // Handle form submission
+        addLessonForm.addEventListener("submit", (e) => {
+            e.preventDefault();
+            const lessonName = document.getElementById("lessonName").value;
+            
+            // Here you can add your logic to save the lesson
+            console.log("New lesson:", lessonName);
+            
+            // Close modal and reset form
+            modal.classList.remove("active");
+            addLessonForm.reset();
+            
+            // You can add a success message here
+            alert("Lesson added successfully!");
         });
 
         // Close modal with Escape key
         document.addEventListener("keydown", (e) => {
-            if (e.key === "Escape") {
-                editModal.classList.remove("active");
-                deleteModal.classList.remove("active");
-            }
-        });
-
-        // Edit button functionality
-        document.querySelectorAll(".edit-btn").forEach(btn => {
-            btn.addEventListener("click", (e) => {
-                const row = e.target.closest(".lesson-row");
-                const lessonName = row.querySelector(".lesson-name").textContent;
-                currentEditRow = row;
-                document.getElementById("editLessonName").value = lessonName;
-                editModal.classList.add("active");
-            });
-        });
-
-        // Edit form submission
-        editForm.addEventListener("submit", (e) => {
-            e.preventDefault();
-            const newName = document.getElementById("editLessonName").value;
-            if (currentEditRow) {
-                currentEditRow.querySelector(".lesson-name").textContent = newName;
-                editModal.classList.remove("active");
-            }
-        });
-
-        // Delete button functionality
-        document.querySelectorAll(".delete-btn").forEach(btn => {
-            btn.addEventListener("click", (e) => {
-                const row = e.target.closest(".lesson-row");
-                const lessonName = row.querySelector(".lesson-name").textContent;
-                currentDeleteRow = row;
-                document.getElementById("deleteLessonName").textContent = lessonName;
-                deleteModal.classList.add("active");
-            });
-        });
-
-        // Delete confirmation
-        confirmDeleteBtn.addEventListener("click", () => {
-            if (currentDeleteRow) {
-                currentDeleteRow.remove();
-                deleteModal.classList.remove("active");
+            if (e.key === "Escape" && modal.classList.contains("active")) {
+                modal.classList.remove("active");
             }
         });
     </script>
-    
 </body>
 </html>
