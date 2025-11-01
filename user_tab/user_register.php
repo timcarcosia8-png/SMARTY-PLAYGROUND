@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smarty Playground - Register</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Poppins:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            background: linear-gradient(180deg, #7C3AED 0%, #6B21A8 40%, #4C1D95 70%, #2D1B69 100%);
+            min-height: 100vh;
+            font-family: 'Poppins', sans-serif;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 3s infinite ease-in-out;
+        }
+
+        @keyframes twinkle {
+
+            0%,
+            100% {
+                opacity: 0.2;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 1;
+                transform: scale(1.2);
+            }
+        }
+
+        .title {
+            font-family: 'Fredoka One', cursive;
+            color: #FCD34D;
+            letter-spacing: 1px;
+            text-shadow:
+                3px 3px 0px #F97316,
+                6px 6px 0px #7C3AED,
+                -1px -1px 0px rgba(255, 255, 255, 0.3);
+        }
+
+
+
+        @keyframes titlePulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.02);
+            }
+        }
+
+        .back-btn {
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .back-btn:active {
+            transform: scale(0.9);
+        }
+
+        input {
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        input:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.5);
+            transform: translateY(-2px);
+        }
+
+        input::placeholder {
+            color: #9CA3AF;
+        }
+
+        .register-btn {
+            background: linear-gradient(180deg, #FB923C 0%, #F97316 50%, #EA580C 100%);
+            transition: all 0.3s ease;
+            font-weight: 600;
+            letter-spacing: 1px;
+            box-shadow: 0 8px 20px rgba(249, 115, 22, 0.4);
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .register-btn:active {
+            transform: scale(0.95);
+            box-shadow: 0 4px 10px rgba(249, 115, 22, 0.4);
+        }
+
+        .link-text {
+            color: #FCD34D;
+            text-decoration: underline;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .link-text:hover {
+            color: #FDE68A;
+        }
+
+        .content-wrapper {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+
+
+</head>
+
+<body>
+    <!-- Stars Background -->
+    <div id="stars"></div>
+
+
+    <!-- Main Container -->
+    <div class="relative z-10 max-w-md mx-auto min-h-screen flex flex-col">
+
+        <!-- Back Button -->
+        <div class="px-6 pt-4">
+            <button onclick="if (history.length > 1) { history.back(); } else { window.location.href='index.html'; }"
+                class="back-btn bg-white rounded-full w-12 h-12 flex items-center justify-center">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M15 18L9 12L15 6" stroke="#4C1D95" stroke-width="3" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                </svg>
+            </button>
+
+        </div>
+
+        <!-- Content Wrapper -->
+        <div class="content-wrapper flex-1 flex flex-col px-6 pt-8">
+            <!-- Title Section -->
+            <div class="text-center mb-8">
+                <h1 class="title text-4xl leading-tight mb-3" style="color: #FCD34D;">
+                    SMARTY<br>PLAYGROUND
+                </h1>
+                <h2 class="text-white text-2xl font-semibold mb-2">Create An Account</h2>
+                <p class="text-white text-sm opacity-90">Start your journey in Smarty Playground the fun way!</p>
+            </div>
+
+            <!-- Form Section -->
+            <div class="space-y-4 mb-6">
+                <form action="../register.php" method="POST" class="space-y-4 mb-6">
+                    <input type="text" name="name" placeholder="Enter Full Name Here"
+                        class="w-full px-5 py-4 rounded-2xl text-gray-700 text-base bg-white" required />
+                    <input type="email" name="email" placeholder="Enter Email Here"
+                        class="w-full px-5 py-4 rounded-2xl text-gray-700 text-base bg-white" required />
+                    <input type="password" name="password" placeholder="Enter Password Here"
+                        class="w-full px-5 py-4 rounded-2xl text-gray-700 text-base bg-white" required />
+
+                    <!-- Terms Text -->
+                    <div class="mb-6">
+                        <p class="text-white text-xs text-center leading-relaxed">
+                            By continuing, you confirm that you are 6 years or older and agree to our
+                            <span class="link-text">Terms & Conditions</span> and
+                            <span class="link-text">Privacy Policy</span>.
+                        </p>
+                    </div>
+
+                    <button type="submit"
+                        class="register-btn w-full py-4 rounded-full text-white text-xl font-semibold">
+                        Register
+                    </button>
+                </form>
+
+            </div>
+
+
+
+            <!-- Register Button -->
+            <!-- <button class="register-btn w-full py-4 rounded-full text-white text-xl font-semibold">
+                Register
+            </button> -->
+        </div>
+
+        <!-- Bottom Spacing -->
+        <div class="h-12"></div>
+    </div>
+
+    <script>
+        // Create stars
+        const starsContainer = document.getElementById('stars');
+        for (let i = 0; i < 80; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+            const size = Math.random() * 3 + 1;
+            star.style.width = size + 'px';
+            star.style.height = size + 'px';
+            star.style.left = Math.random() * 100 + '%';
+            star.style.top = Math.random() * 100 + '%';
+            star.style.animationDelay = Math.random() * 3 + 's';
+            star.style.animationDuration = (Math.random() * 2 + 2) + 's';
+            starsContainer.appendChild(star);
+        }
+    </script>
+    ```
+
+</body>
+
+</html>
