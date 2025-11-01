@@ -3,7 +3,13 @@
 include "../filter_input.php";
 include "../database/db_connect.php";
 
+<<<<<<< HEAD
 
+=======
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+>>>>>>> bcaab525dbca1757cae1a32c88efa8c34fd8ca95
 
 $error_message = "";
 $email = "";
@@ -178,7 +184,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         <!-- Footer -->
         <div class="text-center mt-6">
+<<<<<<< HEAD
             <p class="text-sm text-gray-500">© 2024 PowerMath Defenders. All rights reserved.</p>
+=======
+            <p class="text-sm text-gray-500">© 2024 Smarty PlayGround. All rights reserved.</p>
+>>>>>>> bcaab525dbca1757cae1a32c88efa8c34fd8ca95
         </div>
     </div>
 

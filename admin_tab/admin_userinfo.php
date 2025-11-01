@@ -1,4 +1,5 @@
 <?php
+<<<<<<< HEAD
 session_start();
 include "db_connect.php";
 include "filter_input.php";// connection file
@@ -7,12 +8,23 @@ include "admin_session.php";
 
 
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
+=======
+include "../filter_input.php";
+include "../database/db_connect.php";// connection file
+
+
+if (!isset($_SESSION['user_id'])) {
+    // Not logged in — redirect to login page
+>>>>>>> bcaab525dbca1757cae1a32c88efa8c34fd8ca95
     header("Location: admin_login.php");
     exit();
 }
 
 $loggedInId = $_SESSION['user_id'];
+<<<<<<< HEAD
 $loggedInName = $_SESSION['name'] ?? 'Admin';
+=======
+>>>>>>> bcaab525dbca1757cae1a32c88efa8c34fd8ca95
 
 // Fetch logged-in admin’s info
 $userQueryLoggedIn = "SELECT name, email, role FROM users WHERE user_id = ?";
@@ -28,6 +40,7 @@ $userQuery = "SELECT user_id, name, email FROM users WHERE role != 'admin'";
 $userResult = $conn->query($userQuery);
 
 // 🧩 Fetch Top Users for Leaderboard
+<<<<<<< HEAD
 // $leaderboardQuery = "
 //     SELECT users.name, user_progress.points
 //     FROM user_progress
@@ -45,6 +58,25 @@ $userResult = $conn->query($userQuery);
 //         $users[] = $row;
 //     }
 // }
+=======
+$leaderboardQuery = "
+    SELECT users.name, user_progress.points
+    FROM user_progress
+    INNER JOIN users ON user_progress.user_id = users.user_id
+    WHERE users.role != 'admin'
+    ORDER BY user_progress.points DESC
+    LIMIT 10
+";
+
+$leaderboardResult = $conn->query($leaderboardQuery);
+$users = [];
+
+if ($leaderboardResult && $leaderboardResult->num_rows > 0) {
+    while ($row = $leaderboardResult->fetch_assoc()) {
+        $users[] = $row;
+    }
+}
+>>>>>>> bcaab525dbca1757cae1a32c88efa8c34fd8ca95
 ?>
 
 <!DOCTYPE html>
@@ -65,8 +97,18 @@ $userResult = $conn->query($userQuery);
 
 <body class="bg-gray-100">
 
+<<<<<<< HEAD
         
     
+=======
+        <div class="logout-container">
+            <a href="../adminpage/admin_logout.php" title="Logout and end session">
+                Logout
+                <i class="fa-solid fa-power-off"></i>
+            </a>
+        </div>
+
+>>>>>>> bcaab525dbca1757cae1a32c88efa8c34fd8ca95
     <div class="flex h-screen">
         <!-- Sidebar -->
         <div id="sidebar"
@@ -78,6 +120,7 @@ $userResult = $conn->query($userQuery);
                 <nav class="space-y-2">
                     <a href="admin_dashboard.php"
                         class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg transition">Dashboard</a>
+<<<<<<< HEAD
                     <div x-data="{ open: false }" class="space-y-1">
                     <button @click="open = !open" 
                       class="flex items-center justify-between w-full px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg transition">
@@ -91,6 +134,14 @@ $userResult = $conn->query($userQuery);
                       <a href="admin_readinglessons.php" class="block px-4 py-2 text-gray-700 hover:bg-gray-50 rounded-lg transition">Reading Lesson</a>
                     </div>
                   </div>
+=======
+                    <a href="admin_readingmissions.php"
+                        class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg transition">Reading
+                        Mission</a>
+                    <a href="admin_readinglessons.php"
+                        class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg transition">Reading
+                        Lesson</a>
+>>>>>>> bcaab525dbca1757cae1a32c88efa8c34fd8ca95
                     <a href="admin_dailyprogress.php"
                         class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg transition">Daily
                         Progress</a>
@@ -98,9 +149,14 @@ $userResult = $conn->query($userQuery);
                         class="flex items-center gap-3 px-4 py-3 bg-teal-500 text-white rounded-lg font-medium">User
                         Info</a>
                 </nav>
+<<<<<<< HEAD
                 <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
                 <div class="absolute bottom-6 left-6 right-6">
                     <a onclick="logout()" 
+=======
+                <div class="absolute bottom-6 left-6 right-6">
+                    <a href="admin_logout.php"
+>>>>>>> bcaab525dbca1757cae1a32c88efa8c34fd8ca95
                         class="flex items-center gap-3 px-4 py-3 text-red-600 hover:bg-red-50 rounded-lg transition">Logout</a>
                 </div>
             </div>
@@ -128,12 +184,17 @@ $userResult = $conn->query($userQuery);
 
                     </div>
                 </div>
+<<<<<<< HEAD
                 
+=======
+
+>>>>>>> bcaab525dbca1757cae1a32c88efa8c34fd8ca95
                 <div class="flex gap-6">
                     <!-- 🧾 USER INFO TABLE -->
                     <div class="flex-1 bg-white rounded-lg shadow-md p-6">
                         <h2 class="text-2xl font-bold text-gray-800 mb-6">User Info</h2>
                         <div class="overflow-x-auto">
+<<<<<<< HEAD
                             <div class="flex items-center gap-2 mb-4">
                               <input type="text" id="searchInput" placeholder="Search user..."
                                      class="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-400">
@@ -145,6 +206,8 @@ $userResult = $conn->query($userQuery);
                               </button>
                             </div>
                   
+=======
+>>>>>>> bcaab525dbca1757cae1a32c88efa8c34fd8ca95
                             <table class="w-full">
                                 <thead class="border-b-2 border-gray-200">
                                     <tr>
@@ -154,6 +217,7 @@ $userResult = $conn->query($userQuery);
                                         <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Action</th>
                                     </tr>
                                 </thead>
+<<<<<<< HEAD
                                 <tbody id="userTableBody">
                                     <?php
                                     
@@ -178,6 +242,18 @@ $userResult = $conn->query($userQuery);
                                                   </td>";
 
 
+=======
+                                <tbody>
+                                    <?php
+                                    if ($userResult->num_rows > 0) {
+                                        while ($row = $userResult->fetch_assoc()) {
+                                            echo "<tr class='border-b border-gray-100 hover:bg-gray-50 transition'>";
+                                            echo "<td class='px-6 py-4 text-gray-800'>" . htmlspecialchars($row['name']) . "</td>";
+                                            echo "<td class='px-6 py-4 text-gray-600'>" . htmlspecialchars($row['email']) . "</td>";
+                                            echo "<td class='px-6 py-4'>
+                                            <button class='text-gray-400 hover:text-gray-600'>⋮</button>
+                                          </td>";
+>>>>>>> bcaab525dbca1757cae1a32c88efa8c34fd8ca95
                                             echo "</tr>";
                                         }
                                     } else {
@@ -215,7 +291,11 @@ $userResult = $conn->query($userQuery);
                     </div>
 
                     <!-- 🏆 USER LEADERBOARD -->
+<<<<<<< HEAD
                     <div class="w-96 bg-white rounded-lg shadow-md border-4 border-white-500 p-6">
+=======
+                    <div class="w-96 bg-white rounded-lg shadow-md border-4 border-teal-500 p-6">
+>>>>>>> bcaab525dbca1757cae1a32c88efa8c34fd8ca95
                         <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">User Leaderboard</h2>
 
                         <!-- 🥇 Top 3 Users -->
@@ -256,6 +336,7 @@ $userResult = $conn->query($userQuery);
                 </div>
             </div>
         </div>
+<<<<<<< HEAD
         
         <div id="logoutModal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50">
     <div class="bg-white rounded-3xl p-8 max-w-sm w-11/12 mx-4 text-center">
@@ -442,6 +523,9 @@ $userResult = $conn->query($userQuery);
 
        
     </script>
+=======
+
+>>>>>>> bcaab525dbca1757cae1a32c88efa8c34fd8ca95
 </body>
 
 </html>

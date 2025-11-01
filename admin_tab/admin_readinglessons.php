@@ -1,10 +1,17 @@
 <?php
+<<<<<<< HEAD
 session_start();
 include "db_connect.php";
 include "filter_input.php"; // optional if you sanitize inputs here
 
 // Default query (fetch all videos)
 $query = "SELECT * FROM videos ORDER BY uploaded_at DESC";
+=======
+include "../database/db_connect.php"; // adjust path if needed
+
+// Default query (fetch all lessons)
+$query = "SELECT * FROM lessons ORDER BY created_at DESC";
+>>>>>>> bcaab525dbca1757cae1a32c88efa8c34fd8ca95
 
 // If filter form was submitted (via POST)
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -13,6 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (!empty($date)) {
         // Filter by specific date
+<<<<<<< HEAD
         $query = "SELECT * FROM videos WHERE DATE(uploaded_at) = '$date'";
     }
 
@@ -27,14 +35,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } elseif ($range === 'This Month') {
             $query = "SELECT * FROM videos WHERE MONTH(uploaded_at) = MONTH(CURDATE()) 
                       AND YEAR(uploaded_at) = YEAR(CURDATE())";
+=======
+        $query = "SELECT * FROM lessons WHERE DATE(created_at) = '$date'";
+    }
+
+    if (!empty($range)) {
+        // Filter by range
+        if ($range === 'Today') {
+            $query = "SELECT * FROM lessons WHERE DATE(created_at) = CURDATE()";
+        } elseif ($range === 'Last 7 Days') {
+            $query = "SELECT * FROM lessons WHERE created_at >= DATE_SUB(CURDATE(), INTERVAL 7 DAY)";
+        } elseif ($range === 'Last 30 Days') {
+            $query = "SELECT * FROM lessons WHERE created_at >= DATE_SUB(CURDATE(), INTERVAL 30 DAY)";
+        } elseif ($range === 'This Month') {
+            $query = "SELECT * FROM lessons WHERE MONTH(created_at) = MONTH(CURDATE()) 
+                      AND YEAR(created_at) = YEAR(CURDATE())";
+>>>>>>> bcaab525dbca1757cae1a32c88efa8c34fd8ca95
         }
     }
 }
 
+<<<<<<< HEAD
 // Execute the query
 $result = $conn->query($query);
 
 // $result = mysqli_query($conn, $query);
+=======
+$result = mysqli_query($conn, $query);
+>>>>>>> bcaab525dbca1757cae1a32c88efa8c34fd8ca95
 ?>
 
 
@@ -51,6 +79,7 @@ $result = $conn->query($query);
         body {
             font-family: 'Inter', sans-serif;
         }
+<<<<<<< HEAD
 
         /* Modal styles */
         .modal {
@@ -102,11 +131,23 @@ $result = $conn->query($query);
                 opacity: 1;
             }
         }
+=======
+>>>>>>> bcaab525dbca1757cae1a32c88efa8c34fd8ca95
     </style>
 </head>
 
 <body class="bg-gray-100">
 
+<<<<<<< HEAD
+=======
+        <div class="logout-container">
+            <a href="../adminpage/admin_logout.php" title="Logout and end session">
+                Logout
+                <i class="fa-solid fa-power-off"></i>
+            </a>
+        </div>
+
+>>>>>>> bcaab525dbca1757cae1a32c88efa8c34fd8ca95
     <div class="flex h-screen">
         <!-- Sidebar -->
         <div id="sidebar"
@@ -132,23 +173,41 @@ $result = $conn->query($query);
                         Info</a>
                 </nav>
                 <div class="absolute bottom-6 left-6 right-6">
+<<<<<<< HEAD
                     <a onclick="logout()"
                         class="flex items-center gap-3 px-4 py-3 text-red-600 hover:bg-red-50 rounded-lg transition">Logout</a>
                 </div>
             </div>
         </div>
 
+=======
+                    <a href="admin_logout.php"
+                        class="flex items-center gap-3 px-4 py-3 text-red-600 hover:bg-red-50 rounded-lg transition">Logout</a>
+                </div>
+                
+            </div>
+        </div>
+>>>>>>> bcaab525dbca1757cae1a32c88efa8c34fd8ca95
         <!-- Toggle Button -->
         <button id="toggleSidebar" class="md:hidden fixed top-4 left-4 z-50 p-2 bg-gray-800 text-white rounded">
             ☰
         </button>
 
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> bcaab525dbca1757cae1a32c88efa8c34fd8ca95
         <!-- Main Content Area -->
         <div id="mainContent" class="flex-1 ml-0 md:ml-64 transition-all duration-300">
             <div class="p-8">
                 <div class="flex justify-between items-center mb-8">
                     <div>
                         <h1 class="text-3xl font-bold text-gray-800">Reading Lessons</h1>
+<<<<<<< HEAD
+=======
+
+>>>>>>> bcaab525dbca1757cae1a32c88efa8c34fd8ca95
                     </div>
                     <div class="flex items-center gap-4">
                         <button class="p-2 hover:bg-gray-100 rounded-lg transition">
@@ -172,11 +231,19 @@ $result = $conn->query($query);
 
                 <!-- Content Area -->
                 <div class="p-8">
+<<<<<<< HEAD
                     <div class="bg-white rounded-lg shadow-md border-4 border-white-500 p-6">
                         <!-- Header with Add Button -->
                         <div class="flex justify-between items-center mb-6">
                             <h2 class="text-2xl font-bold text-gray-800">All Reading Lessons</h2>
                             <button id="openModalBtn"
+=======
+                    <div class="bg-white rounded-lg shadow-md border-4 border-teal-500 p-6">
+                        <!-- Header with Add Button -->
+                        <div class="flex justify-between items-center mb-6">
+                            <h2 class="text-2xl font-bold text-gray-800">All Reading Lessons</h2>
+                            <button
+>>>>>>> bcaab525dbca1757cae1a32c88efa8c34fd8ca95
                                 class="flex items-center gap-2 bg-teal-500 text-white px-4 py-2 rounded-lg hover:bg-teal-600 transition font-medium">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -186,6 +253,7 @@ $result = $conn->query($query);
                             </button>
                         </div>
 
+<<<<<<< HEAD
                         <!-- Table -->
                         <div class="overflow-x-auto">
                             <!-- 🔍 Search bar -->
@@ -251,6 +319,89 @@ $result = $conn->query($query);
                         </div>
 
 
+=======
+                        <!-- Filter Section -->
+                        <div class="p-8">
+                            <h2 class="text-2xl font-bold mb-6 text-gray-800">Lesson Filter</h2>
+
+                            <!-- 🟢 Replace old filter block with this form -->
+                            <form method="POST" class="flex items-center gap-6 mb-6">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Select Date</label>
+                                    <input type="date" name="date" id="filterDate"
+                                        class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Date Range</label>
+                                    <select name="range" id="filterRange"
+                                        class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500">
+                                        <option value="">Select</option>
+                                        <option>Today</option>
+                                        <option>Last 7 Days</option>
+                                        <option>Last 30 Days</option>
+                                        <option>This Month</option>
+                                    </select>
+                                </div>
+                                <div class="mt-6">
+                                    <button type="submit"
+                                        class="px-6 py-2 bg-teal-500 text-white rounded-lg hover:bg-teal-600 transition font-medium">
+                                        Apply Filter
+                                    </button>
+                                </div>
+                            </form>
+
+                            <!-- 🟡 Your lesson table should follow below -->
+                            <div class="bg-white rounded-xl shadow-sm border overflow-x-auto">
+                                <table class="w-full">
+                                    <!-- table headers -->
+                                    <!-- table body (Step 2 PHP loop goes here) -->
+                                </table>
+                            </div>
+                        </div>
+
+
+
+                        <!-- Table -->
+                        <div class="overflow-x-auto">
+                            <table class="w-full">
+                                <thead class="border-b-2 border-gray-200">
+                                    <tr>
+                                        <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Lesson Title</th>
+                                        <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Topic</th>
+                                        <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Difficulty</th>
+                                        <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Points Reward</th>
+                                        <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Level Required</th>
+                                        <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Status</th>
+                                        <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Created At</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    <?php
+                                    if (mysqli_num_rows($result) > 0) {
+                                        while ($row = mysqli_fetch_assoc($result)) {
+                                            echo "
+                                            <tr class='border-b border-gray-100 hover:bg-gray-50 transition'>
+                                                <td class='px-6 py-4 text-gray-800'>" . htmlspecialchars($row['lesson_title']) . "</td>
+                                                <td class='px-6 py-4 text-gray-600'>" . htmlspecialchars($row['topic'] ?? '—') . "</td>
+                                                <td class='px-6 py-4 text-gray-600'>" . htmlspecialchars($row['difficulty'] ?? '—') . "</td>
+                                                <td class='px-6 py-4 text-gray-600'>" . htmlspecialchars($row['points_reward']) . "</td>
+                                                <td class='px-6 py-4 text-gray-600'>" . htmlspecialchars($row['level_required']) . "</td>
+                                                <td class='px-6 py-4 text-" . ($row['status'] == 'active' ? 'teal' : 'red') . "-600 font-medium'>" . ucfirst($row['status']) . "</td>
+                                                <td class='px-6 py-4 text-gray-600'>" . date('Y-m-d', strtotime($row['created_at'])) . "</td>
+                                            </tr>";
+                                                                            }
+                                    } else {
+                                        echo "<tr><td colspan='7' class='text-center py-4 text-gray-500'>No lessons found.</td></tr>";
+                                    }
+                                    ?>
+                                </tbody>
+
+
+                            </table>
+                        </div>
+
+>>>>>>> bcaab525dbca1757cae1a32c88efa8c34fd8ca95
                         <!-- Pagination -->
                         <div class="flex justify-between items-center mt-6 pt-4 border-t">
                             <span class="text-sm text-gray-600">01 page of 100</span>
@@ -278,6 +429,7 @@ $result = $conn->query($query);
                 </div>
             </div>
         </div>
+<<<<<<< HEAD
     </div>
     <!-- Edit User Modal -->
     <div id="editModal" class="modal">
@@ -476,12 +628,16 @@ $result = $conn->query($query);
 
         <script>
             // Sidebar toggle
+=======
+        <script>
+>>>>>>> bcaab525dbca1757cae1a32c88efa8c34fd8ca95
             const sidebar = document.getElementById("sidebar");
             const toggleBtn = document.getElementById("toggleSidebar");
 
             toggleBtn.addEventListener("click", () => {
                 sidebar.classList.toggle("-translate-x-full");
             });
+<<<<<<< HEAD
 
             // Modal functionality
             const modal = document.getElementById("addLessonModal");
@@ -651,6 +807,40 @@ $result = $conn->query($query);
             }
 
         </script>
+=======
+        </script>
+        <script>
+            // ===== Auto-fill today's date =====
+            const dateInput = document.getElementById('filterDate');
+            const rangeSelect = document.getElementById('filterRange');
+            const applyBtn = document.getElementById('applyFilter');
+
+            const today = new Date().toISOString().split('T')[0];
+            dateInput.value = today;
+
+            // ===== Apply Filter functionality =====
+            applyBtn.addEventListener('click', () => {
+                const selectedDate = dateInput.value;
+                const selectedRange = rangeSelect.value;
+
+                console.log("Selected Date:", selectedDate);
+                console.log("Date Range:", selectedRange);
+
+                // Example: Send to PHP to filter lessons dynamically
+                fetch('filter_lessons.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: `date=${selectedDate}&range=${selectedRange}`
+                })
+                    .then(response => response.text())
+                    .then(data => {
+                        // Replace your table rows dynamically
+                        document.querySelector('tbody').innerHTML = data;
+                    });
+            });
+        </script>
+
+>>>>>>> bcaab525dbca1757cae1a32c88efa8c34fd8ca95
 </body>
 
 </html>

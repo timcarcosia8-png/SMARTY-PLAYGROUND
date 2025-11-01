@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Daily Rewards - SMARTY PLAYGROUND</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    body {
+      font-family: 'Fredoka', sans-serif;
+    }
+
+    .phone-container {
+      max-width: 400px;
+      margin: 0 auto;
+      background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      position: relative;
+    }
+
+    .avatar {
+      width: 3.5rem;
+      height: 3.5rem;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid white;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+
+    .star {
+      position: absolute;
+      background: white;
+      border-radius: 50%;
+      animation: twinkle 3s infinite ease-in-out;
+    }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.2; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.2); }
+    }
+
+    .reward-card {
+      transition: all 0.3s ease;
+    }
+
+    .reward-card:active {
+      transform: scale(0.95);
+    }
+
+    .reward-glow {
+      box-shadow: 0 0 20px rgba(251, 191, 36, 0.6);
+      animation: pulse-glow 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse-glow {
+      0%, 100% { box-shadow: 0 0 20px rgba(251, 191, 36, 0.4); }
+      50% { box-shadow: 0 0 30px rgba(251, 191, 36, 0.8); }
+    }
+
+    .locked {
+      opacity: 0.5;
+      filter: grayscale(1);
+    }
+
+    .nav-btn {
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .nav-btn.active {
+      color: #667eea;
+    }
+
+    .confetti-piece {
+      position: fixed;
+      width: 10px;
+      height: 10px;
+      z-index: 1000;
+      animation: confetti-fall 3s linear forwards;
+    }
+
+    @keyframes confetti-fall {
+      to { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+    }
+
+    @keyframes fadeInScale {
+      0% { opacity: 0; transform: scale(0.8); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+
+    .animate-fade {
+      animation: fadeInScale 0.4s ease-out;
+    }
+
+    .progress-ring {
+      transition: stroke-dashoffset 0.5s ease;
+    }
+  </style>
+</head>
+
+<body class="bg-gray-100">
+  <div class="phone-container">
+    <!-- Background Stars -->
+    <div id="stars"></div>
+
+    <!-- HEADER -->
+    <header class="px-5 pt-6 pb-4 relative z-10">
+      <div class="flex items-center justify-between">
+        <!-- User Info -->
+        <div class="flex items-center gap-3">
+          <img id="userAvatar" class="avatar" src="default-avatar.png" alt="Avatar" />
+          <div>
+            <p class="text-white text-xs opacity-80 font-medium">Daily Rewards</p>
+            <p class="text-white font-bold text-xl" id="userName">Player</p>
+          </div>
+        </div>
+        <!-- Total Points -->
+        <div class="bg-white/20 backdrop-blur-sm rounded-2xl px-4 py-2">
+          <p class="text-white text-xs opacity-80">Total Points</p>
+          <p class="text-white font-bold text-lg" id="totalPoints">1,250</p>
+        </div>
+      </div>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <main class="px-5 pb-24 relative z-10">
+      
+      <!-- Today's Progress -->
+      <section class="bg-white rounded-3xl p-5 shadow-xl mb-5">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-gray-800 font-bold text-xl">Today's Progress</h3>
+          <span class="text-2xl">📊</span>
+        </div>
+
+        <div class="grid grid-cols-3 gap-3 mb-4">
+          <div class="text-center">
+            <div class="w-16 h-16 mx-auto bg-gradient-to-br from-cyan-400 to-blue-500 rounded-2xl flex items-center justify-center mb-2 shadow-lg">
+              <span class="text-white text-2xl font-bold" id="lessonsCount">5</span>
+            </div>
+            <p class="text-gray-600 text-xs font-medium">Lessons</p>
+          </div>
+          <div class="text-center">
+            <div class="w-16 h-16 mx-auto bg-gradient-to-br from-emerald-400 to-green-500 rounded-2xl flex items-center justify-center mb-2 shadow-lg">
+              <span class="text-white text-2xl font-bold" id="gamesCount">3</span>
+            </div>
+            <p class="text-gray-600 text-xs font-medium">Games</p>
+          </div>
+          <div class="text-center">
+            <div class="w-16 h-16 mx-auto bg-gradient-to-br from-orange-400 to-red-500 rounded-2xl flex items-center justify-center mb-2 shadow-lg">
+              <span class="text-white text-2xl font-bold" id="streakCount">7</span>
+            </div>
+            <p class="text-gray-600 text-xs font-medium">Day Streak</p>
+          </div>
+        </div>
+
+        <div class="bg-gray-100 rounded-2xl p-3">
+          <div class="flex justify-between items-center mb-2">
+            <span class="text-gray-600 text-xs font-medium">Daily Goal</span>
+            <span class="text-gray-800 text-xs font-bold">5/10 Lessons</span>
+          </div>
+          <div class="bg-white rounded-full h-3 overflow-hidden">
+            <div class="bg-gradient-to-r from-cyan-400 to-blue-500 h-3 rounded-full transition-all duration-500" style="width: 50%"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Available Rewards -->
+      <section class="mb-5">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-white font-bold text-xl">🎁 Available Rewards</h3>
+        </div>
+
+        <div class="space-y-3">
+          <!-- Reward 1 - Unlocked -->
+          <div class="reward-card reward-glow bg-gradient-to-br from-yellow-400 to-orange-500 rounded-3xl p-5 shadow-xl" onclick="claimReward(1, 150, '5 Lessons Completed')">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-4">
+                <div class="w-16 h-16 bg-white rounded-2xl flex items-center justify-center shadow-lg">
+                  <span class="text-4xl">⭐</span>
+                </div>
+                <div>
+                  <p class="text-white font-bold text-lg">Bronze Star</p>
+                  <p class="text-white/90 text-xs mb-2">Complete 5 lessons</p>
+                  <div class="bg-white/20 backdrop-blur-sm rounded-full px-3 py-1 inline-block">
+                    <span class="text-white text-xs font-bold">+150 Points</span>
+                  </div>
+                </div>
+              </div>
+              <div class="text-white text-3xl">✓</div>
+            </div>
+          </div>
+
+          <!-- Reward 2 - Unlocked -->
+          <div class="reward-card reward-glow bg-gradient-to-br from-green-400 to-emerald-500 rounded-3xl p-5 shadow-xl" onclick="claimReward(2, 200, 'Game Champion')">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-4">
+                <div class="w-16 h-16 bg-white rounded-2xl flex items-center justify-center shadow-lg">
+                  <span class="text-4xl">🏆</span>
+                </div>
+                <div>
+                  <p class="text-white font-bold text-lg">Game Master</p>
+                  <p class="text-white/90 text-xs mb-2">Win 3 games today</p>
+                  <div class="bg-white/20 backdrop-blur-sm rounded-full px-3 py-1 inline-block">
+                    <span class="text-white text-xs font-bold">+200 Points</span>
+                  </div>
+                </div>
+              </div>
+              <div class="text-white text-3xl">✓</div>
+            </div>
+          </div>
+
+          <!-- Reward 3 - Locked -->
+          <div class="reward-card locked bg-white rounded-3xl p-5 shadow-xl">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-4">
+                <div class="w-16 h-16 bg-gray-200 rounded-2xl flex items-center justify-center shadow-lg">
+                  <span class="text-4xl">🔒</span>
+                </div>
+                <div>
+                  <p class="text-gray-800 font-bold text-lg">Silver Crown</p>
+                  <p class="text-gray-600 text-xs mb-2">Complete 10 lessons</p>
+                  <div class="bg-gray-200 rounded-full px-3 py-1 inline-block">
+                    <span class="text-gray-600 text-xs font-bold">5/10 Progress</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="mt-3 bg-gray-200 rounded-full h-2 overflow-hidden">
+              <div class="bg-gray-400 h-2 rounded-full" style="width: 50%"></div>
+            </div>
+          </div>
+
+          <!-- Reward 4 - Locked -->
+          <div class="reward-card locked bg-white rounded-3xl p-5 shadow-xl">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-4">
+                <div class="w-16 h-16 bg-gray-200 rounded-2xl flex items-center justify-center shadow-lg">
+                  <span class="text-4xl">🔒</span>
+                </div>
+                <div>
+                  <p class="text-gray-800 font-bold text-lg">Fire Streak</p>
+                  <p class="text-gray-600 text-xs mb-2">Maintain 10-day streak</p>
+                  <div class="bg-gray-200 rounded-full px-3 py-1 inline-block">
+                    <span class="text-gray-600 text-xs font-bold">7/10 Days</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="mt-3 bg-gray-200 rounded-full h-2 overflow-hidden">
+              <div class="bg-gray-400 h-2 rounded-full" style="width: 70%"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- BOTTOM NAVIGATION -->
+    <footer class="fixed bottom-0 left-1/2 transform -translate-x-1/2 w-full max-w-[400px] bg-white rounded-t-3xl shadow-2xl px-6 py-4 z-20">
+      <div class="flex justify-around items-center relative">
+        <button class="nav-btn flex flex-col items-center gap-1 text-gray-400" onclick="window.location.href='dashboard.html'">
+          <span class="text-3xl">🏠</span>
+          <span class="text-xs">Home</span>
+        </button>
+        
+        <button class="nav-btn active flex flex-col items-center gap-1">
+          <span class="text-3xl">🎁</span>
+          <span class="text-xs font-semibold">Rewards</span>
+        </button>
+        
+        <button class="nav-btn flex flex-col items-center gap-1 text-gray-400" onclick="window.location.href='progressdb.html'">
+          <span class="text-3xl">📊</span>
+          <span class="text-xs">Progress</span>
+        </button>
+        
+        <button class="nav-btn flex flex-col items-center gap-1 text-gray-400" onclick="window.location.href='dbprofile.html'">
+          <span class="text-3xl">👤</span>
+          <span class="text-xs">Profile</span>
+        </button>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Success Modal -->
+  <div id="successModal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+    <div class="bg-white rounded-3xl p-8 max-w-sm w-11/12 mx-4 text-center animate-fade">
+      <div class="w-24 h-24 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full flex items-center justify-center mx-auto mb-4 shadow-xl">
+        <span class="text-6xl">🎉</span>
+      </div>
+      <h3 class="text-2xl font-bold text-gray-800 mb-2">Reward Claimed!</h3>
+      <p class="text-gray-600 mb-1" id="rewardName">Bronze Star</p>
+      <p class="text-3xl font-bold text-yellow-600 mb-4">+<span id="pointsEarned">150</span> Points</p>
+      <button onclick="closeModal()" class="w-full bg-gradient-to-r from-cyan-400 to-blue-500 text-white py-3 rounded-2xl font-bold shadow-lg hover:shadow-xl transition-all">
+        Awesome! ✨
+      </button>
+    </div>
+  </div>
+
+  <script>
+    // Create background stars
+    const starsContainer = document.getElementById('stars');
+    for (let i = 0; i < 30; i++) {
+      const star = document.createElement('div');
+      star.className = 'star';
+      const size = Math.random() * 3 + 1;
+      star.style.width = size + 'px';
+      star.style.height = size + 'px';
+      star.style.left = Math.random() * 100 + '%';
+      star.style.top = Math.random() * 60 + '%';
+      star.style.animationDelay = Math.random() * 3 + 's';
+      star.style.animationDuration = (Math.random() * 2 + 2) + 's';
+      starsContainer.appendChild(star);
+    }
+
+    // Load user data
+    const avatar = localStorage.getItem("selectedAvatar");
+    const name = localStorage.getItem("playerName");
+    let totalPoints = parseInt(localStorage.getItem("totalPoints")) || 1250;
+    
+    const avatarEl = document.getElementById("userAvatar");
+    const nameEl = document.getElementById("userName");
+    const pointsEl = document.getElementById("totalPoints");
+
+    if (avatar) avatarEl.src = avatar;
+    if (name) nameEl.textContent = name;
+    pointsEl.textContent = totalPoints.toLocaleString();
+
+    // Claim reward function
+    function claimReward(rewardId, points, rewardName) {
+      // Add points
+      totalPoints += points;
+      localStorage.setItem("totalPoints", totalPoints);
+      pointsEl.textContent = totalPoints.toLocaleString();
+      
+      // Show modal
+      document.getElementById('rewardName').textContent = rewardName;
+      document.getElementById('pointsEarned').textContent = points;
+      document.getElementById('successModal').classList.remove('hidden');
+      
+      // Create confetti
+      createConfetti();
+      
+      // Add to recent claims
+      addToRecentClaims(rewardName, points);
+      
+      // Hide the claimed reward card
+      event.currentTarget.style.display = 'none';
+    }
+
+    function closeModal() {
+      document.getElementById('successModal').classList.add('hidden');
+    }
+
+    function createConfetti() {
+      const colors = ['#fbbf24', '#10b981', '#3b82f6', '#8b5cf6', '#ec4899', '#f59e0b'];
+      for (let i = 0; i < 50; i++) {
+        setTimeout(() => {
+          const confetti = document.createElement('div');
+          confetti.className = 'confetti-piece';
+          confetti.style.left = Math.random() * window.innerWidth + 'px';
+          confetti.style.top = '-10px';
+          confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+          confetti.style.animationDelay = Math.random() * 0.5 + 's';
+          document.body.appendChild(confetti);
+          setTimeout(() => confetti.remove(), 3000);
+        }, i * 30);
+      }
+    }
+
+    function addToRecentClaims(rewardName, points) {
+      const claimsContainer = document.getElementById('recentClaims');
+      const newClaim = document.createElement('div');
+      newClaim.className = 'flex items-center justify-between p-3 bg-yellow-50 rounded-2xl border-2 border-yellow-200';
+      newClaim.innerHTML = `
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 bg-yellow-100 rounded-xl flex items-center justify-center">
+            <span class="text-xl">🎁</span>
+          </div>
+          <div>
+            <p class="text-gray-800 font-bold text-sm">${rewardName}</p>
+            <p class="text-gray-500 text-xs">Just now</p>
+          </div>
+        </div>
+        <span class="text-yellow-600 font-bold text-sm">+${points}</span>
+      `;
+      claimsContainer.insertBefore(newClaim, claimsContainer.firstChild);
+    }
+
+    // Load progress from localStorage
+    const lessonsCompleted = parseInt(localStorage.getItem("lessonsCompleted")) || 5;
+    const gamesWon = parseInt(localStorage.getItem("gamesWon")) || 3;
+    const dailyStreak = parseInt(localStorage.getItem("dailyStreak")) || 7;
+
+    document.getElementById("lessonsCount").textContent = lessonsCompleted;
+    document.getElementById("gamesCount").textContent = gamesWon;
+    document.getElementById("streakCount").textContent = dailyStreak;
+  </script>
+</body>
+</html>

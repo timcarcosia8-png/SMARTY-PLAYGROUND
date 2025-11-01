@@ -1,496 +1,554 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Let Us Try - Lesson 3</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Sounds Around Us — Matching Game</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+  <style>
+    body {
+      font-family: 'Fredoka', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+    }
 
-        body {
-            background: linear-gradient(180deg, #7B4BA5 0%, #4A2B6D 50%, #2A1B4D 100%);
-            min-height: 100vh;
-            font-family: 'Comic Sans MS', cursive, sans-serif;
-            padding: 20px;
-            overflow-x: hidden;
-        }
+    .game-container {
+      background: white;
+      border-radius: 30px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      padding: 30px;
+      max-width: 500px;
+      animation: slideIn 0.5s ease-out;
+    }
 
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-        }
+    @keyframes slideIn {
+      from {
+        transform: translateY(30px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
 
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
+    .title {
+      background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      font-weight: 700;
+      font-size: 2rem;
+      text-align: center;
+      margin-bottom: 10px;
+    }
 
-        .title {
-            font-size: 48px;
-            color: #FFD700;
-            text-shadow: 3px 3px 6px rgba(0,0,0,0.4);
-            margin-bottom: 15px;
-            font-weight: bold;
-        }
+    .subtitle {
+      text-align: center;
+      color: #6b7280;
+      font-size: 0.95rem;
+      margin-bottom: 20px;
+      font-weight: 500;
+    }
 
-        .instructions {
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(10px);
-            padding: 20px;
-            border-radius: 25px;
-            color: white;
-            font-size: 22px;
-            margin-bottom: 30px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-            border: 2px solid rgba(255, 255, 255, 0.2);
-        }
+    .score-box {
+      background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+      border-radius: 20px;
+      padding: 15px;
+      text-align: center;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 15px rgba(251, 191, 36, 0.3);
+    }
 
-        .game-card {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 30px;
-            padding: 40px;
-            margin-bottom: 30px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-            border: 3px solid rgba(255, 255, 255, 0.2);
-        }
+    .score-label {
+      color: white;
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 5px;
+    }
 
-        .picture-display {
-            text-align: center;
-            margin-bottom: 30px;
-        }
+    .score-value {
+      color: white;
+      font-size: 2rem;
+      font-weight: 700;
+    }
 
-        .picture {
-            font-size: 140px;
-            margin-bottom: 15px;
-            animation: float 3s ease-in-out infinite;
-        }
+    .main-btn {
+      background: linear-gradient(135deg, #34d399 0%, #10b981 100%);
+      color: white;
+      font-size: 1.5rem;
+      font-weight: 700;
+      border-radius: 20px;
+      padding: 20px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+      border: none;
+      width: 100%;
+      margin-bottom: 15px;
+      text-transform: uppercase;
+      animation: float 3s ease-in-out infinite;
+    }
 
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-15px); }
-        }
+    @keyframes float {
+      0%, 100% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(-10px);
+      }
+    }
 
-        .question {
-            text-align: center;
-            font-size: 28px;
-            color: white;
-            margin-bottom: 25px;
-            font-weight: bold;
-        }
+    .main-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 20px rgba(16, 185, 129, 0.6);
+    }
 
-        .word-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 10px;
-            margin: 40px 0;
-            flex-wrap: wrap;
-        }
+    .main-btn:active {
+      transform: scale(0.95);
+    }
 
-        .letter-box {
-            background: rgba(255, 255, 255, 0.9);
-            border: 5px solid #FFD93D;
-            border-radius: 20px;
-            width: 70px;
-            height: 90px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 48px;
-            font-weight: bold;
-            color: #4A2B6D;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-            text-transform: uppercase;
-        }
+    .secondary-btn {
+      background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+      color: white;
+      padding: 15px 30px;
+      border-radius: 50px;
+      font-size: 1.1rem;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4);
+    }
 
-        .blank-box {
-            background: white;
-            border: 5px dashed #FF6B9D;
-            position: relative;
-        }
+    .secondary-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(139, 92, 246, 0.6);
+    }
 
-        .blank-box input {
-            width: 100%;
-            height: 100%;
-            border: none;
-            background: transparent;
-            text-align: center;
-            font-size: 48px;
-            font-weight: bold;
-            color: #4A2B6D;
-            font-family: 'Comic Sans MS', cursive, sans-serif;
-            text-transform: uppercase;
-            outline: none;
-        }
+    .secondary-btn:active {
+      transform: translateY(0);
+    }
 
-        .blank-box input::placeholder {
-            color: #B8A6CF;
-            font-size: 36px;
-        }
+    .reset-btn {
+      background: linear-gradient(135deg, #f87171 0%, #ef4444 100%);
+    }
 
-        .letter-box.correct {
-            background: #6BCF7F;
-            border-color: #4CAF50;
-            animation: pulse 0.5s ease;
-        }
+    .reset-btn:hover {
+      box-shadow: 0 6px 20px rgba(239, 68, 68, 0.6);
+    }
 
-        .letter-box.wrong {
-            animation: shake 0.5s ease;
-        }
+    .message-box {
+      background: linear-gradient(135deg, #ddd6fe 0%, #c4b5fd 100%);
+      border-radius: 20px;
+      padding: 20px;
+      text-align: center;
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #5b21b6;
+      margin-bottom: 20px;
+      min-height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 15px rgba(139, 92, 246, 0.2);
+    }
 
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.15); }
-        }
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+      margin-bottom: 20px;
+    }
 
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-10px); }
-            75% { transform: translateX(10px); }
-        }
+    .card {
+      background: white;
+      border-radius: 20px;
+      padding: 20px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      border: 4px solid transparent;
+    }
 
-        .button-group {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin-top: 30px;
-            flex-wrap: wrap;
-        }
+    .card:hover {
+      transform: translateY(-5px) scale(1.05);
+      box-shadow: 0 8px 25px rgba(139, 92, 246, 0.3);
+      border-color: #8b5cf6;
+    }
 
-        .action-btn {
-            background: linear-gradient(145deg, #FF6B9D, #C44569);
-            border: 5px solid #FFD93D;
-            border-radius: 25px;
-            padding: 20px 50px;
-            font-size: 28px;
-            font-weight: bold;
-            color: white;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 8px 15px rgba(0,0,0,0.3);
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-        }
+    .card:active {
+      transform: scale(0.95);
+    }
 
-        .action-btn:hover {
-            transform: translateY(-5px) scale(1.05);
-            box-shadow: 0 12px 25px rgba(0,0,0,0.4);
-        }
+    .card-image {
+      background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+      border-radius: 15px;
+      padding: 15px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 120px;
+    }
 
-        .action-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none;
-        }
+    .card-label {
+      text-align: center;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #4b5563;
+    }
 
-        .check-btn {
-            background: linear-gradient(145deg, #6BCF7F, #4CAF50);
-        }
+    .card.correct {
+      border-color: #10b981;
+      background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+      animation: success 0.5s ease;
+    }
 
-        .next-btn {
-            background: linear-gradient(145deg, #FFD93D, #FFA500);
-            display: none;
-        }
+    .card.wrong {
+      animation: shake 0.5s ease;
+    }
 
-        .progress {
-            text-align: center;
-            font-size: 26px;
-            color: #FFD700;
-            margin-bottom: 20px;
-            font-weight: bold;
-        }
+    .card.dimmed {
+      opacity: 0.4;
+    }
 
-        .feedback {
-            text-align: center;
-            font-size: 36px;
-            margin-top: 25px;
-            min-height: 50px;
-            font-weight: bold;
-        }
+    @keyframes success {
+      0%, 100% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.1) rotate(3deg);
+      }
+    }
 
-        .feedback.correct {
-            color: #6BCF7F;
-            animation: bounceIn 0.6s ease;
-        }
+    @keyframes shake {
+      0%, 100% {
+        transform: translateX(0);
+      }
+      25% {
+        transform: translateX(-8px);
+      }
+      75% {
+        transform: translateX(8px);
+      }
+    }
 
-        .feedback.wrong {
-            color: #FF6B6B;
-            animation: fadeIn 0.5s ease;
-        }
+    .star {
+      position: fixed;
+      width: 3px;
+      height: 3px;
+      background: white;
+      border-radius: 50%;
+      animation: twinkle 2s infinite;
+    }
 
-        @keyframes bounceIn {
-            0% { transform: scale(0); opacity: 0; }
-            50% { transform: scale(1.2); }
-            100% { transform: scale(1); opacity: 1; }
-        }
+    @keyframes twinkle {
+      0%, 100% {
+        opacity: 0.3;
+      }
+      50% {
+        opacity: 1;
+      }
+    }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+    .celebration {
+      position: fixed;
+      font-size: 3rem;
+      pointer-events: none;
+      animation: celebrate 1s ease-out;
+    }
 
-        .completion-screen {
-            display: none;
-            text-align: center;
-            padding: 40px;
-        }
+    @keyframes celebrate {
+      0% {
+        transform: translateY(0) scale(0);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-100px) scale(1.5);
+        opacity: 0;
+      }
+    }
 
-        .completion-title {
-            font-size: 52px;
-            color: #FFD700;
-            margin-bottom: 20px;
-            animation: bounce 1s ease infinite;
-        }
+    .footer-tip {
+      background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+      border-radius: 15px;
+      padding: 15px;
+      font-size: 0.85rem;
+      color: #92400e;
+      font-weight: 600;
+      margin-top: 20px;
+    }
 
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-15px); }
-        }
-
-        .score {
-            font-size: 38px;
-            color: white;
-            margin: 20px 0;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.4);
-        }
-
-        .stars-container {
-            position: fixed;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
-            pointer-events: none;
-            z-index: -1;
-        }
-
-        .star {
-            position: absolute;
-            width: 3px;
-            height: 3px;
-            background: white;
-            border-radius: 50%;
-            box-shadow: 0 0 3px white;
-            animation: twinkle 3s infinite;
-        }
-
-        @keyframes twinkle {
-            0%, 100% { opacity: 0.3; }
-            50% { opacity: 1; }
-        }
-
-        .hint {
-            text-align: center;
-            color: #FFD93D;
-            font-size: 20px;
-            margin-top: 15px;
-            font-style: italic;
-        }
-    </style>
+    .footer-tip code {
+      background: #fbbf24;
+      color: white;
+      padding: 2px 8px;
+      border-radius: 5px;
+      font-weight: 700;
+    }
+  </style>
 </head>
-<body>
-    <div class="stars-container" id="starsContainer"></div>
-    
-    <div class="container">
-        <div class="header">
-            <div class="title">🌟 Let Us Try - Lesson 3 🌟</div>
-            <div class="instructions">
-                🗣️ Say the name of each picture.<br>
-                ⌨️ Type in the box the ending sound of it.
-            </div>
-        </div>
+<body class="flex flex-col items-center justify-center min-h-screen p-4">
+  <!-- Background Stars -->
+  <div id="stars"></div>
 
-        <div id="gameScreen">
-            <div class="progress" id="progress"></div>
-            
-            <div class="game-card">
-                <div class="picture-display">
-                    <div class="picture" id="picture"></div>
-                </div>
+  <div class="game-container">
+    <h1 class="title">🔊 Sounds Around Us</h1>
+    <p class="subtitle">Play the sound — tap the picture that matches it!</p>
 
-                <div class="question">
-                    Fill in the missing ending letter
-                </div>
-
-                <div class="word-container" id="wordContainer"></div>
-
-                <div class="button-group">
-                    <button class="action-btn check-btn" id="checkBtn" onclick="checkAnswer()">
-                        Check ✓
-                    </button>
-                    <button class="action-btn next-btn" id="nextBtn" onclick="nextQuestion()">
-                        Next ➡️
-                    </button>
-                </div>
-
-                <div class="feedback" id="feedback"></div>
-                <div class="hint" id="hint"></div>
-            </div>
-        </div>
-
-        <div class="completion-screen" id="completionScreen">
-            <div class="completion-title">🎉 Fantastic Job! 🎉</div>
-            <div class="score" id="finalScore"></div>
-            <button class="action-btn check-btn" onclick="restartGame()">Play Again! 🔄</button>
-        </div>
+    <div class="score-box">
+      <div class="score-label">Your Score</div>
+      <div id="score" class="score-value">0 / 0</div>
     </div>
 
-    <script>
-        const questions = [
-            { emoji: '🐱', word: 'CAT' },
-            { emoji: '🐶', word: 'DOG' },
-            { emoji: '🚌', word: 'BUS' },
-            { emoji: '🦊', word: 'FOX' },
-            { emoji: '🐻', word: 'BEAR' },
-            { emoji: '🌙', word: 'MOON' },
-            { emoji: '🚗', word: 'CAR' },
-            { emoji: '⭐', word: 'STAR' },
-            { emoji: '🏠', word: 'HOUSE' },
-            { emoji: '📚', word: 'BOOK' }
-        ];
+    <button id="playSoundBtn" class="main-btn">
+      ▶️ PLAY SOUND
+    </button>
 
-        let currentQuestion = 0;
-        let score = 0;
-        let answered = false;
-        let inputElement;
+    <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+      <button id="hintBtn" class="secondary-btn" style="flex: 1;">
+        💡 HINT
+      </button>
+      <button id="resetBtn" class="secondary-btn reset-btn" style="flex: 1;">
+        🔄 RESET
+      </button>
+    </div>
 
-        function createStars() {
-            const container = document.getElementById('starsContainer');
-            for (let i = 0; i < 60; i++) {
-                const star = document.createElement('div');
-                star.className = 'star';
-                star.style.left = Math.random() * 100 + '%';
-                star.style.top = Math.random() * 100 + '%';
-                star.style.animationDelay = Math.random() * 3 + 's';
-                container.appendChild(star);
-            }
-        }
+    <div id="message" class="message-box"></div>
 
-        function loadQuestion() {
-            answered = false;
-            const q = questions[currentQuestion];
-            const word = q.word;
-            
-            document.getElementById('progress').textContent = 
-                `Question ${currentQuestion + 1} of ${questions.length}`;
-            document.getElementById('picture').textContent = q.emoji;
-            document.getElementById('feedback').textContent = '';
-            document.getElementById('feedback').className = 'feedback';
-            document.getElementById('hint').textContent = '';
-            document.getElementById('checkBtn').style.display = 'block';
-            document.getElementById('checkBtn').disabled = false;
-            document.getElementById('nextBtn').style.display = 'none';
-            
-            const container = document.getElementById('wordContainer');
-            container.innerHTML = '';
-            
-            for (let i = 0; i < word.length; i++) {
-                const box = document.createElement('div');
-                box.className = 'letter-box';
-                
-                if (i === word.length - 1) {
-                    box.classList.add('blank-box');
-                    const input = document.createElement('input');
-                    input.type = 'text';
-                    input.maxLength = 1;
-                    input.placeholder = '?';
-                    input.id = 'blankInput';
-                    box.appendChild(input);
-                    inputElement = input;
-                    
-                    input.addEventListener('keypress', function(e) {
-                        if (e.key === 'Enter' && !answered) {
-                            checkAnswer();
-                        }
-                    });
-                } else {
-                    box.textContent = word[i];
-                }
-                
-                container.appendChild(box);
-            }
-            
-            setTimeout(() => {
-                if (inputElement) inputElement.focus();
-            }, 100);
-        }
+    <section class="cards-grid">
+      <button class="card" data-key="dog">
+        <div class="card-image">
+          <img src="animal/dog.png" alt="Dog" style="max-height: 90px; object-fit: contain;" onerror="this.style.display='none';this.nextElementSibling.style.display='block'" />
+         
+        </div>
+        <div class="card-label">Dog</div>
+      </button>
 
-        function checkAnswer() {
-            if (answered) return;
-            
-            const userAnswer = inputElement.value.trim().toUpperCase();
-            
-            if (userAnswer === '') {
-                document.getElementById('hint').textContent = '⚠️ Please type a letter first!';
-                return;
-            }
-            
-            answered = true;
-            const q = questions[currentQuestion];
-            const correctLetter = q.word[q.word.length - 1];
-            
-            const blankBox = document.querySelector('.blank-box');
-            
-            if (userAnswer === correctLetter) {
-                blankBox.classList.add('correct');
-                inputElement.value = correctLetter;
-                document.getElementById('feedback').textContent = '🌟 Perfect! 🌟';
-                document.getElementById('feedback').className = 'feedback correct';
-                score++;
-            } else {
-                blankBox.classList.add('wrong');
-                setTimeout(() => {
-                    inputElement.value = correctLetter;
-                    blankBox.classList.remove('wrong');
-                    blankBox.classList.add('correct');
-                }, 500);
-                document.getElementById('feedback').textContent = `💫 The correct letter is: ${correctLetter}`;
-                document.getElementById('feedback').className = 'feedback wrong';
-            }
-            
-            inputElement.disabled = true;
-            document.getElementById('checkBtn').disabled = true;
-            document.getElementById('hint').textContent = '';
-            
-            setTimeout(() => {
-                document.getElementById('checkBtn').style.display = 'none';
-                document.getElementById('nextBtn').style.display = 'block';
-            }, 1500);
-        }
+      <button class="card" data-key="car">
+        <div class="card-image">
+          <img src="animal/car.png" alt="Car" style="max-height: 90px; object-fit: contain;" onerror="this.style.display='none';this.nextElementSibling.style.display='block'" />
+    
+        </div>
+        <div class="card-label">Car</div>
+      </button>
 
-        function nextQuestion() {
-            currentQuestion++;
-            
-            if (currentQuestion < questions.length) {
-                loadQuestion();
-            } else {
-                showCompletion();
-            }
-        }
+      <button class="card" data-key="rain">
+        <div class="card-image">
+          <img src="animal/rain.png" alt="Rain" style="max-height: 90px; object-fit: contain;" onerror="this.style.display='none';this.nextElementSibling.style.display='block'" />
+          
+        </div>
+        <div class="card-label">Rain</div>
+      </button>
 
-        function showCompletion() {
-            document.getElementById('gameScreen').style.display = 'none';
-            document.getElementById('completionScreen').style.display = 'block';
-            
-            const percentage = Math.round((score / questions.length) * 100);
-            document.getElementById('finalScore').innerHTML = 
-                `You got ${score} out of ${questions.length} correct!<br>Score: ${percentage}% 🌟`;
-        }
+      <button class="card" data-key="bell">
+        <div class="card-image">
+          <img src="animal/bell.png" alt="Bell" style="max-height: 90px; object-fit: contain;" onerror="this.style.display='none';this.nextElementSibling.style.display='block'" />
+          
+        </div>
+        <div class="card-label">Bell</div>
+      </button>
 
-        function restartGame() {
-            currentQuestion = 0;
-            score = 0;
-            document.getElementById('gameScreen').style.display = 'block';
-            document.getElementById('completionScreen').style.display = 'none';
-            loadQuestion();
-        }
+      <button class="card" data-key="bird">
+        <div class="card-image">
+          <img src="animal/bird.png" alt="Bird" style="max-height: 90px; object-fit: contain;" onerror="this.style.display='none';this.nextElementSibling.style.display='block'" />
+         
+        </div>
+        <div class="card-label">Bird</div>
+      </button>
 
-        createStars();
-        loadQuestion();
-    </script>
+      <button class="card" data-key="cat">
+        <div class="card-image">
+          <img src="animal/cat.png" alt="Cat" style="max-height: 90px; object-fit: contain;" onerror="this.style.display='none';this.nextElementSibling.style.display='block'" />
+          
+        </div>
+        <div class="card-label">Cat</div>
+      </button>
+    </section>
+
+    
+  </div>
+
+  <script>
+  // Background stars
+  const starsContainer = document.getElementById('stars');
+  for (let i = 0; i < 50; i++) {
+    const star = document.createElement('div');
+    star.className = 'star';
+    star.style.left = Math.random() * 100 + '%';
+    star.style.top = Math.random() * 100 + '%';
+    star.style.animationDelay = Math.random() * 2 + 's';
+    starsContainer.appendChild(star);
+  }
+
+  const sounds = [
+    { key: 'dog', label: 'Dog', file: 'animal/dog.wav' },
+    { key: 'car', label: 'Car', file: 'animal/car.wav' },
+    { key: 'rain', label: 'Rain', file: 'animal/rain.wav' },
+    { key: 'bell', label: 'Bell', file: 'animal/bell.wav' },
+    { key: 'bird', label: 'Bird', file: 'animal/bird.wav' },
+    { key: 'cat', label: 'Cat', file: 'animal/cat.wav' }
+  ];
+
+  let currentTarget = null;
+  let totalTries = 0;
+  let correctCount = 0;
+  let hasPlayed = false;
+  let remainingSounds = [...sounds];
+
+  const playBtn = document.getElementById('playSoundBtn');
+  const hintBtn = document.getElementById('hintBtn');
+  const resetBtn = document.getElementById('resetBtn');
+  const messageEl = document.getElementById('message');
+  const scoreEl = document.getElementById('score');
+  const cards = Array.from(document.querySelectorAll('.card'));
+
+  function updateScore() {
+    scoreEl.textContent = `${correctCount} / ${totalTries}`;
+  }
+
+  function chooseRandomSound() {
+    if (remainingSounds.length === 0) {
+      return null;
+    }
+    const idx = Math.floor(Math.random() * remainingSounds.length);
+    const sound = remainingSounds.splice(idx, 1)[0];
+    return sound;
+  }
+
+  function playCurrentSound() {
+    if (!currentTarget) {
+      messageEl.textContent = 'Press "PLAY SOUND" to start! 🎵';
+      return;
+    }
+    hasPlayed = true;
+   const audio = new Audio(currentTarget.file);
+audio.play().then(() => {
+  setTimeout(() => {
+    audio.pause();
+    audio.currentTime = 0; // reset to beginning if played again
+  }, 3000); // Stop after 3 seconds
+}).catch(err => {
+  messageEl.innerHTML = `⚠️ Audio file not found: <code>${currentTarget.file}</code>`;
+});
+
+    messageEl.textContent = '🎧 Listen carefully and pick the matching picture!';
+  }
+
+  function celebrate() {
+    const emojis = ['🎉', '⭐', '🌟', '✨', '🎊', '🏆'];
+    for (let i = 0; i < 6; i++) {
+      setTimeout(() => {
+        const celebration = document.createElement('div');
+        celebration.className = 'celebration';
+        celebration.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+        celebration.style.left = Math.random() * window.innerWidth + 'px';
+        celebration.style.top = Math.random() * window.innerHeight + 'px';
+        document.body.appendChild(celebration);
+        setTimeout(() => celebration.remove(), 1000);
+      }, i * 100);
+    }
+  }
+
+  function pickNewTargetAndPlay() {
+    currentTarget = chooseRandomSound();
+    hasPlayed = false;
+
+    if (!currentTarget) {
+      messageEl.textContent = '🎉 You matched all the sounds! Redirecting...';
+      setTimeout(() => {
+        window.location.href = 'dashboard.html';
+      }, 2000);
+      return;
+    }
+
+    messageEl.textContent = '🎵 New sound coming up...';
+    cards.forEach(c => {
+      c.classList.remove('correct', 'dimmed');
+    });
+
+    setTimeout(() => playCurrentSound(), 500);
+  }
+
+  playBtn.addEventListener('click', () => {
+    if (!currentTarget) {
+      currentTarget = chooseRandomSound();
+    }
+    playCurrentSound();
+  });
+
+  cards.forEach(card => {
+    card.addEventListener('click', () => {
+      const choice = card.dataset.key;
+
+      if (!currentTarget) {
+        messageEl.textContent = '⚠️ Press "PLAY SOUND" first!';
+        card.classList.add('wrong');
+        setTimeout(() => card.classList.remove('wrong'), 300);
+        return;
+      }
+
+      if (!hasPlayed) {
+        messageEl.textContent = '⚠️ Listen to the sound first!';
+        card.classList.add('wrong');
+        setTimeout(() => card.classList.remove('wrong'), 300);
+        return;
+      }
+
+      totalTries++;
+
+      if (choice === currentTarget.key) {
+        correctCount++;
+        messageEl.textContent = `✨ Excellent! That was ${currentTarget.label}! ✨`;
+        card.classList.add('correct');
+        cards.forEach(c => {
+          if (c !== card) c.classList.add('dimmed');
+        });
+        celebrate();
+        updateScore();
+
+        setTimeout(() => {
+          pickNewTargetAndPlay();
+        }, 1500);
+      } else {
+        messageEl.textContent = '💫 Try to remember! 💫';
+        card.classList.add('wrong');
+        setTimeout(() => card.classList.remove('wrong'), 300);
+        updateScore();
+      }
+    });
+  });
+
+  hintBtn.addEventListener('click', () => {
+    if (!currentTarget) {
+      messageEl.textContent = '⚠️ Press "PLAY SOUND" first, then ask for a hint!';
+      return;
+    }
+    messageEl.textContent = `💡 Hint: Look for the ${currentTarget.label}!`;
+  });
+
+  resetBtn.addEventListener('click', () => {
+    totalTries = 0;
+    correctCount = 0;
+    currentTarget = null;
+    hasPlayed = false;
+    remainingSounds = [...sounds];
+    messageEl.textContent = '🔄 Game reset! Press "PLAY SOUND" to start fresh! 🎮';
+    updateScore();
+    cards.forEach(c => {
+      c.classList.remove('correct', 'dimmed', 'wrong');
+    });
+  });
+
+  // Initialize
+  updateScore();
+  messageEl.textContent = '👋 Welcome! Press "PLAY SOUND" to begin the fun! 🎵';
+</script>
+
 </body>
 </html>

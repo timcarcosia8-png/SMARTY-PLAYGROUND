@@ -1,9 +1,14 @@
 <?php
+<<<<<<< HEAD
 session_start();
 include "db_connect.php";
 include "filter_input.php";
 include "admin_session.php";
 // include "user_session.php";
+=======
+include "../database/db_connect.php"; // Adjust this path if needed
+
+>>>>>>> bcaab525dbca1757cae1a32c88efa8c34fd8ca95
 // Fetch all user progress data (excluding admins)
 $sql = "
     SELECT 
@@ -11,6 +16,10 @@ $sql = "
         u.name,
         u.email,
         u.status,
+<<<<<<< HEAD
+=======
+        up.points,
+>>>>>>> bcaab525dbca1757cae1a32c88efa8c34fd8ca95
         up.progress_percent,
         up.missions_completed,
         up.lessons_completed
@@ -40,6 +49,7 @@ $activeGrowth = $yesterdayActive > 0
 
 
 /* ================================
+<<<<<<< HEAD
   2️⃣ TOTAL MISSIONS COMPLETED
 ================================ */
 // $todayMissionsQuery = $conn->query("
@@ -91,6 +101,59 @@ $activeGrowth = $yesterdayActive > 0
 // $pointsGrowth = $yesterdayPoints > 0
 //     ? round((($todayPoints - $yesterdayPoints) / $yesterdayPoints) * 100, 1)
 //     : 0;
+=======
+   2️⃣ TOTAL MISSIONS COMPLETED
+================================ */
+$todayMissionsQuery = $conn->query("
+    SELECT COUNT(*) AS total
+    FROM user_missions
+    WHERE DATE(completed_at) = CURDATE()
+");
+$todayMissions = $todayMissionsQuery->fetch_assoc()['total'] ?? 0;
+
+$yesterdayMissionsQuery = $conn->query("
+    SELECT COUNT(*) AS total
+    FROM user_missions
+    WHERE DATE(completed_at) = CURDATE() - INTERVAL 1 DAY
+");
+$yesterdayMissions = $yesterdayMissionsQuery->fetch_assoc()['total'] ?? 0;
+
+$missionGrowth = $yesterdayMissions > 0
+    ? round((($todayMissions - $yesterdayMissions) / $yesterdayMissions) * 100, 1)
+    : 0;
+
+
+/* ================================
+   3️⃣ AVERAGE TIME SPENT
+================================ */
+// If you don’t have time tracking, we’ll simulate
+// Replace this later with your real table (like user_sessions)
+$averageTimeSpent = 24; // minutes today (sample)
+$yesterdayTimeSpent = 22; // sample yesterday
+$timeGrowth = round((($averageTimeSpent - $yesterdayTimeSpent) / $yesterdayTimeSpent) * 100, 1);
+
+
+/* ================================
+   4️⃣ TOTAL POINTS EARNED
+================================ */
+$todayPointsQuery = $conn->query("
+    SELECT SUM(points) AS total
+    FROM user_progress
+    WHERE DATE(last_updated) = CURDATE()
+");
+$todayPoints = $todayPointsQuery->fetch_assoc()['total'] ?? 0;
+
+$yesterdayPointsQuery = $conn->query("
+    SELECT SUM(points) AS total
+    FROM user_progress
+    WHERE DATE(last_updated) = CURDATE() - INTERVAL 1 DAY
+");
+$yesterdayPoints = $yesterdayPointsQuery->fetch_assoc()['total'] ?? 0;
+
+$pointsGrowth = $yesterdayPoints > 0
+    ? round((($todayPoints - $yesterdayPoints) / $yesterdayPoints) * 100, 1)
+    : 0;
+>>>>>>> bcaab525dbca1757cae1a32c88efa8c34fd8ca95
 
 ?>
 <!DOCTYPE html>
@@ -113,7 +176,11 @@ $activeGrowth = $yesterdayActive > 0
 <body class="bg-gray-100">
     
     <div class="logout-container">
+<<<<<<< HEAD
             <a href="admin_logout.php" title="Logout and end session">
+=======
+            <a href="../adminpage/admin_logout.php" title="Logout and end session">
+>>>>>>> bcaab525dbca1757cae1a32c88efa8c34fd8ca95
                 Logout
                 <i class="fa-solid fa-power-off"></i>
             </a>
@@ -130,6 +197,7 @@ $activeGrowth = $yesterdayActive > 0
                 <nav class="space-y-2">
                     <a href="admin_dashboard.php"
                         class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg transition">Dashboard</a>
+<<<<<<< HEAD
                     <div x-data="{ open: false }" class="space-y-1">
                     <button @click="open = !open" 
                       class="flex items-center justify-between w-full px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg transition">
@@ -143,6 +211,14 @@ $activeGrowth = $yesterdayActive > 0
                       <a href="admin_readinglessons.php" class="block px-4 py-2 text-gray-700 hover:bg-gray-50 rounded-lg transition">Reading Lesson</a>
                     </div>
                   </div>
+=======
+                    <a href="admin_readingmissions.php"
+                        class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg transition">Reading
+                        Mission</a>
+                    <a href="admin_readinglessons.php"
+                        class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg transition">Reading
+                        Lesson</a>
+>>>>>>> bcaab525dbca1757cae1a32c88efa8c34fd8ca95
                     <a href="admin_dailyprogress.php"
                         class="flex items-center gap-3 px-4 py-3 bg-teal-500 text-white rounded-lg font-medium">Daily
                         Progress</a>
@@ -150,11 +226,21 @@ $activeGrowth = $yesterdayActive > 0
                         class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg transition">User
                         Info</a>
                 </nav>
+<<<<<<< HEAD
                     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
 
                 <div class="absolute bottom-6 left-6 right-6">
                     <a onclick="logout()" 
                         class="flex items-center gap-3 px-4 py-3 text-red-600 hover:bg-red-50 rounded-lg transition">Logout</a>
+=======
+
+
+                <div class="absolute bottom-6 left-6 right-6">
+                    <a href="#"
+                        class="flex items-center gap-3 px-4 py-3 text-red-600 hover:bg-red-50 rounded-lg transition">
+                        <span>Logout</span>
+                    </a>
+>>>>>>> bcaab525dbca1757cae1a32c88efa8c34fd8ca95
                 </div>
             </div>
         </div>
@@ -318,7 +404,11 @@ $activeGrowth = $yesterdayActive > 0
                                     <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Missions</th>
                                     <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Lessons</th>
                                     <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Time Spent</th>
+<<<<<<< HEAD
                                     
+=======
+                                    <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Points</th>
+>>>>>>> bcaab525dbca1757cae1a32c88efa8c34fd8ca95
                                     <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Progress</th>
                                     <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Status</th>
                                 </tr>
@@ -352,7 +442,11 @@ $activeGrowth = $yesterdayActive > 0
                                             <td class="px-6 py-4 text-gray-700"><?= $row['missions_completed'] ?></td>
                                             <td class="px-6 py-4 text-gray-700"><?= $row['lessons_completed'] ?></td>
                                             <td class="px-6 py-4 text-gray-700">--</td>
+<<<<<<< HEAD
                                             
+=======
+                                            <td class="px-6 py-4 text-gray-700"><?= $row['points'] ?></td>
+>>>>>>> bcaab525dbca1757cae1a32c88efa8c34fd8ca95
                                             <td class="px-6 py-4">
                                                 <div class="flex items-center gap-2">
                                                     <div class="flex-1 bg-gray-200 rounded-full h-2 max-w-[100px]">
@@ -402,6 +496,7 @@ $activeGrowth = $yesterdayActive > 0
             </div>
         </div>
     </div>
+<<<<<<< HEAD
     
     <div id="logoutModal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50">
     <div class="bg-white rounded-3xl p-8 max-w-sm w-11/12 mx-4 text-center">
@@ -420,6 +515,8 @@ $activeGrowth = $yesterdayActive > 0
       </div>
     </div>
     
+=======
+>>>>>>> bcaab525dbca1757cae1a32c88efa8c34fd8ca95
     <script>
   // Auto-fill today's date in the date input
   const dateInput = document.getElementById('filterDate');
@@ -449,6 +546,7 @@ $activeGrowth = $yesterdayActive > 0
       document.getElementById('lessonTable').innerHTML = data;
     });
   });
+<<<<<<< HEAD
   
       function logout() {
                 document.getElementById('logoutModal').classList.remove('hidden');
@@ -466,6 +564,8 @@ $activeGrowth = $yesterdayActive > 0
             }
             
   
+=======
+>>>>>>> bcaab525dbca1757cae1a32c88efa8c34fd8ca95
 </script>
 
 </body>

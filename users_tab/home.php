@@ -1,0 +1,217 @@
+<?php
+include '../filter_input.php';
+include "../database/db_connect.php";
+
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smarty Playground</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background: linear-gradient(180deg, #7C3AED 0%, #6B21A8 40%, #4C1D95 70%, #2D1B69 100%);
+            min-height: 100vh;
+            font-family: 'Arial Black', 'Arial Bold', sans-serif;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 3s infinite ease-in-out;
+        }
+        
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.2; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+        
+        .sparkle {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            animation: sparkle 2s infinite;
+        }
+        
+        @keyframes sparkle {
+            0%, 100% { opacity: 0; transform: scale(0) rotate(0deg); }
+            50% { opacity: 1; transform: scale(1) rotate(180deg); }
+        }
+        
+        .title {
+            font-family: 'Arial Black', sans-serif;
+            font-weight: 900;
+            letter-spacing: 2px;
+            text-shadow: 
+                4px 4px 0px #F97316,
+                8px 8px 0px #7C3AED,
+                -2px -2px 0px rgba(255,255,255,0.3);
+            animation: titleFloat 3s ease-in-out infinite;
+        }
+        
+        @keyframes titleFloat {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .btn {
+            transition: all 0.3s ease;
+            font-weight: 800;
+            letter-spacing: 1px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+        
+        .btn:active {
+            transform: scale(0.95);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+        
+        .btn-cyan {
+            background: linear-gradient(180deg, #22D3EE 0%, #06B6D4 50%, #0891B2 100%);
+        }
+        
+        .btn-orange {
+            background: linear-gradient(180deg, #FB923C 0%, #F97316 50%, #EA580C 100%);
+        }
+        
+        .btn-pink {
+            background: linear-gradient(180deg, #E879F9 0%, #D946EF 50%, #C026D3 100%);
+        }
+        
+        .hero-container {
+            position: relative;
+            animation: heroFloat 4s ease-in-out infinite;
+        }
+        
+        @keyframes heroFloat {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+        }
+        
+        .cloud {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 100px;
+            animation: cloudFloat 20s infinite linear;
+        }
+        
+        @keyframes cloudFloat {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100vw); }
+        }
+        
+        .platform {
+            background: linear-gradient(180deg, rgba(139, 92, 246, 0.3) 0%, rgba(124, 58, 237, 0.5) 100%);
+            border-radius: 50%;
+            box-shadow: 0 10px 30px rgba(124, 58, 237, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <!-- Stars Background -->
+    <div id="stars"></div>
+    
+    <!-- Clouds -->
+    <div class="cloud" style="width: 150px; height: 50px; top: 10%; left: -150px; animation-delay: 0s;"></div>
+    <div class="cloud" style="width: 200px; height: 60px; top: 25%; left: -200px; animation-delay: 5s;"></div>
+    <div class="cloud" style="width: 120px; height: 45px; top: 15%; left: -120px; animation-delay: 10s;"></div>
+    
+    <!-- Sparkles -->
+    <div class="sparkle" style="top: 15%; left: 20%; animation-delay: 0s;">✨</div>
+    <div class="sparkle" style="top: 25%; right: 15%; animation-delay: 1s;">✨</div>
+    <div class="sparkle" style="top: 35%; left: 10%; animation-delay: 2s;">⭐</div>
+    <div class="sparkle" style="top: 20%; right: 25%; animation-delay: 1.5s;">⭐</div>
+    
+    <!-- Main Container -->
+    <div class="relative z-10 max-w-md mx-auto min-h-screen flex flex-col">
+        <!-- Status Bar -->
+        <div class="flex justify-between items-center px-6 pt-3 pb-2">
+            <!-- <span class="text-white text-sm font-bold">9:41</span> -->
+            <!-- <div class="flex items-center gap-1">
+                <div class="text-white text-xs">📶</div>
+                <div class="text-white text-xs">📡</div>
+                <div class="text-white text-xs">🔋</div>
+            </div> -->
+        </div>
+        
+        <!-- Top Platforms -->
+        <div class="absolute top-16 left-0 platform" style="width: 120px; height: 40px;"></div>
+        <div class="absolute top-24 right-0 platform" style="width: 100px; height: 35px;"></div>
+        
+        <!-- Title Section -->
+        <div class="flex-1 flex flex-col items-center justify-start pt-12">
+            <h1 class="title text-5xl text-center leading-tight" style="color: #FCD34D;">
+                SMARTY<br>PLAYGROUND
+            </h1>
+        </div>
+        
+        <!-- Buttons Section -->
+        <div class="px-8 pb-6 space-y-4 z-20">
+            <button class="btn btn-cyan w-full py-5 rounded-full text-white text-xl"
+                onclick="window.location.href='user_login.php'">
+                Login
+            </button>
+            <button class="btn btn-orange w-full py-5 rounded-full text-white text-xl">
+                Registration
+            </button>
+            <button class="btn btn-pink w-full py-5 rounded-full text-white text-xl">
+                Parent Login
+            </button>
+        </div>
+        
+        <!-- Hero Characters Section -->
+        <div class="hero-container relative pb-8">
+            <div class="flex justify-center items-end gap-2 px-4">
+          <div class="relative pb-8 pt-4">
+            <!-- Heroes Container -->
+            <div class="flex justify-center items-end gap-2 px-4 mb-4">
+                <!-- Hero 1 -->
+                <div class="flex flex-col items-center hero-bounce">
+                    <img src="Hero1.png" alt="Hero 1" class="w-28 h-32 object-contain">
+                </div>
+                
+                <!-- Hero 2 -->
+                <div class="flex flex-col items-center hero-bounce">
+                    <img src="Hero2.png" alt="Hero 2" class="w-28 h-32 object-contain">
+                </div>
+                
+                <!-- Hero 3 -->
+                <div class="flex flex-col items-center hero-bounce">
+                    <img src="Hero3.png" alt="Hero 3" class="w-28 h-32 object-contain">
+                </div>
+                
+                <!-- Hero 4 -->
+                <div class="flex flex-col items-center hero-bounce">
+                    <img src="Hero4.png" alt="Hero 4" class="w-28 h-32 object-contain">
+                </div>
+            </div>
+        
+        <!-- Footer Text -->
+        <div class="text-center pb-6">
+            <p class="text-white text-xs font-bold tracking-wider">CREATED BY : BSU IT STUDENTS</p>
+        </div>
+    </div>
+
+    <script>
+        // Create stars
+        const starsContainer = document.getElementById('stars');
+        for (let i = 0; i < 100; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+            const size = Math.random() * 3 + 1;
+            star.style.width = size + 'px';
+            star.style.height = size + 'px';
+            star.style.left = Math.random() * 100 + '%';
+            star.style.top = Math.random() * 100 + '%';
+            star.style.animationDelay = Math.random() * 3 + 's';
+            star.style.animationDuration = (Math.random() * 2 + 2) + 's';
+            starsContainer.appendChild(star);
+        }
+    </script>
+</body>
+</html>
