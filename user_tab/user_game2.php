@@ -1,6 +1,7 @@
 <?php
 include "filter_input.php";
-include "database/db_connect.php";
+include "db_connect.php";
+// include "user_session.php";
 ?>
 
 <!DOCTYPE html>
@@ -353,7 +354,7 @@ include "database/db_connect.php";
         const letterSounds = {};
         for (let i = 65; i <= 90; i++) {
             const letter = String.fromCharCode(i).toLowerCase();
-            letterSounds[letter.toUpperCase()] = `sounds/kevin-${letter}.mp3`;
+            letterSounds[letter.toUpperCase()] = `kevin-${letter}.mp3`;
         }
 
         function shuffle(array) {
@@ -368,7 +369,7 @@ include "database/db_connect.php";
         // Fetch questions from DB
         async function loadQuestionsFromDB() {
             try {
-                const res = await fetch('../get_Image.php'); // Go up one folder to root
+                const res = await fetch('get_Image.php'); // Go up one folder to root
 
                 if (!res.ok) throw new Error('Failed to fetch questions');
                 questions = await res.json();
@@ -394,7 +395,7 @@ include "database/db_connect.php";
             const pictureElem = document.getElementById('picture');
             pictureElem.innerHTML = `
                 <div class="flex justify-center items-center">
-                    <img src="../game/image/${q.word}.png" alt="${q.word}" 
+                    <img src="${q.word}.png" alt="${q.word}" 
                         class="w-40 h-40 object-contain border-4 border-yellow-400 rounded-2xl bg-white shadow-md">
                 </div>
                 `;
@@ -445,7 +446,7 @@ include "database/db_connect.php";
             }
 
             // Send progress to backend
-            fetch('../update_beginning_sound.php', {
+            fetch('update_beginning_sound.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -478,24 +479,23 @@ include "database/db_connect.php";
         // let currentAudio = null;
 
         // Play any audio file
-        function playSound(filePath) {
-            if (currentAudio) {
-                currentAudio.pause();
-                currentAudio.currentTime = 0;
-            }
-            currentAudio = new Audio(filePath);
-            currentAudio.play();
+        function playSound(url) {
+            const audio = new Audio(url);
+            audio.play().catch(err => {
+                console.error("Audio play error:", err);
+            });
         }
-
-        // Play letter sound
-        function playWordSound(word) {
-            playSound(`../game/sounds/kevin-${word.toLowerCase()}.mp3`);
-        }
-
+        
         function playLetterSound(letter) {
-            const soundUrl = `../game/sounds/kevin-${letter.toLowerCase()}.mp3`;
+            const soundUrl = ` kevin-${letter.toUpperCase()}.mp3`; // root folder
             playSound(soundUrl);
         }
+        
+        function playWordSound(word) {
+            const soundUrl = ` kevin-${word.toLowerCase()}.mp3`; // root folder
+            playSound(soundUrl);
+        }
+
 
         function celebrate() {
             const emojis = ['🎉', '⭐', '🌟', '✨', '🎊', '🏆'];
@@ -515,7 +515,7 @@ include "database/db_connect.php";
             const qIds = questions.map(q => q.id);
 
             // Save completion for all questions (optional)
-            fetch('../update_beginning_sound.php', {
+            fetch('update_beginning_sound.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -566,12 +566,12 @@ include "database/db_connect.php";
         }
 
         function goHome() {
-            window.location.href = "../user_tab/user_dashboard.php";
+            window.location.href = "user_dashboard.php";
         }
 
 
         function initBackgroundMusic() {
-            bgMusic = new Audio('/SMARTY-PLAYGROUND/game/sounds/bg_game2.mp3');
+            bgMusic = new Audio('bg_game2.mp3');
             bgMusic.loop = true;
             bgMusic.volume = 0.1; // Desired volume
         }
@@ -616,17 +616,17 @@ include "database/db_connect.php";
 
 
         // Try to play after user interaction
-        function enableMusic() {
-            if (!bgMusic) {
-                initBackgroundMusic();
-            }
-            bgMusic.play().catch(err => {
-                console.warn('Autoplay blocked until user interaction:', err);
-            });
-        }
+        // function enableMusic() {
+        //     if (!bgMusic) {
+        //         initBackgroundMusic();
+        //     }
+        //     bgMusic.play().catch(err => {
+        //         console.warn('Autoplay blocked until user interaction:', err);
+        //     });
+        // }
 
-        // Attach event listener once
-        window.addEventListener('click', enableMusic, { once: true });
+        // // Attach event listener once
+        // window.addEventListener('click', enableMusic, { once: true });
 
         // 🎵 Toggle background music on/off
         function toggleMusic() {

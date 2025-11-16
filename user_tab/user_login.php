@@ -2,6 +2,7 @@
 session_start();
 include 'db_connect.php';
 
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = trim($_POST['email']);
     $password = trim($_POST['password']);
@@ -17,16 +18,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if (password_verify($password, $hashed_password)) {
             $_SESSION['user_id'] = $user_id;
-            $_SESSION['user_name'] = $name;
+            $_SESSION['name'] = $name; // changed
+            $_SESSION['role'] = 'student'; // added
             $_SESSION['is_verified'] = $is_verified;
             $_SESSION['avatar'] = $avatar;
 
             // Redirect logic
             if ($is_verified == 0) {
-                // Not yet verified → verify email
-                header("Location: verify_email.php");
+    // Not yet verified → fetch their current verification code
+                $token_stmt = $conn->prepare("SELECT verification_code FROM users WHERE user_id = ?");
+                $token_stmt->bind_param("i", $user_id);
+                $token_stmt->execute();
+                $token_stmt->bind_result($verification_code);
+                $token_stmt->fetch();
+                $token_stmt->close();
+            
+                // Redirect to verify page with email & token
+                header("Location: verify.php?email=" . urlencode($email) . "&code=" . urlencode($verification_code));
                 exit;
-            } elseif ($is_verified == 1 && empty($avatar)) {
+            }
+             elseif ($is_verified == 1 && empty($avatar)) {
                 // Verified but no avatar yet → choose avatar
                 header("Location: user_cAvatar.php");
                 exit;
@@ -176,7 +187,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 <!-- Forgot Password -->
                 <div class="text-right mb-2">
-                    <a href="#" class="forgot-link text-sm font-semibold">Forgot Password?</a>
+                    <a href="#" onclick="window.location.href='forgotpassword.php'" class="forgot-link text-sm font-semibold">Forgot Password?</a>
+                    
                 </div>
 
                 <!-- Terms -->

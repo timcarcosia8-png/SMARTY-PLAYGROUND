@@ -1,6 +1,7 @@
 <?php
-include "../filter_input.php";
-include "../database/db_connect.php";
+include 'filter_input.php';
+include 'db_connect.php';
+// include "user_session.php";
 // include "../get_Objects.php";
 // include "../get_Audio.php";
 
@@ -438,7 +439,7 @@ include "../database/db_connect.php";
                 messageEl.textContent = '🎉 You matched all the sounds! Redirecting...';
                 setTimeout(() => {
                     localStorage.setItem("readingGameCompleted", "true");
-                    window.location.href = "Users/dashboard.html";
+                    window.location.href = "user_dashboard.php";
                 }, 2000);
                 return;
             }
@@ -484,7 +485,17 @@ include "../database/db_connect.php";
                     // totalTries++;  <-- remove this, wrong answers won't count
                     // Play audio for feedback
                     const clickAudio = new Audio(`/${currentTarget.file}`);
-                    clickAudio.play().catch(() => console.warn('Audio file missing:', currentTarget.file));
+                        clickAudio.currentTime = 0; // start from beginning
+                        clickAudio.play().then(() => {
+                          // Stop after 3 seconds
+                          setTimeout(() => {
+                            clickAudio.pause();
+                            clickAudio.currentTime = 0; // reset
+                          }, 3000);
+                        }).catch(() => {
+                          console.warn('Audio file missing:', currentTarget.file);
+                        });
+
 
                     if (choice === currentTarget.key) {
                         correctCount++;
@@ -520,7 +531,7 @@ include "../database/db_connect.php";
         // -----------------
         async function loadSoundsFromDB() {
             try {
-                const res = await fetch('../get_game_data.php'); // relative to current folder
+                const res = await fetch('get_game_data.php'); // relative to current folder
                 if (!res.ok) throw new Error(`HTTP error ${res.status}`);
                 const data = await res.json();
 
@@ -601,7 +612,7 @@ include "../database/db_connect.php";
         });
 
         function initBackgroundMusic() {
-            bgMusic = new Audio('/SMARTY-PLAYGROUND/game/sounds/bg_game3.mp3');
+            bgMusic = new Audio('bg_game3.mp3');
             bgMusic.loop = true;
             bgMusic.volume = 0.05; // Desired volume
         }
@@ -618,7 +629,7 @@ include "../database/db_connect.php";
 
         window.addEventListener('DOMContentLoaded', tryPlayMusic);
 
-        function fadeInMusic(targetVolume = 0.3, step = 0.02, interval = 150) {
+        function fadeInMusic(targetVolume = 0.00003, step = 0.00002, interval = 150) {
             let vol = 0;
             bgMusic.volume = vol;
             const fade = setInterval(() => {
@@ -646,17 +657,17 @@ include "../database/db_connect.php";
 
 
         // Try to play after user interaction
-        function enableMusic() {
-            if (!bgMusic) {
-                initBackgroundMusic();
-            }
-            bgMusic.play().catch(err => {
-                console.warn('Autoplay blocked until user interaction:', err);
-            });
-        }
+        // function enableMusic() {
+        //     if (!bgMusic) {
+        //         initBackgroundMusic();
+        //     }
+        //     bgMusic.play().catch(err => {
+        //         console.warn('Autoplay blocked until user interaction:', err);
+        //     });
+        // }
 
-        // Attach event listener once
-        window.addEventListener('click', enableMusic, { once: true });
+        // // Attach event listener once
+        // window.addEventListener('click', enableMusic, { once: true });
 
         // 🎵 Toggle background music on/off
         function toggleMusic() {

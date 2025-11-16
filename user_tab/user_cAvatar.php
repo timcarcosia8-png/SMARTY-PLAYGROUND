@@ -1,10 +1,10 @@
 <?php
 session_start();
-include '../database/db_connect.php';
+include 'db_connect.php';
 
 // Redirect if not logged in
 if (!isset($_SESSION['user_id'])) {
-    header("Location: login.php");
+    header("Location: user_login.php");
     exit;
 }
 
@@ -25,7 +25,7 @@ if ($user && $user['is_verified'] == 1 && !empty($user['avatar'])) {
 }
 
 // Handle avatar selection (update avatar + verify)
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['avatar'])) {
+if ($_SERVER["REQUEST_METHOD"] === "POST" && !empty($_POST['avatar'])) {
     $avatar = $_POST['avatar'];
 
     $stmt = $conn->prepare("UPDATE users SET avatar = ?, is_verified = 1 WHERE user_id = ?");
@@ -33,198 +33,73 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['avatar'])) {
     $stmt->execute();
     $stmt->close();
 
-    echo "<script>
-        alert('Avatar selected successfully!');
-        window.location.href = 'user_dashboard.php';
-    </script>";
+    // Update session and redirect
+    $_SESSION['avatar'] = $avatar;
+    header("Location: user_dashboard.php");
     exit;
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Smarty Playground - Choose Avatar</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap" rel="stylesheet">
-  <style>
-    body {
-      background: linear-gradient(180deg, #7C3AED 0%, #6B21A8 40%, #4C1D95 70%, #2D1B69 100%);
-      min-height: 100vh;
-      font-family: 'Fredoka One', cursive;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .star {
-      position: absolute;
-      background: white;
-      border-radius: 50%;
-      animation: twinkle 3s infinite ease-in-out;
-    }
-
-    @keyframes twinkle {
-      0%, 100% { opacity: 0.2; transform: scale(1); }
-      50% { opacity: 1; transform: scale(1.2); }
-    }
-
-    .sparkle {
-      position: absolute;
-      animation: sparkle 2s infinite;
-      font-size: 20px;
-    }
-
-    @keyframes sparkle {
-      0%, 100% { opacity: 0; transform: scale(0) rotate(0deg); }
-      50% { opacity: 1; transform: scale(1) rotate(180deg); }
-    }
-
-    .title {
-      font-weight: 900;
-      letter-spacing: 2px;
-      text-shadow:
-        3px 3px 0px #F97316,
-        6px 6px 0px #7C3AED,
-        -1px -1px 0px rgba(255,255,255,0.3);
-      animation: titlePulse 2s ease-in-out infinite;
-    }
-
-    @keyframes titlePulse {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.02); }
-    }
-
-    .avatar {
-      width: 130px;
-      height: 130px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-      border-radius: 50%;
-    }
-
-    .avatar img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-      display: block;
-      border-radius: 50%;
-    }
-
-    .avatar:hover {
-      transform: scale(1.08);
-      box-shadow: 0 12px 30px rgba(252, 211, 77, 0.5);
-    }
-
-    .avatar.selected {
-      border: 4px solid white;
-      box-shadow: 0 0 0 3px #F59E0B, 0 12px 30px rgba(252, 211, 77, 0.6);
-      transform: scale(1.1);
-    }
-
-    .continue-btn {
-      background: linear-gradient(180deg, #FB923C 0%, #F97316 50%, #EA580C 100%);
-      transition: all 0.3s ease;
-      font-weight: 800;
-      letter-spacing: 1px;
-      box-shadow: 0 8px 20px rgba(249, 115, 22, 0.4);
-    }
-
-    .continue-btn:active {
-      transform: scale(0.95);
-      box-shadow: 0 4px 10px rgba(249, 115, 22, 0.4);
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smarty Playground - Choose Avatar</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap" rel="stylesheet">
+<style>
+body { background: linear-gradient(180deg,#7C3AED 0%,#6B21A8 40%,#4C1D95 70%,#2D1B69 100%); min-height:100vh; font-family:'Fredoka One',cursive; position:relative; overflow:hidden; }
+.star { position:absolute; background:white; border-radius:50%; animation:twinkle 3s infinite ease-in-out; }
+@keyframes twinkle { 0%,100%{opacity:0.2; transform:scale(1);} 50%{opacity:1; transform:scale(1.2);} }
+.title { font-weight:900; letter-spacing:2px; text-shadow:3px 3px 0px #F97316,6px 6px 0px #7C3AED,-1px -1px 0px rgba(255,255,255,0.3); animation:titlePulse 2s ease-in-out infinite;}
+@keyframes titlePulse {0%,100%{transform:scale(1);}50%{transform:scale(1.02);}}
+.avatar {width:130px; height:130px; cursor:pointer; transition:all 0.3s ease; box-shadow:0 8px 20px rgba(0,0,0,0.3); border-radius:50%;}
+.avatar img {width:100%; height:100%; object-fit:contain; border-radius:50%;}
+.avatar:hover {transform:scale(1.08); box-shadow:0 12px 30px rgba(252,211,77,0.5);}
+.avatar.selected {border:4px solid white; box-shadow:0 0 0 3px #F59E0B,0 12px 30px rgba(252,211,77,0.6); transform:scale(1.1);}
+.continue-btn {background:linear-gradient(180deg,#FB923C 0%,#F97316 50%,#EA580C 100%); transition:all 0.3s ease; font-weight:800; letter-spacing:1px; box-shadow:0 8px 20px rgba(249,115,22,0.4);}
+.continue-btn:active {transform:scale(0.95); box-shadow:0 4px 10px rgba(249,115,22,0.4);}
+</style>
 </head>
 <body>
-  <!-- Stars Background -->
-  <div id="stars"></div>
+<div id="stars"></div>
 
-  <!-- Sparkles -->
-  <div class="sparkle" style="top: 15%; left: 20%; animation-delay: 0s;">✨</div>
-  <div class="sparkle" style="top: 25%; right: 15%; animation-delay: 1s;">✨</div>
-  <div class="sparkle" style="bottom: 40%; left: 10%; animation-delay: 2s;">⭐</div>
-  <div class="sparkle" style="top: 20%; right: 25%; animation-delay: 1.5s;">⭐</div>
-
-  <!-- Main Container -->
-  <div class="relative z-10 max-w-md mx-auto min-h-screen flex flex-col px-6 py-4">
-    <!-- Back Button -->
-    <div class="mb-6">
-      <button class="bg-white rounded-full w-12 h-12 flex items-center justify-center shadow-lg hover:scale-105 transition-transform" onclick="window.history.back()">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-          <path d="M15 18L9 12L15 6" stroke="#4C1D95" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </button>
-    </div>
-
-    <!-- Title Section -->
-    <div class="text-center mb-8">
-      <h1 class="title text-4xl leading-tight mb-3" style="color: #FCD34D;">
-        SMARTY<br>PLAYGROUND
-      </h1>
-      <h2 class="text-white text-2xl font-bold mb-2">Choose Your Avatar</h2>
-    </div>
-
-    <!-- Avatar Selection -->
-    <form id="avatarForm" method="POST">
-      <input type="hidden" name="avatar" id="selectedAvatarInput">
-
-      <div class="grid grid-cols-2 gap-6 mb-8 justify-items-center">
-        <div class="avatar" onclick="selectAvatar(this)" data-avatar="../user_tab/Hero1.png">
-          <img src="../user_tab/Hero1.png" alt="Hero 1">
-        </div>
-        <div class="avatar" onclick="selectAvatar(this)" data-avatar="../user_tab/Hero2.png">
-          <img src="../user_tab/Hero2.png" alt="Hero 2">
-        </div>
-        <div class="avatar" onclick="selectAvatar(this)" data-avatar="../user_tab/Hero3.png">
-          <img src="../user_tab/Hero3.png" alt="Hero 3">
-        </div>
-        <div class="avatar" onclick="selectAvatar(this)" data-avatar="../user_tab/Hero4.png">
-          <img src="../user_tab/Hero4.png" alt="Hero 4">
-        </div>
-      </div>
-
-      <!-- Continue Button -->
-      <button type="button" class="continue-btn w-full py-4 rounded-full text-white text-xl font-bold" onclick="continueToDashboard()">
-        Continue
-      </button>
-    </form>
+<div class="relative z-10 max-w-md mx-auto min-h-screen flex flex-col px-6 py-4">
+  <div class="mb-6">
+    <button class="bg-white rounded-full w-12 h-12 flex items-center justify-center shadow-lg hover:scale-105 transition-transform" onclick="window.history.back()">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <path d="M15 18L9 12L15 6" stroke="#4C1D95" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
   </div>
 
-  <script>
-    // Star animation
-    const starsContainer = document.getElementById('stars');
-    for (let i = 0; i < 80; i++) {
-      const star = document.createElement('div');
-      star.className = 'star';
-      const size = Math.random() * 3 + 1;
-      star.style.width = size + 'px';
-      star.style.height = size + 'px';
-      star.style.left = Math.random() * 100 + '%';
-      star.style.top = Math.random() * 100 + '%';
-      star.style.animationDelay = Math.random() * 3 + 's';
-      star.style.animationDuration = (Math.random() * 2 + 2) + 's';
-      starsContainer.appendChild(star);
-    }
+  <div class="text-center mb-8">
+    <h1 class="title text-4xl leading-tight mb-3" style="color: #FCD34D;">SMARTY<br>PLAYGROUND</h1>
+    <h2 class="text-white text-2xl font-bold mb-2">Choose Your Avatar</h2>
+  </div>
 
-    // Avatar selection
-    function selectAvatar(element) {
-      document.querySelectorAll('.avatar').forEach(a => a.classList.remove('selected'));
-      element.classList.add('selected');
-      document.getElementById('selectedAvatarInput').value = element.getAttribute('data-avatar');
-    }
+  <form id="avatarForm" method="POST">
+    <input type="hidden" name="avatar" id="selectedAvatarInput">
+    <div class="grid grid-cols-2 gap-6 mb-8 justify-items-center">
+      <div class="avatar" onclick="selectAvatar(this)" data-avatar="Hero1.png"><img src="Hero1.png" alt="Hero 1"></div>
+      <div class="avatar" onclick="selectAvatar(this)" data-avatar="Hero2.png"><img src="Hero2.png" alt="Hero 2"></div>
+      <div class="avatar" onclick="selectAvatar(this)" data-avatar="Hero3.png"><img src="Hero3.png" alt="Hero 3"></div>
+      <div class="avatar" onclick="selectAvatar(this)" data-avatar="Hero4.png"><img src="Hero4.png" alt="Hero 4"></div>
+    </div>
+    <button type="submit" class="continue-btn w-full py-4 rounded-full text-white text-xl font-bold">Continue</button>
+  </form>
+</div>
 
-    // Continue and save avatar
-    function continueToDashboard() {
-      const selected = document.querySelector('.avatar.selected img');
-      if (!selected) {
-        alert('Please choose an avatar first!');
-        return;
-      }
-      localStorage.setItem('selectedAvatar', selected.src);
-      document.getElementById('avatarForm').submit();
-    }
-  </script>
+<script>
+const starsContainer = document.getElementById('stars');
+for(let i=0;i<80;i++){const s=document.createElement('div');s.className='star'; const size=Math.random()*3+1; s.style.width=size+'px'; s.style.height=size+'px'; s.style.left=Math.random()*100+'%'; s.style.top=Math.random()*100+'%'; s.style.animationDelay=Math.random()*3+'s'; s.style.animationDuration=(Math.random()*2+2)+'s'; starsContainer.appendChild(s);}
+
+function selectAvatar(element){
+  document.querySelectorAll('.avatar').forEach(a=>a.classList.remove('selected'));
+  element.classList.add('selected');
+  document.getElementById('selectedAvatarInput').value = element.getAttribute('data-avatar');
+}
+</script>
 </body>
 </html>

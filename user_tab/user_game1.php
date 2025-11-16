@@ -1,9 +1,9 @@
 <?php
-include "../filter_input.php";
-include "../database/db_connect.php";
+include "filter_input.php";
+include "db_connect.php";
 // include "../get_Objects.php";
 // include "../get_Audio.php";
-
+// include "user_session.php";
 
 
 ?>
@@ -318,7 +318,7 @@ include "../database/db_connect.php";
         // 🧩 1️⃣ Fetch words (names only)
         async function fetchWords() {
             try {
-                const res = await fetch("../get_Objects.php");
+                const res = await fetch("get_Objects.php");
                 const data = await res.json();
 
                 if (!Array.isArray(data)) {
@@ -340,36 +340,60 @@ include "../database/db_connect.php";
         }
 
         // 🎧 Preload all letter audios
-        function preloadLetterAudio() {
-            const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
-            letters.forEach(letter => {
-                const url = `../fetch_letter_audio.php?letter=${encodeURIComponent(letter)}`;
-                const a = new Audio(url);
-                a.preload = 'auto';
-                audioCache[letter] = a;
-            });
-            console.log("Letter audios preloaded ✅");
-        }
+        // 🎧 Preload all letter audios dynamically
+            async function preloadLetterAudio() {
+                try {
+                    const res = await fetch('fetch_letter_audio.php');
+                    const data = await res.json();
+            
+                    for (const [letter, path] of Object.entries(data)) {
+                        const audio = new Audio(path);
+                        audio.preload = 'auto';
+                        audioCache[letter] = audio;
+                    }
+            
+                    console.log("Letter audios preloaded ✅", Object.keys(audioCache));
+                } catch (err) {
+                    console.error("Failed to preload letters:", err);
+                }
+            }
+
 
 
         // 🎵 Play audio for a letter (cross-browser)
         async function playLetterAudio(letter) {
-            try {
-                const audio = audioCache[letter.toUpperCase()] || new Audio(`../fetch_letter_audio.php?letter=${encodeURIComponent(letter.toUpperCase())}`);
-                audio.currentTime = 0;
-                await audio.play().catch(() => {
-                    document.body.addEventListener('click', () => audio.play(), { once: true });
-                });
-            } catch (err) {
-                console.error("Audio playback failed:", err);
+            const upper = letter.toUpperCase();
+        
+            if (!audioCache[upper]) {
+                try {
+                    const res = await fetch(`fetch_letter_audio.php?letter=${upper}`);
+                    const data = await res.json();
+                    if (data.audio) {
+                        audioCache[upper] = new Audio(data.audio);
+                        audioCache[upper].preload = 'auto';
+                    } else {
+                        console.warn("Audio not found for letter:", upper);
+                        return;
+                    }
+                } catch (err) {
+                    console.error("Failed to fetch letter audio:", err);
+                    return;
+                }
             }
+        
+            audioCache[upper].currentTime = 0;
+            audioCache[upper].play().catch(() => {
+                document.body.addEventListener('click', () => audioCache[upper].play(), { once: true });
+            });
         }
+
+
 
 
         // 🔊 Fetch audio for a word (from DB)
         async function fetchAudioForWord(wordId) {
             try {
-                const res = await fetch(`../get_Audio.php?id=${wordId}`);
+                const res = await fetch(`get_Audio.php?id=${wordId}`);
                 const data = await res.json();
 
                 if (data.audio) {
@@ -435,7 +459,86 @@ include "../database/db_connect.php";
         const lettersContainer = document.getElementById('letters');
         const nextBtn = document.getElementById('nextBtn');
         const speakWordBtn = document.getElementById('speakWordBtn');
+        
+        let activeTouch = null;
 
+        // ✅ Helper for touch detection
+        function isTouchDevice() {
+          return 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+        }
+        
+        // ✅ Handle drop logic for both desktop and mobile
+        function handleDrop(e, dropzone) {
+          e.preventDefault();
+          const letter = e.dataTransfer ? e.dataTransfer.getData("text") : e.target.dataset.letter;
+          if (!letter) return;
+        
+          if (!dropzone.textContent) {
+            dropzone.textContent = letter;
+            dropzone.classList.add('filled');
+        
+            // Remove letter from the source container
+            const letterDiv = document.querySelector(`.letter[data-letter="${letter}"].dragging`);
+            if (letterDiv) letterDiv.remove();
+          }
+        
+          checkWordCompletion();
+        }
+        
+        function handleTouchStart(e, letterDiv) {
+          activeTouch = {
+            letter: letterDiv.dataset.letter,
+            element: letterDiv,
+            startX: e.touches[0].clientX,
+            startY: e.touches[0].clientY,
+            clone: letterDiv.cloneNode(true)
+          };
+        
+          activeTouch.clone.style.position = "fixed";
+          activeTouch.clone.style.left = activeTouch.startX + "px";
+          activeTouch.clone.style.top = activeTouch.startY + "px";
+          activeTouch.clone.style.opacity = "0.8";
+          activeTouch.clone.style.zIndex = "9999";
+          activeTouch.clone.classList.add('dragging');
+        
+          document.body.appendChild(activeTouch.clone);
+          playLetterAudio(activeTouch.letter);
+        }
+        
+        function handleTouchMove(e) {
+          if (!activeTouch) return;
+          const touch = e.touches[0];
+          activeTouch.clone.style.left = (touch.clientX - 25) + "px";
+          activeTouch.clone.style.top = (touch.clientY - 25) + "px";
+        }
+        
+        function handleTouchEnd(e) {
+          if (!activeTouch) return;
+        
+          const touch = e.changedTouches[0];
+          const dropzones = document.querySelectorAll('.dropzone');
+          const target = document.elementFromPoint(touch.clientX, touch.clientY);
+        
+          // Check if dropped on a valid dropzone
+          dropzones.forEach(dz => {
+            const rect = dz.getBoundingClientRect();
+            if (
+              touch.clientX >= rect.left &&
+              touch.clientX <= rect.right &&
+              touch.clientY >= rect.top &&
+              touch.clientY <= rect.bottom
+            ) {
+              handleDrop({ preventDefault: () => {}, target: { dataset: { letter: activeTouch.letter } } }, dz);
+            }
+          });
+        
+          activeTouch.clone.remove();
+          activeTouch = null;
+        }
+        
+        document.addEventListener('touchmove', handleTouchMove, { passive: false });
+        document.addEventListener('touchend', handleTouchEnd);
+        
         function loadWord() {
             document.getElementById('feedback').classList.add('hidden');
             dropzonesContainer.innerHTML = "";
@@ -543,7 +646,7 @@ include "../database/db_connect.php";
                 localStorage.setItem("readingGameCompleted", "true");
                 celebrate();
                 setTimeout(() => {
-                    window.location.href = "../user_tab/user_dashboard.php";
+                    window.location.href = "user_dashboard.php";
                 }, 3000);
             } else {
                 loadWord();
@@ -554,7 +657,7 @@ include "../database/db_connect.php";
         // Initialize background music
         // 🎵 Auto-start background music (no click needed)
         function initBackgroundMusic() {
-            bgMusic = new Audio('/SMARTY-PLAYGROUND/game/sounds/bg_game1.mp3');
+            bgMusic = new Audio('bg_game1.mp3');
             bgMusic.loop = true;
             bgMusic.volume = 0.1; // Desired volume
         }
@@ -599,17 +702,17 @@ include "../database/db_connect.php";
 
 
         // Try to play after user interaction
-        function enableMusic() {
-            if (!bgMusic) {
-                initBackgroundMusic();
-            }
-            bgMusic.play().catch(err => {
-                console.warn('Autoplay blocked until user interaction:', err);
-            });
-        }
+        // function enableMusic() {
+        //     if (!bgMusic) {
+        //         initBackgroundMusic();
+        //     }
+        //     bgMusic.play().catch(err => {
+        //         console.warn('Autoplay blocked until user interaction:', err);
+        //     });
+        // }
 
-        // Attach event listener once
-        window.addEventListener('click', enableMusic, { once: true });
+        // // Attach event listener once
+        // window.addEventListener('click', enableMusic, { once: true });
 
         // 🎵 Toggle background music on/off
         function toggleMusic() {

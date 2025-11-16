@@ -2,7 +2,7 @@
 header('Content-Type: application/json');
 
 include "filter_input.php";
-include "database/db_connect.php";
+include "db_connect.php";
 
 $questions = [];
 
@@ -12,9 +12,12 @@ $result = $conn->query($sql);
 if ($result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
         $questions[] = [
-            'image' => '/SMARTY-PLAYGROUND/game/image/' . basename($row['image']), // relative path
-            'correct' => $row['correct'],
-            'wrong' => $row['wrong']
+            'image' => $row['image'],           // relative path or emoji
+            'correct' => $row['correct'],       // correct word
+            'wrong' => $row['wrong'],           // wrong word
+            'sound' => $row['sound'],           // phonetic breakdown
+            'correctAudio' => $row['correctAudio'], // path to correct audio
+            'wrongAudio' => $row['wrongAudio']      // path to wrong audio
         ];
     }
 }

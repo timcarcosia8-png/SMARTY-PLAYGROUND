@@ -1,9 +1,29 @@
 <?php
-include "filter_input.php";
-include "database/db_connect.php";
+session_start();
+include 'db_connect.php';
 
+if (!isset($_SESSION['user_id'])) {
+    header("Location: login.php");
+    exit;
+}
 
+$user_id = $_SESSION['user_id'];
+
+// Fetch user info
+$stmt = $conn->prepare("SELECT name, avatar, points FROM users WHERE user_id = ?");
+$stmt->bind_param("i", $user_id);
+$stmt->execute();
+$stmt->bind_result($name, $avatar, $points);
+$stmt->fetch();
+$stmt->close();
+
+// Default avatar if none
+if (empty($avatar)) {
+    $avatar = "default-avatar.png";
+}
 ?>
+
+
 
 
 <!DOCTYPE html>
@@ -118,16 +138,16 @@ include "database/db_connect.php";
       <div class="flex items-center justify-between">
         <!-- User Info -->
         <div class="flex items-center gap-3">
-          <img id="userAvatar" class="avatar" src="default-avatar.png" alt="Avatar" />
+          <img id="userAvatar" class="avatar" src="<?php echo htmlspecialchars($avatar); ?>" alt="Avatar" />
           <div>
             <p class="text-white text-xs opacity-80 font-medium">Daily Rewards</p>
-            <p class="text-white font-bold text-xl" id="userName">Player</p>
+            <p class="text-white font-bold text-xl"><?php echo htmlspecialchars($name); ?></p>
           </div>
         </div>
         <!-- Total Points -->
         <div class="bg-white/20 backdrop-blur-sm rounded-2xl px-4 py-2">
           <p class="text-white text-xs opacity-80">Total Points</p>
-          <p class="text-white font-bold text-lg" id="totalPoints">1,250</p>
+          <p class="text-white font-bold text-lg"><?php echo number_format($points); ?></p>
         </div>
       </div>
     </header>
@@ -268,7 +288,7 @@ include "database/db_connect.php";
     <!-- BOTTOM NAVIGATION -->
     <footer class="fixed bottom-0 left-1/2 transform -translate-x-1/2 w-full max-w-[400px] bg-white rounded-t-3xl shadow-2xl px-6 py-4 z-20">
       <div class="flex justify-around items-center relative">
-        <button class="nav-btn flex flex-col items-center gap-1 text-gray-400" onclick="window.location.href='dashboard.html'">
+        <button class="nav-btn flex flex-col items-center gap-1 text-gray-400" onclick="window.location.href='user_dashboard.php'">
           <span class="text-3xl">🏠</span>
           <span class="text-xs">Home</span>
         </button>
@@ -278,12 +298,12 @@ include "database/db_connect.php";
           <span class="text-xs font-semibold">Rewards</span>
         </button>
         
-        <button class="nav-btn flex flex-col items-center gap-1 text-gray-400" onclick="window.location.href='progressdb.html'">
+        <button class="nav-btn flex flex-col items-center gap-1 text-gray-400" onclick="window.location.href='user_progress.php'">
           <span class="text-3xl">📊</span>
           <span class="text-xs">Progress</span>
         </button>
         
-        <button class="nav-btn flex flex-col items-center gap-1 text-gray-400" onclick="window.location.href='dbprofile.html'">
+        <button class="nav-btn flex flex-col items-center gap-1 text-gray-400" onclick="window.location.href='user_profile.php'">
           <span class="text-3xl">👤</span>
           <span class="text-xs">Profile</span>
         </button>
@@ -323,9 +343,9 @@ include "database/db_connect.php";
     }
 
     // Load user data
-    const avatar = localStorage.getItem("selectedAvatar");
-    const name = localStorage.getItem("playerName");
-    let totalPoints = parseInt(localStorage.getItem("totalPoints")) || 1250;
+    // const avatar = localStorage.getItem("selectedAvatar");
+    // const name = localStorage.getItem("playerName");
+    // let totalPoints = parseInt(localStorage.getItem("totalPoints")) || 1250;
     
     const avatarEl = document.getElementById("userAvatar");
     const nameEl = document.getElementById("userName");

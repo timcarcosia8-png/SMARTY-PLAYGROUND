@@ -1,6 +1,7 @@
 <?php
 session_start();
-include '../database/db_connect.php';
+include 'db_connect.php';
+include "user_session.php";
 
 if (!isset($_SESSION['user_id'])) {
     header("Location: login.php");
@@ -10,514 +11,445 @@ if (!isset($_SESSION['user_id'])) {
 $user_id = $_SESSION['user_id'];
 
 // Fetch user progress
-$stmt = $conn->prepare("SELECT points, level, missions_completed, lessons_completed, progress_percent 
+$stmt = $conn->prepare("SELECT  missions_completed, lessons_completed, progress_percent 
                         FROM user_progress WHERE user_id = ?");
 $stmt->bind_param("i", $user_id);
 $stmt->execute();
-$stmt->bind_result($points, $level, $missions_completed, $lessons_completed, $progress_percent);
+$stmt->bind_result($missions_completed, $lessons_completed, $progress_percent);
 $stmt->fetch();
 $stmt->close();
 
 // Default values if no record exists
-if (!$points) {
-    $points = 0;
-    $level = 1;
-    $missions_completed = 0;
-    $lessons_completed = 0;
-    $progress_percent = 0;
-}
+// if (!$points) {
+//     $points = 0;
+//     $level = 1;
+//     $missions_completed = 0;
+//     $lessons_completed = 0;
+//     $progress_percent = 0;
+// }
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smarty Playground - Progress Dashboard</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Fredoka', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Progress - SMARTY PLAYGROUND</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    body {
+      font-family: 'Fredoka', sans-serif;
+    }
 
-        .progress-container {
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 20px;
-        }
+    .phone-container {
+      max-width: 400px;
+      margin: 0 auto;
+      background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      position: relative;
+    }
 
-        .star {
-            position: fixed;
-            background: white;
-            border-radius: 50%;
-            animation: twinkle 3s infinite ease-in-out;
-        }
+    .star {
+      position: absolute;
+      background: white;
+      border-radius: 50%;
+      animation: twinkle 3s infinite ease-in-out;
+    }
 
-        @keyframes twinkle {
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.2; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.2); }
+    }
 
-            0%,
-            100% {
-                opacity: 0.2;
-                transform: scale(1);
-            }
+    .progress-bar {
+      background: #e5e7eb;
+      border-radius: 50px;
+      height: 10px;
+      overflow: hidden;
+      position: relative;
+    }
 
-            50% {
-                opacity: 1;
-                transform: scale(1.2);
-            }
-        }
+    .progress-fill {
+      height: 100%;
+      border-radius: 50px;
+      transition: width 0.8s ease;
+      position: relative;
+      overflow: hidden;
+    }
 
-        .game-card {
-            background: white;
-            border-radius: 20px;
-            padding: 20px;
-            margin-bottom: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            transition: all 0.3s ease;
-        }
+    .progress-fill::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+      animation: shimmer 2s infinite;
+    }
 
-        .game-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
-        }
+    @keyframes shimmer {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
 
-        .progress-bar {
-            background: #e5e7eb;
-            border-radius: 50px;
-            height: 12px;
-            overflow: hidden;
-            position: relative;
-        }
+    .nav-btn {
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
 
-        .progress-fill {
-            height: 100%;
-            border-radius: 50px;
-            background: linear-gradient(90deg, #34d399 0%, #10b981 100%);
-            transition: width 0.8s ease;
-            position: relative;
-            overflow: hidden;
-        }
+    .nav-btn.active {
+      color: #667eea;
+    }
 
-        .progress-fill::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-            animation: shimmer 2s infinite;
-        }
+    .lesson-card {
+      transition: all 0.3s ease;
+    }
 
-        @keyframes shimmer {
-            0% {
-                transform: translateX(-100%);
-            }
+    .lesson-card:active {
+      transform: scale(0.98);
+    }
 
-            100% {
-                transform: translateX(100%);
-            }
-        }
+    .circular-progress {
+      transform: rotate(-90deg);
+    }
 
-        .stats-card {
-            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
-            border-radius: 20px;
-            padding: 25px;
-            box-shadow: 0 10px 30px rgba(251, 191, 36, 0.4);
-            color: white;
-            margin-bottom: 20px;
-        }
+    .reset-btn {
+      transition: all 0.3s ease;
+    }
 
-        .back-btn {
-            width: 50px;
-            height: 50px;
-            background: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-            transition: all 0.3s ease;
-            margin-bottom: 20px;
-        }
-
-        .back-btn:hover {
-            transform: scale(1.1);
-        }
-
-        .badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 0.875rem;
-            font-weight: 600;
-        }
-
-        .badge-completed {
-            background: #d1fae5;
-            color: #065f46;
-        }
-
-        .badge-pending {
-            background: #fee2e2;
-            color: #991b1b;
-        }
-
-        .lesson-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 12px;
-            background: #f9fafb;
-            border-radius: 12px;
-            margin-bottom: 8px;
-            transition: all 0.3s ease;
-        }
-
-        .lesson-item:hover {
-            background: #f3f4f6;
-            transform: translateX(5px);
-        }
-
-        .category-header {
-            font-size: 1.25rem;
-            font-weight: 700;
-            color: #374151;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-    </style>
+    .reset-btn:active {
+      transform: scale(0.95);
+    }
+  </style>
 </head>
 
-<body>
+<body class="bg-gray-100">
+  <div class="phone-container">
     <!-- Background Stars -->
     <div id="stars"></div>
 
-    <div class="progress-container">
-        <!-- Back Button -->
-        <button class="back-btn" onclick="history.back()">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                <path d="M15 18L9 12L15 6" stroke="#667eea" stroke-width="3" stroke-linecap="round"
-                    stroke-linejoin="round" />
-            </svg>
+    <!-- HEADER -->
+    <header class="px-5 pt-6 pb-4 relative z-10">
+      <div class="flex items-center justify-between">
+        <h1 class="text-white font-bold text-3xl">My Progress</h1>
+        <button onclick="resetProgress()" class="reset-btn w-12 h-12 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center">
+          <span class="text-2xl">🔄</span>
         </button>
+      </div>
+    </header>
 
-        <!-- Stats Card -->
-        <div class="stats-card">
-            <h1 class="text-2xl font-bold mb-4">🎯 My Learning Progress</h1>
-            <div class="grid grid-cols-3 gap-4 text-center">
-                <div>
-                    <div class="text-3xl font-bold" id="totalCompleted">0</div>
-                    <div class="text-sm opacity-90">Completed</div>
-                </div>
-                <div>
-                    <div class="text-3xl font-bold" id="totalLessons">0</div>
-                    <div class="text-sm opacity-90">Total</div>
-                </div>
-                <div>
-                    <div class="text-3xl font-bold" id="overallProgress">0%</div>
-                    <div class="text-sm opacity-90">Progress</div>
-                </div>
-            </div>
+    <!-- MAIN CONTENT -->
+    <main class="px-5 pb-24 relative z-10">
+      
+      <!-- Overall Stats Card -->
+      <section class="bg-gradient-to-br from-yellow-400 to-orange-500 rounded-3xl p-6 shadow-xl mb-5">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-white font-bold text-xl">🎯 Learning Stats</h3>
         </div>
 
-        <!-- Games Section -->
-        <div class="game-card">
-            <div class="category-header">
-                🎮 Games
-            </div>
+        <div class="grid grid-cols-3 gap-3">
+          <div class="text-center">
+            <div class="text-white text-3xl font-bold mb-1" id="totalCompleted">0</div>
+            <p class="text-white/90 text-xs">Completed</p>
+          </div>
+          <div class="text-center">
+            <div class="text-white text-3xl font-bold mb-1" id="totalLessons">0</div>
+            <p class="text-white/90 text-xs">Total</p>
+          </div>
+          <div class="text-center">
+            <div class="text-white text-3xl font-bold mb-1" id="overallProgress">0%</div>
+            <p class="text-white/90 text-xs">Progress</p>
+          </div>
+        </div>
+      </section>
 
-            <!-- Game 1: Word Builder -->
-            <div class="lesson-item" data-key="wordGameCompleted">
-                <div class="flex-1">
-                    <div class="font-bold text-gray-800">Spell the Word</div>
-                    <div class="text-xs text-gray-500">Drag letters to spell words</div>
-                </div>
-                <span class="badge badge-pending game-status">❌ Not Started</span>
-            </div>
-
-            <!-- Game 2: Beginning Sounds -->
-            <div class="lesson-item" data-key="readingGameCompleted">
-                <div class="flex-1">
-                    <div class="font-bold text-gray-800">Beginning Sounds</div>
-                    <div class="text-xs text-gray-500">Match letters with sounds</div>
-                </div>
-                <span class="badge badge-pending game-status">❌ Not Started</span>
-            </div>
-
-            <div class="mt-4">
-                <div class="flex justify-between text-sm text-gray-600 mb-2">
-                    <span>Games Progress</span>
-                    <span id="gamesProgress">0%</span>
-                </div>
-                <div class="progress-bar">
-                    <div class="progress-fill" id="gamesProgressBar" style="width: 0%"></div>
-                </div>
-            </div>
+      <!-- Games Section -->
+      <section class="bg-white rounded-3xl p-5 shadow-xl mb-5">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-gray-800 font-bold text-xl">🎮 Games</h3>
+          <div class="flex items-center gap-2">
+            <!--<span class="text-gray-600 text-sm font-medium" id="gamesProgress">0%</span>-->
+          </div>
         </div>
 
-        <!-- Lessons Section -->
-        <div class="game-card">
-            <div class="category-header">
-                📚 Reading Lessons
-            </div>
-
-            <!-- Lesson 1 -->
-            <div class="lesson-item" data-key="lesson1Completed">
+        <div class="space-y-3 mb-4">
+          <!-- Game 1 -->
+          <div class="lesson-card bg-gradient-to-br from-purple-50 to-pink-50 rounded-2xl p-4 border-2 border-purple-100" data-key="wordGameCompleted">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-3 flex-1">
+                <div class="w-12 h-12 bg-gradient-to-br from-purple-400 to-pink-500 rounded-xl flex items-center justify-center shadow-md">
+                  <span class="text-2xl">🔤</span>
+                </div>
                 <div class="flex-1">
-                    <div class="font-bold text-gray-800">Lesson 1: Letter Recognition</div>
-                    <div class="text-xs text-gray-500">Learn uppercase letters A-Z</div>
+                  <p class="text-gray-800 font-bold text-sm">Sounds Around Us</p>
+                  <p class="text-gray-500 text-xs">Tap the picture that matches it!</p>
                 </div>
-                <span class="badge badge-pending lesson-status">❌ Not Started</span>
+              </div>
+              <!--<span class="game-status text-xl">❌</span>-->
             </div>
+          </div>
 
-            <!-- Lesson 2 -->
-            <div class="lesson-item" data-key="lesson2Completed">
+          <!-- Game 2 -->
+          <div class="lesson-card bg-gradient-to-br from-blue-50 to-cyan-50 rounded-2xl p-4 border-2 border-blue-100" data-key="readingGameCompleted">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-3 flex-1">
+                <div class="w-12 h-12 bg-gradient-to-br from-blue-400 to-cyan-500 rounded-xl flex items-center justify-center shadow-md">
+                  <span class="text-2xl">🔤</span>
+                </div>
                 <div class="flex-1">
-                    <div class="font-bold text-gray-800">Lesson 2: Phonics Basics</div>
-                    <div class="text-xs text-gray-500">Learn letter sounds</div>
+                  <p class="text-gray-800 font-bold text-sm">Beginning Sounds</p>
+                  <p class="text-gray-500 text-xs">Match sounds & letters</p>
                 </div>
-                <span class="badge badge-pending lesson-status">❌ Not Started</span>
+              </div>
+              <!--<span class="game-status text-xl">❌</span>-->
             </div>
-
-            <!-- Lesson 3 -->
-            <div class="lesson-item" data-key="lesson3Completed">
+          </div>
+          
+          <div class="lesson-card bg-gradient-to-br from-purple-50 to-pink-50 rounded-2xl p-4 border-2 border-purple-100" data-key="wordGameCompleted">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-3 flex-1">
+                <div class="w-12 h-12 bg-gradient-to-br from-purple-400 to-pink-500 rounded-xl flex items-center justify-center shadow-md">
+                  <span class="text-2xl">🔤</span>
+                </div>
                 <div class="flex-1">
-                    <div class="font-bold text-gray-800">Lesson 3: Simple Words</div>
-                    <div class="text-xs text-gray-500">Read 3-letter words</div>
+                  <p class="text-gray-800 font-bold text-sm">Spell the Word</p>
+                  <p class="text-gray-500 text-xs">Drag letters to spell words!</p>
                 </div>
-                <span class="badge badge-pending lesson-status">❌ Not Started</span>
+              </div>
+              <!--<span class="game-status text-xl">❌</span>-->
             </div>
-
-            <!-- Lesson 4 -->
-            <div class="lesson-item" data-key="lesson4Completed">
+          </div>
+          
+          <div class="lesson-card bg-gradient-to-br from-blue-50 to-cyan-50 rounded-2xl p-4 border-2 border-blue-100" data-key="readingGameCompleted">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-3 flex-1">
+                <div class="w-12 h-12 bg-gradient-to-br from-blue-400 to-cyan-500 rounded-xl flex items-center justify-center shadow-md">
+                  <span class="text-2xl">🔤</span>
+                </div>
                 <div class="flex-1">
-                    <div class="font-bold text-gray-800">Lesson 4: Sight Words</div>
-                    <div class="text-xs text-gray-500">Memorize common words</div>
+                  <p class="text-gray-800 font-bold text-sm">Medial /a/ Sound</p>
+                  <p class="text-gray-500 text-xs">Listen to both words first, then choose the one with /a/!</p>
                 </div>
-                <span class="badge badge-pending lesson-status">❌ Not Started</span>
+              </div>
+              <!--<span class="game-status text-xl">❌</span>-->
             </div>
-
-            <div class="mt-4">
-                <div class="flex justify-between text-sm text-gray-600 mb-2">
-                    <span>Lessons Progress</span>
-                    <span id="lessonsProgress">0%</span>
-                </div>
-                <div class="progress-bar">
-                    <div class="progress-fill" id="lessonsProgressBar" style="width: 0%"></div>
-                </div>
-            </div>
+          </div>
+          
         </div>
-
-        <!-- Math Missions Section -->
-        <!-- <div class="game-card">
-            <div class="category-header">
-                🔢 Math Missions
-            </div> -->
-
-            <!-- Math 1 -->
-            <!-- <div class="lesson-item" data-key="math1Completed">
-                <div class="flex-1">
-                    <div class="font-bold text-gray-800">Mission 1: Counting 1-10</div>
-                    <div class="text-xs text-gray-500">Learn to count objects</div>
-                </div>
-                <span class="badge badge-pending math-status">❌ Not Started</span>
-            </div> -->
-
-            <!-- Math 2 -->
-            <!-- <div class="lesson-item" data-key="math2Completed">
-                <div class="flex-1">
-                    <div class="font-bold text-gray-800">Mission 2: Simple Addition</div>
-                    <div class="text-xs text-gray-500">Add numbers up to 10</div>
-                </div>
-                <span class="badge badge-pending math-status">❌ Not Started</span>
-            </div> -->
-
-            <!-- Math 3 -->
-            <!-- <div class="lesson-item" data-key="math3Completed">
-                <div class="flex-1">
-                    <div class="font-bold text-gray-800">Mission 3: Simple Subtraction</div>
-                    <div class="text-xs text-gray-500">Subtract numbers up to 10</div>
-                </div>
-                <span class="badge badge-pending math-status">❌ Not Started</span>
-            </div>
-
-            <div class="mt-4">
-                <div class="flex justify-between text-sm text-gray-600 mb-2">
-                    <span>Math Progress</span>
-                    <span id="mathProgress">0%</span>
-                </div>
-                <div class="progress-bar">
-                    <div class="progress-fill" id="mathProgressBar" style="width: 0%"></div>
-                </div>
-            </div>
-        </div> -->
-
-        <!-- Reset Button -->
-        <div class="text-center mt-6">
-            <button onclick="resetProgress()"
-                class="bg-white text-purple-600 font-bold px-8 py-3 rounded-full shadow-lg hover:shadow-xl transition-all hover:scale-105 active:scale-95">
-                Reset All Progress 🔄
-            </button>
-        </div>
-    </div>
-
-    <script>
-        const userProgress = {
-            points: <?php echo $points; ?>,
-            level: <?php echo $level; ?>,
-            missionsCompleted: <?php echo $missions_completed; ?>,
-            lessonsCompleted: <?php echo $lessons_completed; ?>,
-            progressPercent: <?php echo $progress_percent; ?>
-        };
-
-
+        
         
 
+        <div class="progress-bar">
+          <div class="progress-fill bg-gradient-to-r from-purple-400 to-pink-500" id="gamesProgressBar" style="width: 0%"></div>
+        </div>
+      </section>
 
-        // Update dashboard stats
-        document.addEventListener('DOMContentLoaded', () => {
-            // Overall stats
-            document.getElementById('totalCompleted').textContent = userProgress.missionsCompleted + userProgress.lessonsCompleted;
-            document.getElementById('totalLessons').textContent = 10; // total lessons/missions in your system
-            document.getElementById('overallProgress').textContent = userProgress.progressPercent + '%';
+      <!-- Reading Lessons Section -->
+      <section class="bg-white rounded-3xl p-5 shadow-xl mb-5">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-gray-800 font-bold text-xl">📚 Reading Lessons</h3>
+          <div class="flex items-center gap-2">
+            <!--<span class="text-gray-600 text-sm font-medium" id="lessonsProgress">0%</span>-->
+          </div>
+        </div>
 
-            // Individual progress bars
-            document.getElementById('gamesProgressBar').style.width = Math.round((userProgress.missionsCompleted / 3) * 100) + '%';
-            document.getElementById('lessonsProgressBar').style.width = Math.round((userProgress.lessonsCompleted / 4) * 100) + '%';
-            document.getElementById('mathProgressBar').style.width = Math.round((userProgress.missionsCompleted / 3) * 100) + '%';
-        });
-        // Create background stars
-        const starsContainer = document.getElementById('stars');
-        for (let i = 0; i < 50; i++) {
-            const star = document.createElement('div');
-            star.className = 'star';
-            const size = Math.random() * 3 + 1;
-            star.style.width = size + 'px';
-            star.style.height = size + 'px';
-            star.style.left = Math.random() * 100 + '%';
-            star.style.top = Math.random() * 100 + '%';
-            star.style.animationDelay = Math.random() * 3 + 's';
-            starsContainer.appendChild(star);
-        }
+        <div class="space-y-3 mb-4">
+          <!-- Lesson 1 -->
+          <section class="bg-white rounded-3xl p-5 shadow-xl relative">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-gray-800 font-bold text-xl">Reading Lessons</h3>
+                    <span class="text-2xl">🎯</span>
+                </div>
 
-        // Load and display progress
-        function loadProgress() {
-            let totalCompleted = 0;
-            let totalItems = 0;
+                <div class="space-y-3">
+                    <?php
+                    $videoQuery = $conn->query("SELECT * FROM videos ORDER BY uploaded_at DESC");
+                    $index = 1;
 
-            // Games
-            let gamesCompleted = 0;
-            const gameItems = document.querySelectorAll('.lesson-item[data-key^="wordGame"], .lesson-item[data-key^="readingGame"]');
-            gameItems.forEach(item => {
-                totalItems++;
-                const key = item.getAttribute('data-key');
-                const status = item.querySelector('.game-status');
-                const completed = localStorage.getItem(key) === 'true';
+                    if ($videoQuery && $videoQuery->num_rows > 0) {
+                        while ($video = $videoQuery->fetch_assoc()) {
+                            $color = ['cyan', 'emerald', 'orange', 'purple', 'teal', 'pink'][($index - 1) % 6];
+                            $title = htmlspecialchars($video['title']);
+                            $desc = htmlspecialchars($video['description'] ?? 'No description');
+                            $path = htmlspecialchars($video['file_path']);
 
-                if (completed) {
-                    gamesCompleted++;
-                    totalCompleted++;
-                    status.textContent = '✅ Completed';
-                    status.className = 'badge badge-completed';
-                }
-            });
+                            echo "
+                    <div class='lesson-item flex items-center justify-between p-4 rounded-xl border-2 border-gray-100'>
+                        <div class='flex items-center gap-4'>
+                            <div class='w-12 h-12 bg-gradient-to-br from-{$color}-400 to-{$color}-500 rounded-xl flex items-center justify-center shadow-md'>
+                                <span class='text-white text-xl font-bold'>{$index}</span>
+                            </div>
+                            <div>
+                                <p class='text-gray-800 font-bold text-sm'>{$title}</p>
+                                <p class='text-gray-500 text-xs mb-1'>{$desc}</p>
+                            </div>
+                        </div>
+                        <button class='text-{$color}-400 text-xl hover:scale-110 transition'></button>
+                    </div>
+                    ";
+                            $index++;
+                        }
+                    } else {
+                        echo "<p class='text-gray-500 text-center'>No videos available.</p>";
+                    }
+                    ?>
+                </div>
 
-            // Lessons
-            let lessonsCompleted = 0;
-            const lessonItems = document.querySelectorAll('.lesson-item[data-key^="lesson"]');
-            lessonItems.forEach(item => {
-                totalItems++;
-                const key = item.getAttribute('data-key');
-                const status = item.querySelector('.lesson-status');
-                const completed = localStorage.getItem(key) === 'true';
+                <!-- 🎬 Video Modal -->
+                <div id="videoModal"
+                    class="hidden fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
+                    <div class="bg-white rounded-2xl shadow-2xl overflow-hidden relative w-11/12 md:w-2/3 lg:w-1/2">
+                        <button onclick="closeVideoModal()"
+                            class="absolute top-3 right-3 bg-gray-800 text-white rounded-full px-3 py-1 hover:bg-gray-600 transition">✕</button>
 
-                if (completed) {
-                    lessonsCompleted++;
-                    totalCompleted++;
-                    status.textContent = '✅ Completed';
-                    status.className = 'badge badge-completed';
-                }
-            });
+                        <div class="p-4 border-b">
+                            <h2 id="videoTitle" class="text-lg font-bold text-gray-800"></h2>
+                        </div>
 
-            // Math
-            let mathCompleted = 0;
-            const mathItems = document.querySelectorAll('.lesson-item[data-key^="math"]');
-            mathItems.forEach(item => {
-                totalItems++;
-                const key = item.getAttribute('data-key');
-                const status = item.querySelector('.math-status');
-                const completed = localStorage.getItem(key) === 'true';
+                        <video id="lessonVideo" class="w-full rounded-b-2xl" controls>
+                            <source src="" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                </div>
+            </section>
 
-                if (completed) {
-                    mathCompleted++;
-                    totalCompleted++;
-                    status.textContent = '✅ Completed';
-                    status.className = 'badge badge-completed';
-                }
-            });
+        <div class="progress-bar">
+          <div class="progress-fill bg-gradient-to-r from-green-400 to-emerald-500" id="lessonsProgressBar" style="width: 0%"></div>
+        </div>
+      </section>
 
-            // Update progress bars
-            const gamesPercent = Math.round((gamesCompleted / gameItems.length) * 100);
-            const lessonsPercent = Math.round((lessonsCompleted / lessonItems.length) * 100);
-            const mathPercent = Math.round((mathCompleted / mathItems.length) * 100);
-            const overallPercent = Math.round((totalCompleted / totalItems) * 100);
+      
+    </main>
 
-            document.getElementById('gamesProgress').textContent = gamesPercent + '%';
-            document.getElementById('gamesProgressBar').style.width = gamesPercent + '%';
+    <!-- BOTTOM NAVIGATION -->
+    <footer class="fixed bottom-0 left-1/2 transform -translate-x-1/2 w-full max-w-[400px] bg-white rounded-t-3xl shadow-2xl px-6 py-4 z-20">
+      <div class="flex justify-around items-center relative">
+        <button class="nav-btn flex flex-col items-center gap-1 text-gray-400" onclick="window.location.href='user_dashboard.php'">
+          <span class="text-3xl">🏠</span>
+          <span class="text-xs">Home</span>
+        </button>
+        
+        <button class="nav-btn active flex flex-col items-center gap-1">
+          <span class="text-3xl">📊</span>
+          <span class="text-xs font-semibold">Progress</span>
+        </button>
+        
+        <button class="nav-btn flex flex-col items-center gap-1 text-gray-400" onclick="window.location.href='user_profile.php'">
+          <span class="text-3xl">👤</span>
+          <span class="text-xs">Profile</span>
+        </button>
+      </div>
+    </footer>
+  </div>
 
-            document.getElementById('lessonsProgress').textContent = lessonsPercent + '%';
-            document.getElementById('lessonsProgressBar').style.width = lessonsPercent + '%';
+  <script>
+    // Create background stars
+    const starsContainer = document.getElementById('stars');
+    for (let i = 0; i < 30; i++) {
+      const star = document.createElement('div');
+      star.className = 'star';
+      const size = Math.random() * 3 + 1;
+      star.style.width = size + 'px';
+      star.style.height = size + 'px';
+      star.style.left = Math.random() * 100 + '%';
+      star.style.top = Math.random() * 60 + '%';
+      star.style.animationDelay = Math.random() * 3 + 's';
+      star.style.animationDuration = (Math.random() * 2 + 2) + 's';
+      starsContainer.appendChild(star);
+    }
 
-            document.getElementById('mathProgress').textContent = mathPercent + '%';
-            document.getElementById('mathProgressBar').style.width = mathPercent + '%';
+    // Load and display progress
+    function loadProgress() {
+      let totalCompleted = 0;
+      let totalItems = 0;
 
-            // Update stats
-            document.getElementById('totalCompleted').textContent = totalCompleted;
-            document.getElementById('totalLessons').textContent = totalItems;
-            document.getElementById('overallProgress').textContent = overallPercent + '%';
-        }
+      // Games
+    //   let gamesCompleted = 0;
+    //   const gameItems = document.querySelectorAll('.lesson-card[data-key^="wordGame"], .lesson-card[data-key^="readingGame"]');
+    //   gameItems.forEach(item => {
+    //     totalItems++;
+    //     const key = item.getAttribute('data-key');
+    //     const status = item.querySelector('.game-status');
+    //     const completed = localStorage.getItem(key) === 'true';
+        
+    //     if (completed) {
+    //       gamesCompleted++;
+    //       totalCompleted++;
+    //       status.textContent = '✅';
+    //       item.classList.add('opacity-75');
+    //     }
+    //   });
 
-        function resetProgress() {
-            if (confirm('Are you sure you want to reset all progress? This cannot be undone.')) {
-                localStorage.clear();
-                location.reload();
-            }
-        }
+      // Lessons
+    //   let lessonsCompleted = 0;
+    //   const lessonItems = document.querySelectorAll('.lesson-card[data-key^="lesson"]');
+    //   lessonItems.forEach(item => {
+    //     totalItems++;
+    //     const key = item.getAttribute('data-key');
+    //     const status = item.querySelector('.lesson-status');
+    //     const completed = localStorage.getItem(key) === 'true';
+        
+    //     if (completed) {
+    //       lessonsCompleted++;
+    //       totalCompleted++;
+    //       status.textContent = '✅';
+    //       item.classList.add('opacity-75');
+    //     }
+    //   });
 
-        function markCompleted(type) {
-            if (type === 'game') userProgress.missionsCompleted++;
-            if (type === 'lesson') userProgress.lessonsCompleted++;
+      // Math
+    //   let mathCompleted = 0;
+    //   const mathItems = document.querySelectorAll('.lesson-card[data-key^="math"]');
+    //   mathItems.forEach(item => {
+    //     totalItems++;
+    //     const key = item.getAttribute('data-key');
+    //     const status = item.querySelector('.math-status');
+    //     const completed = localStorage.getItem(key) === 'true';
+        
+    //     if (completed) {
+    //       mathCompleted++;
+    //       totalCompleted++;
+    //       status.textContent = '✅';
+    //       item.classList.add('opacity-75');
+    //     }
+    //   });
 
-            // Recalculate total progress
-            const totalCompleted = userProgress.missionsCompleted + userProgress.lessonsCompleted;
-            const totalItems = 10; // total lessons + games
-            userProgress.progressPercent = Math.round((totalCompleted / totalItems) * 100);
+      // Update progress bars
+      const gamesPercent = Math.round((gamesCompleted / gameItems.length) * 100);
+      const lessonsPercent = Math.round((lessonsCompleted / lessonItems.length) * 100);
+      const mathPercent = Math.round((mathCompleted / mathItems.length) * 100);
+      const overallPercent = Math.round((totalCompleted / totalItems) * 100);
 
-            // Update dashboard UI
-            document.getElementById('totalCompleted').textContent = totalCompleted;
-            document.getElementById('overallProgress').textContent = userProgress.progressPercent + '%';
+      document.getElementById('gamesProgress').textContent = gamesPercent + '%';
+      document.getElementById('gamesProgressBar').style.width = gamesPercent + '%';
+      
+      document.getElementById('lessonsProgress').textContent = lessonsPercent + '%';
+      document.getElementById('lessonsProgressBar').style.width = lessonsPercent + '%';
+      
+      document.getElementById('mathProgress').textContent = mathPercent + '%';
+      document.getElementById('mathProgressBar').style.width = mathPercent + '%';
 
-            // Save to DB
-            fetch('update_progress.php', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(userProgress)
-            });
-        }
+      // Update stats
+      document.getElementById('totalCompleted').textContent = totalCompleted;
+      document.getElementById('totalLessons').textContent = totalItems;
+      document.getElementById('overallProgress').textContent = overallPercent + '%';
+    }
 
-        // Load progress on page load
-        document.addEventListener('DOMContentLoaded', loadProgress);
-    </script>
+    function resetProgress() {
+      if (confirm('Are you sure you want to reset all progress? This cannot be undone.')) {
+        // Clear specific progress keys
+        const keys = ['wordGameCompleted', 'readingGameCompleted', 'lesson1Completed', 'lesson2Completed', 'lesson3Completed', 'lesson4Completed', 'math1Completed', 'math2Completed', 'math3Completed'];
+        keys.forEach(key => localStorage.removeItem(key));
+        location.reload();
+      }
+    }
+
+    // Load progress on page load
+    document.addEventListener('DOMContentLoaded', loadProgress);
+  </script>
 </body>
-
 </html>

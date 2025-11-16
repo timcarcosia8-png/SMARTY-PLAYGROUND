@@ -1,7 +1,7 @@
 <?php
 header('Content-Type: application/json');
 include "filter_input.php";
-include "database/db_connect.php";
+include "db_connect.php";
 
 // Fetch all beginning sounds
 $sql = "SELECT id, word, image_path, sound_letter FROM beginning_sounds";

@@ -1,15 +1,7 @@
 <?php
-
-include "../filter_input.php";
-include "../database/db_connect.php";
-
-<<<<<<< HEAD
-
-=======
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
->>>>>>> bcaab525dbca1757cae1a32c88efa8c34fd8ca95
+session_start();
+include "filter_input.php";
+include "db_connect.php";
 
 $error_message = "";
 $email = "";
@@ -23,7 +15,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     if (empty($email) || empty($password)) {
         $errors[] = "All fields are required.";
     } else {
-        $stmt = $conn->prepare("SELECT * FROM users WHERE email = ? AND role = 'admin' LIMIT 1");
+        // ✅ Allow both admin and superadmin to log in
+        $stmt = $conn->prepare("SELECT * FROM users WHERE email = ? AND (role = 'admin' OR role = 'superadmin') LIMIT 1");
         $stmt->bind_param("s", $email);
         $stmt->execute();
         $result = $stmt->get_result();
@@ -38,9 +31,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                     // ✅ Store session data
                     $_SESSION['user_id'] = $user['user_id'];
                     $_SESSION['name'] = $user['name'];
-                    $_SESSION['role'] = $user['role'];
+                    $_SESSION['role'] = $user['role']; // role can be 'admin' or 'superadmin'
 
                     // ✅ Redirect to dashboard
+                    echo "<script>console.log('Password verified successfully');</script>";
                     header("Location: admin_dashboard.php");
                     exit();
                 } else {
@@ -60,9 +54,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         }
     }
 }
-
-
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -82,7 +73,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
 <body class="bg-gray-50 min-h-screen flex items-center justify-center p-4">
     <div class="w-full max-w-md">
-        <!-- Login Card -->
         <div class="bg-white rounded-xl shadow-sm p-8 border border-gray-200">
             <!-- Logo and Header -->
             <div class="text-center mb-8">
@@ -95,7 +85,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
             <!-- Login Form -->
             <form method="POST">
-                <!-- Email Input -->
                 <div class="mb-4">
                     <label for="email" class="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
                     <input type="email" id="email" name="email" required
@@ -103,7 +92,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                         placeholder="admin@powermath.com">
                 </div>
 
-                <!-- Password Input -->
                 <div class="mb-4">
                     <label for="password" class="block text-sm font-medium text-gray-700 mb-2">Password</label>
                     <div class="relative">
@@ -124,29 +112,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                     </div>
                 </div>
 
-                <!-- Remember Me & Forgot Password -->
+                <!-- Remember Me -->
                 <div class="flex items-center justify-between mb-6">
                     <label class="flex items-center">
-                        <input type="checkbox"
-                            class="w-4 h-4 text-teal-500 border-gray-300 rounded focus:ring-teal-500">
+                        <input type="checkbox" class="w-4 h-4 text-teal-500 border-gray-300 rounded focus:ring-teal-500">
                         <span class="ml-2 text-sm text-gray-600">Remember me</span>
                     </label>
                     <a href="#" class="text-sm text-teal-500 hover:text-teal-600">Forgot password?</a>
                 </div>
-
-                <!-- Error Message -->
-                <?php if (!empty($error_message)): ?>
-                    <div class="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm">
-                        <div class="flex items-center gap-2">
-                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd"
-                                    d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-                                    clip-rule="evenodd"></path>
-                            </svg>
-                            <span><?= htmlspecialchars($error_message) ?></span>
-                        </div>
-                    </div>
-                <?php endif; ?>
 
                 <!-- Login Button -->
                 <button type="submit"
@@ -155,17 +128,15 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 </button>
             </form>
 
-            <!-- Divider -->
             <div class="relative my-6">
                 <div class="absolute inset-0 flex items-center">
                     <div class="w-full border-t border-gray-200"></div>
                 </div>
                 <div class="relative flex justify-center text-sm">
-                    <span class="px-2 bg-white text-gray-500">Admin Access Only</span>
+                    <span class="px-2 bg-white text-gray-500">Admin & Super Admin Access</span>
                 </div>
             </div>
 
-            <!-- Admin Info -->
             <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
                 <div class="flex items-start gap-3">
                     <svg class="w-5 h-5 text-gray-600 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
@@ -175,20 +146,17 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                     </svg>
                     <div>
                         <p class="text-sm font-medium text-gray-800">Authorized Personnel Only</p>
-                        <p class="text-xs text-gray-600 mt-1">This login portal is restricted to administrators.
-                            Unauthorized access attempts will be logged and reported.</p>
+                        <p class="text-xs text-gray-600 mt-1">
+                            This login portal is restricted to administrators and super admins.
+                            Unauthorized access attempts will be logged.
+                        </p>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Footer -->
         <div class="text-center mt-6">
-<<<<<<< HEAD
-            <p class="text-sm text-gray-500">© 2024 PowerMath Defenders. All rights reserved.</p>
-=======
-            <p class="text-sm text-gray-500">© 2024 Smarty PlayGround. All rights reserved.</p>
->>>>>>> bcaab525dbca1757cae1a32c88efa8c34fd8ca95
+            <p class="text-sm text-gray-500">All rights reserved.</p>
         </div>
     </div>
 
@@ -207,5 +175,4 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         }
     </script>
 </body>
-
 </html>

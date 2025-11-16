@@ -168,7 +168,7 @@
 
             <!-- Form Section -->
             <div class="space-y-4 mb-6">
-                <form action="../register.php" method="POST" class="space-y-4 mb-6">
+                <form action="register.php" method="POST" class="space-y-4 mb-6">
                     <input type="text" name="name" placeholder="Enter Full Name Here"
                         class="w-full px-5 py-4 rounded-2xl text-gray-700 text-base bg-white" required />
                     <input type="email" name="email" placeholder="Enter Email Here"

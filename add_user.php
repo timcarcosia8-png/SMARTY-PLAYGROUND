@@ -39,7 +39,7 @@ if ($check->num_rows > 0) {
 $check->close();
 
 // Generate random password
-function generatePassword($length = 10)
+function generatePassword($length = 8)
 {
     return substr(str_shuffle('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()'), 0, $length);
 }
@@ -48,13 +48,13 @@ $plain_password = generatePassword();
 $hashed_password = password_hash($plain_password, PASSWORD_DEFAULT);
 
 // Generate verification token
-$token = bin2hex(random_bytes(16));
+ $verification_code = str_pad(rand(0, 9999), 4, '0', STR_PAD_LEFT);
 
 $full_name = trim("$first_name $middle_name $last_name");
 
 // Insert user
 $stmt = $conn->prepare("INSERT INTO users (name, email, password, address, birthday, role, verification_code, is_verified) VALUES (?, ?, ?, ?, ?, 'student', ?, 0)");
-$stmt->bind_param("ssssss", $full_name, $email, $hashed_password, $address, $birthday, $token);
+$stmt->bind_param("ssssss", $full_name, $email, $hashed_password, $address, $birthday, $verification_code);
 
 if ($stmt->execute()) {
     $user_id = $stmt->insert_id;
@@ -81,13 +81,16 @@ if ($stmt->execute()) {
         $mail->isHTML(true);
         $mail->Subject = 'Welcome to Smarty Playground! Verify Your Account';
 
-        $verify_link = "https://darkcyan-mink-932088.hostingersite.com/verify.php?token=$token";
+        $verify_link = "https://darkcyan-mink-932088.hostingersite.com/user_login.php";
         $mail->Body = "
             <h2>Welcome, $first_name! 🎉</h2>
             <p>Your account has been created by the administrator.</p>
             <p><b>Login Email:</b> $email<br>
                <b>Temporary Password:</b> $plain_password</p>
-            <p>Please click the link below to verify your email and start using your account:</p>
+               <b></b></p>
+               <b>Verification Code:</b> $verification_code</p>
+               
+            <p>Please click the link below to login your email and start verying your account after:</p>
             <a href='$verify_link' style='
                 background: #10b981;
                 color: white;
@@ -95,7 +98,7 @@ if ($stmt->execute()) {
                 text-decoration: none;
                 border-radius: 5px;
                 font-weight: bold;
-            '>Verify Account</a>
+            '>Login Account</a>
             <br><br>
             <p style='color:#555'>If you didn’t expect this email, you can safely ignore it.</p>
         ";

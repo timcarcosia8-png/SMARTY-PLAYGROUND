@@ -1,7 +1,23 @@
 <?php
+include "user_session.php"; // ✅ Handles session & role validation
 include "filter_input.php";
-include "database/db_connect.php";
+include "db_connect.php";
+
+// Fetch user info from database
+$stmt = $conn->prepare("SELECT name, avatar, points FROM users WHERE user_id = ?");
+$stmt->bind_param("i", $user_id);
+$stmt->execute();
+$stmt->bind_result($name, $avatar, $points);
+$stmt->fetch();
+$stmt->close();
+
+// Default avatar if none
+if (empty($avatar)) {
+    $avatar = "Hero1.png";
+}
 ?>
+
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -106,10 +122,10 @@ include "database/db_connect.php";
       <section class="bg-white rounded-3xl p-6 shadow-xl mb-5">
         <div class="flex flex-col items-center">
           <!-- Avatar -->
-          <img id="userAvatar" class="avatar-large mb-3" src="default-avatar.png" alt="Avatar" />
+          <img id="userAvatar" class="avatar-large mb-3" src="<?php echo htmlspecialchars($avatar); ?>" alt="Avatar" />
           
           <!-- Name -->
-          <h2 class="text-gray-800 font-bold text-xl mb-1" id="userName">Player</h2>
+          <h2 class="text-gray-800 font-bold text-xl mb-1" id="userName"><?php echo htmlspecialchars($name); ?></h2>
           <p class="text-gray-500 text-sm">Level 5 Champion</p>
         </div>
       </section>
@@ -117,7 +133,8 @@ include "database/db_connect.php";
       <!-- Settings Options -->
       <section class="space-y-3 mb-5">
         <!-- Edit Profile -->
-        <button class="settings-btn w-full bg-white rounded-2xl p-4 shadow-lg flex items-center justify-between">
+        <button onclick="openModal('editProfileModal')" 
+          class="settings-btn w-full bg-white rounded-2xl p-4 shadow-lg flex items-center justify-between">
           <span class="text-gray-800 font-semibold text-base">Edit Profile</span>
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
             <path d="M9 18L15 12L9 6" stroke="#667eea" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -125,7 +142,8 @@ include "database/db_connect.php";
         </button>
 
         <!-- Change Password -->
-        <button class="settings-btn w-full bg-white rounded-2xl p-4 shadow-lg flex items-center justify-between">
+        <button onclick="openModal('changePasswordModal')" 
+          class="settings-btn w-full bg-white rounded-2xl p-4 shadow-lg flex items-center justify-between">
           <span class="text-gray-800 font-semibold text-base">Change Password</span>
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
             <path d="M9 18L15 12L9 6" stroke="#667eea" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -197,7 +215,7 @@ include "database/db_connect.php";
       <h3 class="text-2xl font-bold text-gray-800 mb-2">Logout?</h3>
       <p class="text-gray-600 mb-6">Are you sure you want to logout?</p>
       <div class="flex gap-3">
-        <button onclick="closeModal()" class="flex-1 bg-gray-200 text-gray-800 py-3 rounded-2xl font-bold">
+        <button onclick="closeModal('logoutModal')" class="flex-1 bg-gray-200 text-gray-800 py-3 rounded-2xl font-bold">
           Cancel
         </button>
         <button onclick="confirmLogout()" class="flex-1 bg-gradient-to-r from-orange-400 to-red-500 text-white py-3 rounded-2xl font-bold shadow-lg">
@@ -206,6 +224,83 @@ include "database/db_connect.php";
       </div>
     </div>
   </div>
+  
+<!-- ✏️ EDIT PROFILE MODAL -->
+   <!-- ✏️ EDIT PROFILE MODAL -->
+<div id="editProfileModal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+  <div class="bg-white rounded-3xl p-8 max-w-sm w-11/12 mx-4 text-center">
+    <h3 class="text-2xl font-bold text-gray-800 mb-2">Edit Profile</h3>
+    <p class="text-gray-600 mb-6">Update your display name or avatar below.</p>
+
+    <form id="editProfileForm">
+      <!-- Name -->
+      <div class="mb-4 text-left">
+        <label class="block text-gray-700 font-medium mb-1">Name</label>
+        <input type="text" id="editName" name="name" value="<?php echo htmlspecialchars($name); ?>"
+          class="w-full border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
+      </div>
+
+      <!-- Avatar -->
+      <!--<div class="mb-6 text-left">-->
+      <!--  <label class="block text-gray-700 font-medium mb-1">Avatar</label>-->
+      <!--  <input type="file" id="editAvatar" name="avatar" accept="image/*"-->
+      <!--    class="w-full border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">-->
+      <!--</div>-->
+
+      <div class="flex gap-3">
+        <button type="button" onclick="closeModal('editProfileModal')" 
+          class="flex-1 bg-gray-200 text-gray-800 py-3 rounded-2xl font-bold">
+          Cancel
+        </button>
+        <button type="submit"
+          class="flex-1 bg-gradient-to-r from-blue-400 to-blue-600 text-white py-3 rounded-2xl font-bold shadow-lg">
+          Save
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- 🔐 CHANGE PASSWORD MODAL -->
+<div id="changePasswordModal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+  <div class="bg-white rounded-3xl p-8 max-w-sm w-11/12 mx-4 text-center">
+    <h3 class="text-2xl font-bold text-gray-800 mb-2">Change Password</h3>
+    <p class="text-gray-600 mb-6">Enter your current and new password below.</p>
+
+    <form id="changePasswordForm">
+      <div class="mb-3 text-left">
+        <label class="block text-gray-700 font-medium mb-1">Current Password</label>
+        <input type="password" id="currentPassword" name="currentPassword" 
+          class="w-full border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
+      </div>
+
+      <div class="mb-3 text-left">
+        <label class="block text-gray-700 font-medium mb-1">New Password</label>
+        <input type="password" id="newPassword" name="newPassword" 
+          class="w-full border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
+      </div>
+
+      <div class="mb-6 text-left">
+        <label class="block text-gray-700 font-medium mb-1">Confirm New Password</label>
+        <input type="password" id="confirmPassword" name="confirmPassword" 
+          class="w-full border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
+      </div>
+
+      <div class="flex gap-3">
+        <button type="button" onclick="closeModal('changePasswordModal')" 
+          class="flex-1 bg-gray-200 text-gray-800 py-3 rounded-2xl font-bold">
+          Cancel
+        </button>
+        <button type="submit"
+          class="flex-1 bg-gradient-to-r from-blue-400 to-blue-600 text-white py-3 rounded-2xl font-bold shadow-lg">
+          Save
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+
 
   <script>
     // Create background stars
@@ -222,55 +317,82 @@ include "database/db_connect.php";
       star.style.animationDuration = (Math.random() * 2 + 2) + 's';
       starsContainer.appendChild(star);
     }
-
-    // Load user data
-    const avatar = localStorage.getItem("selectedAvatar");
-    const name = localStorage.getItem("playerName");
     
-    const avatarEl = document.getElementById("userAvatar");
-    const nameEl = document.getElementById("userName");
+    
+        // ✅ Show modal
+        function openModal(id) {
+        const modal = document.getElementById(id);
+        if (modal) modal.classList.remove('hidden');
+        else console.warn('Modal not found:', id);
+      }
+    
+      // ✅ Close modal
+      function closeModal(id) {
+        const modal = document.getElementById(id);
+        if (modal) modal.classList.add('hidden');
+        else console.warn('Modal not found:', id);
+      }
+    
+      // ✅ Edit Profile AJAX
+      document.getElementById('editProfileForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const formData = new FormData(e.target);
+        const res = await fetch('update_profile.php', { method: 'POST', body: formData });
+        const result = await res.text();
+        alert(result);
+        closeModal('editProfileModal');
+      });
 
-    if (avatar) avatarEl.src = avatar;
-    if (name) nameEl.textContent = name;
-
-    // Logout functionality
-    function logout() {
-      document.getElementById('logoutModal').classList.remove('hidden');
-    }
-
-    function closeModal() {
-      document.getElementById('logoutModal').classList.add('hidden');
-    }
-
-    function confirmLogout() {
-      // Clear user session data (but keep progress)
-      const progressKeys = [
-        'wordGameCompleted', 'readingGameCompleted', 
-        'lesson1Completed', 'lesson2Completed', 'lesson3Completed', 'lesson4Completed',
-        'math1Completed', 'math2Completed', 'math3Completed',
-        'totalPoints', 'lessonsCompleted', 'gamesWon', 'dailyStreak',
-        'trophiesEarned', 'goalsCompleted', 'gemsCollected'
-      ];
+    
+      // ✅ Change Password AJAX
+      document.getElementById('changePasswordForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const formData = new FormData(e.target);
+        const res = await fetch('change_password.php', { method: 'POST', body: formData });
+        const result = await res.text();
+        alert(result);
+        closeModal('changePasswordModal');
+      });
       
-      // Save progress data
-      const progressData = {};
-      progressKeys.forEach(key => {
-        const value = localStorage.getItem(key);
-        if (value) progressData[key] = value;
+      
+      document.getElementById('changePasswordForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const formData = new FormData(e.target);
+        const res = await fetch('change_password.php', { method: 'POST', body: formData });
+        const result = await res.text();
+        alert(result);
+        closeModal('logoutModal');
       });
-
-      // Clear all localStorage
-      localStorage.clear();
-
-      // Restore progress data
-      Object.keys(progressData).forEach(key => {
-        localStorage.setItem(key, progressData[key]);
-      });
-
-      // Redirect to login or home
-      alert('Logged out successfully!');
-      window.location.href = 'index.html'; // Change to your login page
-    }
+    
+      // ✅ Logout modal controls
+      function logout() {
+        openModal('logoutModal');
+      }
+    
+      function confirmLogout() {
+        // Keep user progress
+        const progressKeys = [
+          'wordGameCompleted', 'readingGameCompleted',
+          'lesson1Completed', 'lesson2Completed', 'lesson3Completed', 'lesson4Completed',
+          'math1Completed', 'math2Completed', 'math3Completed',
+          'totalPoints', 'lessonsCompleted', 'gamesWon', 'dailyStreak',
+          'trophiesEarned', 'goalsCompleted', 'gemsCollected'
+        ];
+    
+        const progressData = {};
+        progressKeys.forEach(key => {
+          const value = localStorage.getItem(key);
+          if (value) progressData[key] = value;
+        });
+    
+        localStorage.clear();
+        Object.keys(progressData).forEach(key => {
+          localStorage.setItem(key, progressData[key]);
+        });
+    
+        alert('Logged out successfully!');
+        window.location.href = 'user_logout.php';
+      }
   </script>
 </body>
 </html>

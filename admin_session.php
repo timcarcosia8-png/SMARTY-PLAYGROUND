@@ -1,15 +1,21 @@
-<?php 
+<?php
 session_start();
-$username = "";
-$usertype = "";
-if (!isset($_SESSION['username'])) {
-    header("Location: admin page/admin_login.php");
+
+if (!isset($_SESSION['user_id']) || !isset($_SESSION['role'])) {
+    header("Location: admin_login.php");
     exit();
-} else {
-    $username = $_SESSION['username'];
-    $usertype = $_SESSION['usertype'];
-    if ($usertype !== "admin") {
-        header("Location: ../users/users_dashboard.php");
-        exit();
-    }
 }
+
+$role = $_SESSION['role'];
+$username = $_SESSION['name'];
+$user_id = $_SESSION['user_id'];
+
+// Redirect if not admin/superadmin
+if ($role !== 'admin' && $role !== 'superadmin') {
+    header("Location: home.php");
+    exit();
+}
+
+// Optional: restrict certain actions to Super Admin only
+$isSuperAdmin = ($role === 'superadmin');
+?>

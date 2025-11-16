@@ -1,10 +1,11 @@
 <?php
 session_start();
 include "db_connect.php";
+header('Content-Type: application/json');
 
 if (!isset($_SESSION['user_id'])) {
     http_response_code(403);
-    echo "Unauthorized access.";
+    echo json_encode(['success' => false, 'message' => 'Unauthorized access.']);
     exit;
 }
 
@@ -16,17 +17,17 @@ $confirmPassword = $_POST['confirmPassword'] ?? '';
 
 // ✅ Validate input
 if (empty($currentPassword) || empty($newPassword) || empty($confirmPassword)) {
-    echo "All fields are required.";
+    echo json_encode(['success' => false, 'message' => 'All fields are required.']);
     exit;
 }
 
 if ($newPassword !== $confirmPassword) {
-    echo "New passwords do not match.";
+    echo json_encode(['success' => false, 'message' => 'New passwords do not match.']);
     exit;
 }
 
 if (strlen($newPassword) < 6) {
-    echo "Password must be at least 6 characters long.";
+    echo json_encode(['success' => false, 'message' => 'Password must be at least 6 characters long.']);
     exit;
 }
 
@@ -40,7 +41,13 @@ $stmt->close();
 
 // ✅ Verify old password
 if (!password_verify($currentPassword, $dbPassword)) {
-    echo "Current password is incorrect.";
+    echo json_encode(['success' => false, 'message' => 'Current password is incorrect.']);
+    exit;
+}
+
+// ✅ Prevent reuse
+if (password_verify($newPassword, $dbPassword)) {
+    echo json_encode(['success' => false, 'message' => 'New password cannot be the same as the current one.']);
     exit;
 }
 
@@ -52,9 +59,9 @@ $stmt = $conn->prepare("UPDATE users SET password = ? WHERE user_id = ?");
 $stmt->bind_param("si", $newHash, $user_id);
 
 if ($stmt->execute()) {
-    echo "Password changed successfully!";
+    echo json_encode(['success' => true, 'message' => 'Password changed successfully!']);
 } else {
-    echo "Error updating password: " . $conn->error;
+    echo json_encode(['success' => false, 'message' => 'Database error: ' . $conn->error]);
 }
 
 $stmt->close();

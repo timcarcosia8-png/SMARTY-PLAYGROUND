@@ -34,23 +34,25 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 
             // Generate 5-digit verification code
             // Generate a secure token
+            // Generate a secure token
             $reset_token = bin2hex(random_bytes(16));
-
+            
             // Update token in database
-            $update = $conn->prepare("UPDATE users SET verification_code = ?, is_verified = 0 WHERE user_id = ?");
+            $update = $conn->prepare("UPDATE users SET reset_token = ? WHERE user_id = ?");
             $update->bind_param("si", $reset_token, $user_id);
             $update->execute();
+
 
             // Send email
             $mail = new PHPMailer(true);
             try {
-                $verificationLink = "https://darkcyan-mink-932088.hostingersite.com/reset_password_form.php?token=$reset_token";
+                $verificationLink = "https://darkcyan-mink-932088.hostingersite.com/reset_password.php?token=$reset_token";
 
                 $mail->isSMTP();
                 $mail->Host = 'smtp.gmail.com';
                 $mail->SMTPAuth = true;
                 $mail->Username = 'mr.ocampo12@gmail.com';
-                $mail->Password = 'your-app-password';
+                $mail->Password = 'mrpf dljl ryjv ctzz';
                 $mail->SMTPSecure = 'tls';
                 $mail->Port = 587;
 

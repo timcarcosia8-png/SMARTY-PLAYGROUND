@@ -34,7 +34,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
         $stmt->bind_param("si", $hashed, $user_id);
         $stmt->execute();
         $success = "Password has been reset successfully!";
-        header("Location: login.php?reset=success");
+        header("Location: user_login.php");
         exit();
     }
 }

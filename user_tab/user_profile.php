@@ -1,31 +1,32 @@
 <?php
 session_start();
-include '../database/db_connect.php';
+include 'db_connect.php';
+include "user_session.php";
 
-// Redirect if not logged in
-if (!isset($_SESSION['user_id'])) {
-  header("Location: ../login.php");
-  exit;
-}
 
+if (!isset($_SESSION['user_id'])) { header("Location: user_login.php"); exit; }
 $user_id = $_SESSION['user_id'];
 
-// Fetch user info
-$stmt = $conn->prepare("SELECT name, avatar, points, is_verified FROM users WHERE user_id = ?");
+// User info
+$stmt = $conn->prepare("SELECT name, email, avatar, created_at FROM users WHERE user_id = ?");
 $stmt->bind_param("i", $user_id);
 $stmt->execute();
-$stmt->bind_result($name, $avatar, $points, $is_verified);
+$stmt->bind_result($name, $email, $avatar, $created_at);
 $stmt->fetch();
 $stmt->close();
 
-// Default avatar if none
-if (empty($avatar)) {
-  $avatar = "../user_tab/Hero1.png";
-}
 
-// Progress logic
-$maxPoints = 1000;
-$progressPercent = min(100, ($points / $maxPoints) * 100);
+$memberSince = date("M Y", strtotime($created_at));
+
+if(empty($avatar)) $avatar="default-avatar.png";
+
+// Progress info
+$stmt2 = $conn->prepare("SELECT lessons_completed, missions_completed FROM user_progress WHERE user_id = ?");
+$stmt2->bind_param("i", $user_id);
+$stmt2->execute();
+$stmt2->bind_result($lessons_completed, $missions_completed);
+$stmt2->fetch();
+$stmt2->close();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -39,136 +40,234 @@ $progressPercent = min(100, ($points / $maxPoints) * 100);
   <style>
     body {
       font-family: 'Fredoka', sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      min-height: 100vh;
-      overflow-x: hidden;
     }
-    .star { position: fixed; width: 3px; height: 3px; background: white; border-radius: 50%; animation: twinkle 2s infinite; }
-    @keyframes twinkle { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
 
-    .profile-container { max-width: 400px; margin: 0 auto; padding: 20px; padding-bottom: 100px; }
-    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
-    .header-title { color: white; font-size: 1.8rem; font-weight: 700; }
-    .settings-btn { background: white; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); transition: all 0.3s ease; }
-    .settings-btn:hover { transform: rotate(90deg) scale(1.1); }
+    .phone-container {
+      max-width: 400px;
+      margin: 0 auto;
+      background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      position: relative;
+    }
 
-    .profile-card { background: white; border-radius: 30px; padding: 30px; text-align: center; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3); }
-    .avatar-container { width: 120px; height: 120px; margin: 0 auto 20px; border-radius: 50%; background: linear-gradient(135deg, #22d3ee 0%, #06b6d4 100%); display: flex; align-items: center; justify-content: center; border: 4px solid white; box-shadow: 0 8px 20px rgba(34, 211, 238, 0.4); position: relative; overflow: hidden; }
-    .avatar-container img { width: 100%; height: 100%; object-fit: cover; }
-
-    .camera-badge {
+    .star {
       position: absolute;
-      bottom: 0;
-      right: 0;
-      background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
-      width: 35px; height: 35px;
+      background: white;
       border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      border: 3px solid white;
+      animation: twinkle 3s infinite ease-in-out;
+    }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.2; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.2); }
+    }
+
+    .nav-btn {
+      transition: all 0.3s ease;
       cursor: pointer;
-      font-size: 1rem;
+    }
+
+    .nav-btn.active {
+      color: #667eea;
+    }
+
+    .stat-card {
       transition: all 0.3s ease;
     }
-    .camera-badge:hover { transform: scale(1.1); }
 
-    .student-name { color: #374151; font-size: 1.5rem; font-weight: 700; margin-bottom: 15px; }
-    .progress-container { background: #f3f4f6; border-radius: 20px; padding: 15px; margin-top: 15px; }
-    .progress-label { color: #6b7280; font-size: 0.875rem; font-weight: 600; margin-bottom: 8px; text-align: left; }
-    .progress-bar-bg { background: #e5e7eb; border-radius: 50px; height: 12px; overflow: hidden; position: relative; }
-    .progress-bar-fill { height: 100%; background: linear-gradient(90deg, #22d3ee 0%, #06b6d4 100%); border-radius: 50px; transition: width 0.5s ease; position: relative; overflow: hidden; }
-    .progress-bar-fill::after {
-      content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
-      animation: shimmer 2s infinite;
+    .stat-card:active {
+      transform: scale(0.95);
     }
-    @keyframes shimmer { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
-    .progress-text { color: #374151; font-size: 0.875rem; font-weight: 600; margin-top: 8px; text-align: right; }
 
-    .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px; }
-    .stat-card { background: white; border-radius: 20px; padding: 20px 15px; text-align: center; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); transition: all 0.3s ease; cursor: pointer; }
-    .stat-card:hover { transform: translateY(-5px); box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15); }
-    .stat-icon { font-size: 2rem; margin-bottom: 8px; }
-    .stat-label { color: #6b7280; font-size: 0.875rem; font-weight: 600; margin-bottom: 5px; }
-    .stat-value { color: #374151; font-size: 1.5rem; font-weight: 700; }
+    .avatar-large {
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 5px solid white;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    }
 
-    .badges-section { background: white; border-radius: 25px; padding: 25px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); }
-    .badges-title { font-size: 1.3rem; font-weight: 700; color: #374151; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
-    .badges-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; }
-    .badge { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%); border-radius: 20px; animation: float 3s ease-in-out infinite; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); }
-    .badge:hover { transform: scale(1.15) rotate(10deg); box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15); }
-    @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+    .settings-btn {
+      transition: all 0.3s ease;
+    }
 
-    .bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); background: white; border-radius: 30px 30px 0 0; padding: 15px 20px; box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.2); display: flex; justify-content: space-around; align-items: center; width: 100%; max-width: 400px; z-index: 100; }
-    .nav-item { display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: all 0.3s ease; color: #9ca3af; padding: 5px 10px; }
-    .nav-item:hover { transform: translateY(-3px); }
-    .nav-item.active { color: #667eea; }
-    .nav-icon { font-size: 1.8rem; margin-bottom: 5px; }
-    .nav-label { font-size: 0.7rem; font-weight: 600; }
+    .settings-btn:active {
+      transform: rotate(90deg);
+    }
   </style>
 </head>
-<body>
-  <div id="stars"></div>
 
-  <div class="profile-container">
-    <!-- Header -->
-    <div class="header">
-      <div class="header-title">My Profile</div>
-      <div class="settings-btn" onclick="alert('Settings coming soon!')">
-        <svg width="24" height="24" fill="none" stroke="#667eea" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="12" cy="12" r="3"></circle>
-          <path d="M12 1v6m0 6v6M5.64 5.64l4.24 4.24m6.36 0l4.24-4.24M5.64 18.36l4.24-4.24m6.36 0l4.24 4.24"></path>
-        </svg>
-      </div>
-    </div>
+<body class="bg-gray-100">
+  <div class="phone-container">
+    <!-- Background Stars -->
+    <div id="stars"></div>
 
-    <!-- Profile Card -->
-    <div class="profile-card">
-      <div class="avatar-container">
-        <img id="profileAvatar" src="<?php echo htmlspecialchars($avatar); ?>" alt="Student Avatar">
-        <!-- <div class="camera-badge" onclick="alert('Avatar change coming soon!')">📷</div> -->
-      </div>
-      <div class="student-name"><?php echo htmlspecialchars($name); ?></div>
+    <!-- HEADER -->
+    <header class="px-5 pt-6 pb-4 relative z-10 flex justify-between items-center">
+      <h1 class="text-white font-bold text-3xl">My Profile</h1>
+      <button class="settings-btn w-12 h-12 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center"onclick="window.location.href='user_settings.php'">
+        <span class="text-2xl">⚙️</span>
+      </button>
+    </header>
 
-      <div class="progress-container">
-        <div class="progress-label">Progress to Next Level</div>
-        <div class="progress-bar-bg">
-          <div class="progress-bar-fill" style="width: <?php echo $progressPercent; ?>%;"></div>
+    <!-- MAIN CONTENT -->
+    <main class="px-5 pb-24 relative z-10">
+      
+      <!-- Profile Card -->
+      <section class="bg-white rounded-3xl p-6 shadow-xl mb-5">
+        <div class="flex flex-col items-center">
+          <!-- Avatar -->
+            <img id="userAvatar" class="avatar-large mb-4" src="<?php echo htmlspecialchars($avatar); ?>" alt="Avatar" />
+        
+            <h2 class="text-gray-800 font-bold text-2xl mb-1" id="userName"><?php echo htmlspecialchars($name); ?></h2>
+
+          <!--<p class="text-gray-500 text-sm mb-4">Level 5 Champion</p>-->
+
+          <!-- Progress to Next Level -->
+          <!--<div class="w-full bg-gray-100 rounded-2xl p-4">-->
+          <!--  <div class="flex justify-between items-center mb-2">-->
+          <!--    <span class="text-gray-600 text-sm font-medium">Progress to Next Level</span>-->
+          <!--  </div>-->
+          <!--  <div class="bg-white rounded-full h-3 overflow-hidden mb-2">-->
+          <!--    <div class="bg-gradient-to-r from-cyan-400 to-blue-500 h-3 rounded-full transition-all duration-500" style="width: 75%"></div>-->
+          <!--  </div>-->
+          <!--  <p class="text-right text-gray-800 font-bold text-sm"><span id="currentCoins">750</span> / 1000 Coins</p>-->
+          <!--</div>-->
         </div>
-        <div class="progress-text">
-          <span><?php echo $points; ?></span> / <span><?php echo $maxPoints; ?></span> Points
+      </section>
+
+      <!-- Statistics -->
+      <!--<section class="grid grid-cols-3 gap-3 mb-5">-->
+        <!-- Trophy -->
+      <!--  <div class="stat-card bg-white rounded-3xl p-4 shadow-xl text-center">-->
+      <!--    <div class="w-16 h-16 mx-auto bg-gradient-to-br from-yellow-400 to-orange-500 rounded-2xl flex items-center justify-center mb-2 shadow-lg">-->
+      <!--      <span class="text-3xl">🏆</span>-->
+      <!--    </div>-->
+      <!--    <p class="text-gray-800 font-bold text-xl" id="trophyCount">12</p>-->
+      <!--    <p class="text-gray-500 text-xs">Trophies</p>-->
+      <!--  </div>-->
+
+        <!-- Target -->
+      <!--  <div class="stat-card bg-white rounded-3xl p-4 shadow-xl text-center">-->
+      <!--    <div class="w-16 h-16 mx-auto bg-gradient-to-br from-pink-400 to-rose-500 rounded-2xl flex items-center justify-center mb-2 shadow-lg">-->
+      <!--      <span class="text-3xl">🎯</span>-->
+      <!--    </div>-->
+      <!--    <p class="text-gray-800 font-bold text-xl" id="targetCount">28</p>-->
+      <!--    <p class="text-gray-500 text-xs">Goals</p>-->
+      <!--  </div>-->
+
+        <!-- Diamond -->
+      <!--  <div class="stat-card bg-white rounded-3xl p-4 shadow-xl text-center">-->
+      <!--    <div class="w-16 h-16 mx-auto bg-gradient-to-br from-cyan-400 to-blue-500 rounded-2xl flex items-center justify-center mb-2 shadow-lg">-->
+      <!--      <span class="text-3xl">💎</span>-->
+      <!--    </div>-->
+      <!--    <p class="text-gray-800 font-bold text-xl" id="diamondCount">45</p>-->
+      <!--    <p class="text-gray-500 text-xs">Gems</p>-->
+      <!--  </div>-->
+      <!--</section>-->
+
+      <!-- Achievements -->
+      <!--<section class="bg-white rounded-3xl p-5 shadow-xl mb-5">-->
+      <!--  <div class="flex items-center justify-between mb-4">-->
+      <!--    <h3 class="text-gray-800 font-bold text-xl">Achievements</h3>-->
+      <!--    <span class="text-2xl">🌟</span>-->
+      <!--  </div>-->
+
+      <!--  <div class="space-y-3">-->
+          <!-- Achievement 1 -->
+      <!--    <div class="bg-gradient-to-br from-yellow-400 to-orange-500 rounded-2xl p-4 shadow-lg">-->
+      <!--      <div class="flex items-center gap-3">-->
+      <!--        <div class="w-12 h-12 bg-white rounded-xl flex items-center justify-center shadow-md">-->
+      <!--          <span class="text-2xl">🔥</span>-->
+      <!--        </div>-->
+      <!--        <div class="flex-1">-->
+      <!--          <p class="text-white font-bold text-sm">7 Day Streak Master</p>-->
+      <!--          <p class="text-white/90 text-xs">Keep learning every day!</p>-->
+      <!--        </div>-->
+      <!--        <div class="text-white text-2xl">✓</div>-->
+      <!--      </div>-->
+      <!--    </div>-->
+
+          <!-- Achievement 2 -->
+      <!--    <div class="bg-gradient-to-br from-purple-400 to-pink-500 rounded-2xl p-4 shadow-lg">-->
+      <!--      <div class="flex items-center gap-3">-->
+      <!--        <div class="w-12 h-12 bg-white rounded-xl flex items-center justify-center shadow-md">-->
+      <!--          <span class="text-2xl">📚</span>-->
+      <!--        </div>-->
+      <!--        <div class="flex-1">-->
+      <!--          <p class="text-white font-bold text-sm">Bookworm Champion</p>-->
+      <!--          <p class="text-white/90 text-xs">Completed 50 lessons</p>-->
+      <!--        </div>-->
+      <!--        <div class="text-white text-2xl">✓</div>-->
+      <!--      </div>-->
+      <!--    </div>-->
+
+          <!-- Achievement 3 -->
+      <!--    <div class="bg-gradient-to-br from-green-400 to-emerald-500 rounded-2xl p-4 shadow-lg">-->
+      <!--      <div class="flex items-center gap-3">-->
+      <!--        <div class="w-12 h-12 bg-white rounded-xl flex items-center justify-center shadow-md">-->
+      <!--          <span class="text-2xl">🎮</span>-->
+      <!--        </div>-->
+      <!--        <div class="flex-1">-->
+      <!--          <p class="text-white font-bold text-sm">Game Master</p>-->
+      <!--          <p class="text-white/90 text-xs">Won 20 games</p>-->
+      <!--        </div>-->
+      <!--        <div class="text-white text-2xl">✓</div>-->
+      <!--      </div>-->
+      <!--    </div>-->
+      <!--  </div>-->
+      <!--</section>-->
+
+      <!-- Account Info -->
+         <section class="bg-white rounded-3xl p-5 shadow-xl">
+        <h3 class="text-gray-800 font-bold text-xl mb-4">Account Info</h3>
+        
+        <div class="space-y-3">
+          <!-- Email -->
+          <div class="flex items-center justify-between p-3 bg-gray-50 rounded-2xl">
+            <div class="flex items-center gap-3">
+              <span class="text-2xl">📧</span>
+              <span class="text-gray-700 text-sm font-medium">Email</span>
+            </div>
+            <span class="text-gray-500 text-xs"><?php echo htmlspecialchars($email); ?></span>
+          </div>
+    
+          <!-- Member Since -->
+          <div class="flex items-center justify-between p-3 bg-gray-50 rounded-2xl">
+            <div class="flex items-center gap-3">
+              <span class="text-2xl">📅</span>
+              <span class="text-gray-700 text-sm font-medium">Member Since</span>
+            </div>
+            <span class="text-gray-500 text-xs"><?php echo $memberSince; ?></span>
+          </div>
+    
+          <!-- Total Points -->
+          
         </div>
-      </div>
-    </div>
+    </section>
 
-    <!-- Stats -->
-    <div class="stats-grid">
-      <div class="stat-card"><div class="stat-icon">🏆</div><div class="stat-label">Rank</div><div class="stat-value">102</div></div>
-      <div class="stat-card"><div class="stat-icon">🎯</div><div class="stat-label">Level</div><div class="stat-value">7</div></div>
-      <div class="stat-card"><div class="stat-icon">💎</div><div class="stat-label">Coins</div><div class="stat-value"><?php echo $points; ?></div></div>
-    </div>
-
-    <!-- Badges -->
-    <div class="badges-section">
-      <div class="badges-title"><span>🏅</span><span>Achievements</span></div>
-      <div class="badges-grid">
-        <div class="badge" title="First Steps">🌟</div>
-        <div class="badge" title="Word Master">📚</div>
-        <div class="badge" title="Math Whiz">🔢</div>
-        <div class="badge" title="Speed Reader">⚡</div>
-        <div class="badge" title="Perfect Score">💯</div>
-        <div class="badge" title="Daily Streak">🔥</div>
-        <div class="badge" title="Team Player">🤝</div>
-        <div class="badge" title="Champion">👑</div>
-      </div>
-    </div>
-  </div>
+    </main>
 
   <!-- Bottom Nav -->
-  <div class="bottom-nav">
-    <div class="nav-item" onclick="window.location.href='user_dashboard.php'"><div class="nav-icon">🏠</div><div class="nav-label">Home</div></div>
-    <div class="nav-item" onclick="window.location.href='user_progress.php'"><div class="nav-icon">📊</div><div class="nav-label">Progress</div></div>
-    <div class="nav-item active"><div class="nav-icon">👤</div><div class="nav-label">Profile</div></div>
-  </div>
+  <footer class="fixed bottom-0 left-1/2 transform -translate-x-1/2 w-full max-w-[400px] bg-white rounded-t-3xl shadow-2xl px-6 py-4 z-20">
+      <div class="flex justify-around items-center relative">
+        <button class="nav-btn flex flex-col items-center gap-1 text-gray-400" onclick="window.location.href='user_dashboard.php'">
+          <span class="text-3xl">🏠</span>
+          <span class="text-xs">Home</span>
+        </button>
+        
+        <button class="nav-btn flex flex-col items-center gap-1 text-gray-400" onclick="window.location.href='user_progress.php'">
+          <span class="text-3xl">📊</span>
+          <span class="text-xs">Progress</span>
+        </button>
+        
+        <button class="nav-btn active flex flex-col items-center gap-1">
+          <span class="text-3xl">👤</span>
+          <span class="text-xs font-semibold">Profile</span>
+        </button>
+      </div>
+    </footer>
 
   <script>
     // Stars background

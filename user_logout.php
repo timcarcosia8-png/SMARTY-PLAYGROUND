@@ -1,15 +1,22 @@
 <?php
 session_start();
 
-// Destroy all session data
-session_unset();
+// Unset all session variables
+$_SESSION = [];
+
+// Destroy the session
 session_destroy();
 
-// Prevent page caching
-header("Cache-Control: no-cache, must-revalidate, max-age=0");
-header("Expires: Sat, 26 Jul 1997 05:00:00 GMT");
+// Optional: clear the session cookie
+if (ini_get("session.use_cookies")) {
+    $params = session_get_cookie_params();
+    setcookie(session_name(), '', time() - 42000,
+        $params["path"], $params["domain"],
+        $params["secure"], $params["httponly"]
+    );
+}
 
-// Redirect to login or home
+// Redirect back to login page
 header("Location: user_login.php");
 exit();
 ?>

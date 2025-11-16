@@ -1,6 +1,6 @@
 <?php
 
-include "database/db_connect.php";
+include "db_connect.php";
 
 if (!isset($_GET['id'])) {
     echo json_encode(["error" => "Missing audio ID"]);

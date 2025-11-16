@@ -1,31 +1,35 @@
 <?php
-include '../database/db_connect.php'; // Adjust the path if needed
-
+session_start();
+include "db_connect.php";
+include "filter_input.php"; // Adjust the path if needed
+include "admin_session.php";
+// include "user_session.php";
 // Default query
 $query = "SELECT * FROM missions";
 
 // Handle filter form
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $filterDate = $_POST['date'] ?? '';
-    $filterRange = $_POST['range'] ?? '';
+// if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+//     $filterDate = $_POST['date'] ?? '';
+//     $filterRange = $_POST['range'] ?? '';
 
-    if (!empty($filterDate)) {
-        $query = "SELECT * FROM missions WHERE DATE(created_at) = '$filterDate'";
-    } elseif (!empty($filterRange)) {
-        if ($filterRange == 'Today') {
-            $query = "SELECT * FROM missions WHERE DATE(created_at) = CURDATE()";
-        } elseif ($filterRange == 'Last 7 Days') {
-            $query = "SELECT * FROM missions WHERE created_at >= CURDATE() - INTERVAL 7 DAY";
-        } elseif ($filterRange == 'Last 30 Days') {
-            $query = "SELECT * FROM missions WHERE created_at >= CURDATE() - INTERVAL 30 DAY";
-        } elseif ($filterRange == 'This Month') {
-            $query = "SELECT * FROM missions WHERE MONTH(created_at) = MONTH(CURDATE()) AND YEAR(created_at) = YEAR(CURDATE())";
-        }
-    }
-}
+//     if (!empty($filterDate)) {
+//         $query = "SELECT * FROM missions WHERE DATE(created_at) = '$filterDate'";
+//     } elseif (!empty($filterRange)) {
+//         if ($filterRange == 'Today') {
+//             $query = "SELECT * FROM missions WHERE DATE(created_at) = CURDATE()";
+//         } elseif ($filterRange == 'Last 7 Days') {
+//             $query = "SELECT * FROM missions WHERE created_at >= CURDATE() - INTERVAL 7 DAY";
+//         } elseif ($filterRange == 'Last 30 Days') {
+//             $query = "SELECT * FROM missions WHERE created_at >= CURDATE() - INTERVAL 30 DAY";
+//         } elseif ($filterRange == 'This Month') {
+//             $query = "SELECT * FROM missions WHERE MONTH(created_at) = MONTH(CURDATE()) AND YEAR(created_at) = YEAR(CURDATE())";
+//         }
+//     }
+// }
 
-$result = $conn->query($query);
+// $result = $conn->query($query);
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -45,13 +49,7 @@ $result = $conn->query($query);
 
 <body class="bg-gray-100">
     
-        <div class="logout-container">
-            <a href="../adminpage/admin_logout.php" title="Logout and end session">
-                Logout
-                <i class="fa-solid fa-power-off"></i>
-            </a>
-
-        </div>
+        
 
     <div class="flex h-screen">
         <!-- Sidebar -->
@@ -64,12 +62,19 @@ $result = $conn->query($query);
                 <nav class="space-y-2">
                     <a href="admin_dashboard.php"
                         class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg transition">Dashboard</a>
-                    <a href="admin_readingmissions.php"
-                        class="flex items-center gap-3 px-4 py-3 bg-teal-500 text-white rounded-lg font-medium">Reading
-                        Mission</a>
-                    <a href="admin_readinglessons.php"
-                        class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg transition">Reading
-                        Lesson</a>
+                    <div x-data="{ open: false }" class="space-y-1">
+                    <button @click="open = !open" 
+                      class="flex items-center justify-between w-full px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg transition">
+                      <span class="font-medium">Content Management</span>
+                      <svg :class="{ 'rotate-180': open }" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transform transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </button>
+                    <div x-show="open" class="pl-6 space-y-1">
+                      <a href="admin_readingmissions.php" class="block px-4 py-2 text-gray-700 hover:bg-gray-50 rounded-lg transition">Reading Mission</a>
+                      <a href="admin_readinglessons.php" class="block px-4 py-2 text-gray-700 hover:bg-gray-50 rounded-lg transition">Reading Lesson</a>
+                    </div>
+                  </div>
                     <a href="admin_dailyprogress.php"
                         class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg transition">Daily
                         Progress</a>
@@ -77,8 +82,9 @@ $result = $conn->query($query);
                         class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg transition">User
                         Info</a>
                 </nav>
+                <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
                 <div class="absolute bottom-6 left-6 right-6">
-                    <a href="admin_logout.php"
+                    <a onclick="logout()" 
                         class="flex items-center gap-3 px-4 py-3 text-red-600 hover:bg-red-50 rounded-lg transition">Logout</a>
                 </div>
             </div>
@@ -120,7 +126,7 @@ $result = $conn->query($query);
 
                 <!-- Content Area -->
                 <div class="p-8">
-                    <div class="bg-white rounded-lg shadow-md border-4 border-teal-500 p-6">
+                    <div class="bg-white rounded-lg shadow-md border-4 border-white-500 p-6">
                         <!-- Header with Add Button -->
                         <div class="flex justify-between items-center mb-6">
                             <h2 class="text-2xl font-bold text-gray-800">All Reading Missions</h2>
@@ -233,6 +239,41 @@ $result = $conn->query($query);
                 </div>
             </div>
         </div>
+        
+        <div id="logoutModal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+    <div class="bg-white rounded-3xl p-8 max-w-sm w-11/12 mx-4 text-center">
+      <div class="w-20 h-20 bg-gradient-to-br from-orange-400 to-red-500 rounded-full flex items-center justify-center mx-auto mb-4 shadow-xl">
+        <span class="text-5xl">👋</span>
+      </div>
+      <h3 class="text-2xl font-bold text-gray-800 mb-2">Logout?</h3>
+      <p class="text-gray-600 mb-6">Are you sure you want to logout?</p>
+      <div class="flex gap-3">
+        <button onclick="closeModal()" class="flex-1 bg-gray-200 text-gray-800 py-3 rounded-2xl font-bold">
+          Cancel
+        </button>
+        <button onclick="confirmLogout()" class="flex-1 bg-gradient-to-r from-orange-400 to-red-500 text-white py-3 rounded-2xl font-bold shadow-lg">
+          Logout
+        </button>
+      </div>
+    </div>
+        
+        <script>
+        function logout() {
+            document.getElementById('logoutModal').classList.remove('hidden');
+        }
+    
+        function closeModal() {
+            document.getElementById('logoutModal').classList.add('hidden');
+        }
+        
+        
+        function confirmLogout() {
+          // Redirect to login or home
+          alert('Logged out successfully!');
+          window.location.href = 'admin_logout.php';
+        }
+        </script>
+    
 </body>
 
 </html>

@@ -1,8 +1,8 @@
 <?php
 $dbservername = "localhost";
-$dbusername = "root";
-$dbpassword = "";
-$database = "smarty_playground";
+$dbusername = "u983508915_root";
+$dbpassword = "Smartyplayground2025";
+$database = "u983508915_smartyplay";
 
 $conn = new mysqli($dbservername, $dbusername, $dbpassword, $database);
 
